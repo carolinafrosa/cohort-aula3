@@ -1,0 +1,1296 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "${EVOLUTION_API_KEY}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.remetente }}"
+            },
+            {
+              "name": "text",
+              "value": "=Olá! Bem-vindo ao Projeta SC 🏛️\nSou o assistente de projetos do Governo de Santa Catarina. \nPosso ajudar você a encontrar informações sobre projetos e investimentos do estado.\n🔎 *Digite o que você deseja consultar*\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3296,
+        1504
+      ],
+      "id": "ddbdd721-fb27-48be-8bd2-7f396a7bd133",
+      "name": "RetornoBoasVindas"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst p = input.projeto;\nconst remetente = input.remetente;\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nif (staticData.contextos[remetente]) {\n  staticData.contextos[remetente].projeto_atual = p;\n  staticData.contextos[remetente].projeto_exibido = false;\n}\n\nreturn [{\n  tipo: \"projeto_selecionado\",\n  remetente,\n  descricao_projeto:\n    \"\\uD83D\\uDCC4 *\" + p.CODIGO_PROCESSO + \" - \" + p.NOME + \"*\\n\\n\" +\n    \"\\uD83D\\uDFE1 *Situacao:* \" + (p.SITUACAO || \"-\") + \"\\n\" +\n    \"\\uD83C\\uDFDB *Orgao:* \" + (p.ORGAO || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCC5 *Inicio:* \" + (p.DATA_INICIO || \"-\") + \"\\n\" +\n    \"\\uD83D\\uDCC5 *Termino:* \" + (p.DATA_FIM || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCB0 *Valor:* R$ \" + (p.VALORPLANEJADO || \"0\") + \"\\n\" +\n    \"\\uD83D\\uDCCA *Execucao:* \" + (p.PERCENTUAL_EXEC || \"0\") + \"%\" +\n    (p.SITUACAO_ATUAL ? \"\\n\\n\\u2705 *Detalhe da Situacao:*\\n\" + p.SITUACAO_ATUAL : \"\") +\n    \"\\n\\n*Deseja mais informacoes?*\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n    \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n    \"3\\uFE0F\\u20E3 Ver Contratos\\n\" +\n    \"4\\uFE0F\\u20E3 Nova Busca\"\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3296,
+        2784
+      ],
+      "id": "b7aba839-bbbb-405d-ba57-2d7b2ce76dec",
+      "name": "FormataProjeto"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ${GROQ_API_KEY}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"temperature\": 0,\n  \"max_tokens\": 200,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Voce e um interpretador de buscas de projetos do governo de SC. Extraia do texto do usuario os campos de busca e retorne SOMENTE um JSON valido, sem explicacoes, sem markdown.\\n\\nRegras:\\n1. Fundacoes, secretarias, departamentos e orgaos governamentais vao para orgao\\n2. APENAS nomes de cidades e municipios vao para municipio. Exemplos de municipios: Florianopolis, Joinville, Blumenau, Palhoca, Biguacu, Chapeco, Lages, Itajai, Criciuma, Sao Jose, Tubarao\\n3. Nomes de obras, projetos, construcoes, estruturas, complexos, parques, terminais vao para nome. Exemplos: Ponte, Escola, Hospital, Rodovia, Viaduto, Barragem, MiraMar, Via Expressa, HemoSC, Terminal Rodoviario\\n4. Frases como 'quero saber', 'me fala', 'projeto', 'nome do projeto' sao introducoes - ignore e extraia apenas a palavra-chave principal\\n5. obra, convenio, servico, aquisicao vao para tipo\\n6. em andamento vao para situacao Andamento\\n7. concluido, finalizado vao para situacao Concluido\\n8. O campo indicado como Proximo campo esperado recebe o texto do usuario\\n9. Nomes proprios compostos e nomes de projetos especificos SEMPRE vao para nome, nunca para municipio\\n\\nCampos: nome, municipio, situacao, tipo, orgao, codigo\\n\\nExemplos:\\nPalhoca -> {\\\"municipio\\\":\\\"Palhoca\\\"}\\nFlorianopolis -> {\\\"municipio\\\":\\\"Florianopolis\\\"}\\nPonte Hercilio Luz -> {\\\"nome\\\":\\\"Ponte Hercilio Luz\\\"}\\nMiraMar -> {\\\"nome\\\":\\\"MiraMar\\\"}\\nVia Expressa -> {\\\"nome\\\":\\\"Via Expressa\\\"}\\nHemoSC -> {\\\"nome\\\":\\\"HemoSC\\\"}\\nParque Miramar -> {\\\"nome\\\":\\\"Parque Miramar\\\"}\\nComplexo do Campeche -> {\\\"nome\\\":\\\"Complexo do Campeche\\\"}\\nTerminal Rodoviario -> {\\\"nome\\\":\\\"Terminal Rodoviario\\\"}\\nquero saber o nome do projeto ponte -> {\\\"nome\\\":\\\"ponte\\\"}\\nme fala sobre o projeto escola -> {\\\"nome\\\":\\\"escola\\\"}\\nEscola Sao Jose -> {\\\"nome\\\":\\\"Escola Sao Jose\\\"}\\nHospital Regional -> {\\\"nome\\\":\\\"Hospital Regional\\\"}\\nFundacao Catarinense de Esporte -> {\\\"orgao\\\":\\\"Fundacao Catarinense de Esporte\\\"}\\nescola florianopolis -> {\\\"nome\\\":\\\"escola\\\",\\\"municipio\\\":\\\"florianopolis\\\"}\\nem andamento -> {\\\"situacao\\\":\\\"Andamento\\\"}\\nconcluido -> {\\\"situacao\\\":\\\"Concluido\\\"}\\n32/2025 -> {\\\"codigo\\\":\\\"32/2025\\\"}\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{ $json.busca_limpa }}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3488,
+        2432
+      ],
+      "id": "dcd91285-31e6-4507-a017-b0498fd0923d",
+      "name": "InterpretaConsulta"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\nconst camposAcumulados = $('ProcessaMensagem').first().json.campos_acumulados || {};\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\n// Se busca_limpa é \"refinar\", ignora o Groq e usa só campos acumulados\nlet camposNovos = {};\nif (buscaOriginal !== \"refinar\") {\n  try {\n    const texto = input.choices[0].message.content.trim();\n    camposNovos = JSON.parse(texto.replace(/```json|```/g, \"\").trim());\n  } catch(e) {\n    camposNovos = { nome: buscaOriginal };\n  }\n}\n\n// Mescla campos — novos complementam os existentes\n// Campos \"QUALQUER\" nao sao sobrescritos pelo Groq\nconst campos = { ...camposAcumulados };\nObject.keys(camposNovos).forEach(key => {\n  if (campos[key] === \"QUALQUER\") return;\n  if (key === 'nome' && campos.nome && camposNovos.nome && campos.nome !== \"QUALQUER\") {\n    if (!campos.nome.includes(camposNovos.nome)) campos.nome = campos.nome + \" \" + camposNovos.nome;\n  } else {\n    campos[key] = camposNovos[key];\n  }\n});\n\nif (staticData.contextos[remetente]) {\n  staticData.contextos[remetente].campos_acumulados = campos;\n} else {\n  staticData.contextos[remetente] = { campos_acumulados: campos };\n}\n\nfunction removerAcentos(str) {\n  if (!str) return \"\";\n  return str.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").toLowerCase().trim();\n}\n\nfunction montarPattern(str) {\n  if (!str || str === \"QUALQUER\") return null;\n  const palavras = removerAcentos(str).toUpperCase().split(/\\s+/).filter(function(w){ return w.length >= 3; });\n  if (palavras.length === 0) return null;\n  const palavrasUsadas = palavras.slice(0, 2);\n  // Palavras longas (7+ chars): usar 6 chars para mais precisao\n  // Palavras curtas: usar 4 chars\n  return \"%\" + palavrasUsadas.map(function(w){\n    var tam = w.length >= 7 ? 6 : 4;\n    return w.substring(0, tam);\n  }).join(\"%\") + \"%\";\n}\n\nconst busca_codigo = campos.codigo || \"\";\nconst busca_nome_p = montarPattern(campos.nome);\nconst busca_municipio_p = montarPattern(campos.municipio);\nconst busca_orgao_p = montarPattern(campos.orgao);\nconst busca_situacao_p = montarPattern(campos.situacao);\nconst busca_tipo_p = montarPattern(campos.tipo);\n\n// Monta WHERE\nlet where;\n\nif (busca_codigo) {\n  where = \"TRIM(TO_CHAR(VIP.NUMERO))||'-'||TRIM(TO_CHAR(VIP.ANO)) = '\" + busca_codigo.replace(\"/\", \"-\") + \"'\";\n} else if (busca_nome_p && busca_municipio_p) {\n  where = \"UPPER(VIP.NOME) LIKE '\" + busca_nome_p + \"' AND UPPER(M.MUNICIPIO) LIKE '\" + busca_municipio_p + \"'\";\n} else if (busca_nome_p) {\n  where = \"UPPER(VIP.NOME) LIKE '\" + busca_nome_p + \"'\";\n} else if (busca_municipio_p) {\n  where = \"UPPER(M.MUNICIPIO) LIKE '\" + busca_municipio_p + \"'\";\n} else {\n  where = \"1=1\";\n}\n\n// Filtros adicionais sempre como AND\nlet whereExtra = \"\";\nif (busca_situacao_p) whereExtra += \" AND UPPER(VIP.SITUACAO) LIKE '\" + busca_situacao_p + \"'\";\nif (busca_tipo_p) whereExtra += \" AND UPPER(VIP.TIPO) LIKE '\" + busca_tipo_p + \"'\";\nif (busca_orgao_p) whereExtra += \" AND UPPER(VIP.ORGAO) LIKE '\" + busca_orgao_p + \"'\";\n\nconst sql = \"SELECT DISTINCT VIP.PROJETO_ID, VIP.NUMERO, VIP.ANO, TRIM(TO_CHAR(VIP.NUMERO))||'-'||TRIM(TO_CHAR(VIP.ANO)) AS CODIGO_PROCESSO, VIP.NOME, VIP.SITUACAO, VIP.SITUACAO_ATUAL, VIP.ORGAO, VIP.TIPO, TO_CHAR(VIP.DATAINICIO, 'DD-MM-YYYY') AS DATA_INICIO, TO_CHAR(VIP.DATAFIM, 'DD-MM-YYYY') AS DATA_FIM, VIP.PRAZO_ESTIMADO AS PRAZOESTIMADO, VIP.VALORPLANEJADO, VIP.PERCEXECUTADOFINANC AS PERCENTUAL_EXEC, M.MUNICIPIO, MR.REGIAO FROM VW_IDENTIFICACAO_PROJETOS VIP LEFT JOIN LOCALIZACAO L ON L.PROJETO_ID = VIP.PROJETO_ID LEFT JOIN MUNICIPIO M ON M.ID = L.MUNICIPIO_ID LEFT JOIN MUNICIPIO_REGIAO MR ON MR.MUNICIPIO_ID = M.ID LEFT JOIN PORTFOLIO_PROJETO PP ON VIP.PROJETO_ID = PP.PROJETO_ID LEFT JOIN PORTFOLIO PORT ON PP.PORTFOLIO_ID = PORT.ID LEFT JOIN PROGRAMA_INVESTIMENTO PI ON PI.ID = PP.PROGRAMA_INVESTIMENTO_ID WHERE (\" + where + \")\" + whereExtra + \" ORDER BY VIP.ANO DESC, VIP.NUMERO DESC FETCH FIRST 20 ROWS ONLY\";\n\nconst busca_limpa_completa = [campos.nome, campos.municipio, campos.situacao, campos.tipo, campos.orgao, campos.codigo]\n  .filter(v => v && v !== \"QUALQUER\")\n  .join(\" \");\n\nreturn [{\n  remetente,\n  busca_limpa: busca_limpa_completa || buscaOriginal,\n  campos,\n  sql_query: sql\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3680,
+        2432
+      ],
+      "id": "f1653b56-d341-43ed-8343-6ecdcbc4b291",
+      "name": "MontaBusca"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "78caf95b-b49c-4b78-8f20-8e7fbadaebb3",
+              "leftValue": "={{ $json.submenu }}",
+              "rightValue": "entregas",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3296,
+        1824
+      ],
+      "id": "fd69b993-36a8-47bc-b023-00f50a205ade",
+      "name": "RoteiaSubmenu"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "200282e0-9a27-4af5-be6a-392ce85b822b",
+              "leftValue": "={{ $json.submenu }}",
+              "rightValue": "valores",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3504,
+        2000
+      ],
+      "id": "fa006220-1e58-40ff-89b0-27e7543a7c9f",
+      "name": "RoteiaValores"
+    },
+    {
+      "parameters": {
+        "query": "={{ $json.sql_entregas }}"
+      },
+      "id": "7685280e-169f-45ef-9846-27a0eeb2cdeb",
+      "name": "ConsultaEntregas",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        3888,
+        1808
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "=SELECT\n    VL_PLANEJADO AS VALOR_PLANEJADO,\n    VL_CONTRATADO AS VALOR_CONTRATADO,\n    VL_EXECUTADO AS VALOR_EXECUTADO,\n    VL_PAGO AS VALOR_PAGO,\n    PC_EXECUTADO AS PERC_EXEC\nFROM FINANCEIRO\nWHERE PROJETO_ID = {{ $json.projeto.PROJETO_ID }}"
+      },
+      "id": "4f256151-534c-486a-9ee8-9b1e74bd25f6",
+      "name": "ConsultaValores",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        3888,
+        1984
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ $json.sql_contratos }}"
+      },
+      "id": "b380f29a-93be-46e8-910a-5273b7a48dc0",
+      "name": "ConsultaContratos",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        3888,
+        2160
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const todos = $input.all();\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst staticData = $getWorkflowStaticData('global');\nconst contexto = staticData.contextos?.[remetente] || {};\nconst p = contexto.projeto_atual || {};\n\nif (todos.length === 0) {\n  return [{\n    remetente,\n    mensagem_retorno:\n      \"\\u274C Nao encontrei entregas para este projeto.\\n\\n\" +\n      \"Deseja mais informacoes?\\n\" +\n      \"1\\uFE0F\\u20E3 Ver Valores\\n\" +\n      \"2\\uFE0F\\u20E3 Ver Contratos\\n\" +\n      \"4\\uFE0F\\u20E3 Nova Busca\"\n  }];\n}\n\nconst linhas = todos.map(item => {\n  const e = item.json;\n  const perc = e.PERC_EXECUTADO !== null ? \" (\" + e.PERC_EXECUTADO + \"%)\" : \"\";\n  return \"- \" + (e.NOME_ENTREGA || \"-\") + perc;\n}).join(\"\\n\");\n\nreturn [{\n  remetente,\n  mensagem_retorno:\n    \"\\uD83D\\uDCCB Principais Entregas\\n\" +\n    p.CODIGO_PROCESSO + \" - \" + p.NOME + \"\\n\\n\" +\n    linhas + \"\\n\\n\" +\n    \"Deseja mais informacoes?\\n\" +\n    \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n    \"3\\uFE0F\\u20E3 Ver Contratos\\n\" +\n    \"4\\uFE0F\\u20E3 Nova Busca\"\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        1808
+      ],
+      "id": "8401a104-cdd7-477f-a67e-b25e0adf9576",
+      "name": "FormataEntregas"
+    },
+    {
+      "parameters": {
+        "jsCode": "const todos = $input.all();\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst staticData = $getWorkflowStaticData('global');\nconst contexto = staticData.contextos?.[remetente] || {};\nconst p = contexto.projeto_atual || {};\n\nif (todos.length === 0) {\n  return [{\n    remetente,\n    mensagem_retorno:\n      \"\\u274C Nao encontrei valores para este projeto.\\n\\n\" +\n      \"*Deseja mais informacoes?*\\n\" +\n      \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n      \"3\\uFE0F\\u20E3 Ver Contratos\\n\" +\n      \"4\\uFE0F\\u20E3 Nova Busca\"\n  }];\n}\n\nfunction formatarValor(val) {\n  const n = parseFloat(String(val || \"0\").replace(\",\", \".\")) || 0;\n  return \"R$ \" + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n}\n\nconst v = todos[0].json;\n\nreturn [{\n  remetente,\n  mensagem_retorno:\n    \"\\uD83D\\uDCB0 *Valores do Projeto*\\n\" +\n    \"*\" + p.CODIGO_PROCESSO + \" - \" + p.NOME + \"*\\n\\n\" +\n    \"\\uD83D\\uDCB3 *Planejado:* \" + formatarValor(v.VALOR_PLANEJADO) + \"\\n\" +\n    \"\\uD83D\\uDCB3 *Contratado:* \" + formatarValor(v.VALOR_CONTRATADO) + \"\\n\" +\n    \"\\uD83D\\uDCB3 *Executado:* \" + formatarValor(v.VALOR_EXECUTADO) + \"\\n\" +\n    \"\\uD83D\\uDCB3 *Pago:* \" + formatarValor(v.VALOR_PAGO) + \"\\n\" +\n    \"\\uD83D\\uDCCA *Execucao:* \" + (v.PERC_EXEC || \"0\") + \"%\\n\\n\" +\n    \"*Deseja mais informacoes?*\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n    \"3\\uFE0F\\u20E3 Ver Contratos\\n\" +\n    \"4\\uFE0F\\u20E3 Nova Busca\"\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        1984
+      ],
+      "id": "32a208b5-40a2-4102-be54-02604245d376",
+      "name": "FormataValores"
+    },
+    {
+      "parameters": {
+        "jsCode": "const todos = $input.all().filter(item => {\n  if (!item.json) return false;\n  const vals = Object.values(item.json);\n  return vals.some(v => v !== null && v !== undefined && v !== \"\");\n});\n\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst staticData = $getWorkflowStaticData('global');\nconst contexto = staticData.contextos?.[remetente] || {};\nconst p = contexto.projeto_atual || {};\n\nif (todos.length === 0) {\n  return [{\n    remetente,\n    mensagem_retorno:\n      \"\\u274C Nao encontrei contratos para este projeto.\\n\\n\" +\n      \"*Deseja mais informacoes?*\\n\" +\n      \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n      \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n      \"4\\uFE0F\\u20E3 Nova Busca\"\n  }];\n}\n\nfunction formatarValor(val) {\n  const n = parseFloat(String(val || \"0\").replace(\",\", \".\")) || 0;\n  return \"R$ \" + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n}\n\nfunction formatarData(val) {\n  if (!val) return \"-\";\n  try {\n    const d = new Date(val);\n    return d.toLocaleDateString('pt-BR');\n  } catch(e) {\n    return String(val).substring(0, 10);\n  }\n}\n\nfunction numeroLabel(i) {\n  const emojis = [\n    \"1\\uFE0F\\u20E3\",\"2\\uFE0F\\u20E3\",\"3\\uFE0F\\u20E3\",\"4\\uFE0F\\u20E3\",\"5\\uFE0F\\u20E3\",\n    \"6\\uFE0F\\u20E3\",\"7\\uFE0F\\u20E3\",\"8\\uFE0F\\u20E3\",\"9\\uFE0F\\u20E3\"\n  ];\n  if (i < 9) return emojis[i];\n  return \"*\" + (i + 1) + \".*\";\n}\n\nif (todos.length === 1) {\n  const c = todos[0].json;\n  if (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\n  staticData.contextos[remetente].contratos = [c];\n  return [{\n    remetente,\n    mensagem_retorno:\n      \"\\uD83D\\uDCDC *Contrato:* \" + (c.NUMERO || \"-\") +\n      \"\\n\\uD83C\\uDFE2 *Contratada:* \" + (c.CONTRATADA || \"-\") +\n      \"\\n\\uD83C\\uDFAF *Objeto:* \" + (c.OBJETO || \"-\") +\n      \"\\n\\uD83D\\uDFE1 *Situacao:* \" + (c.SITUACAO || \"-\") +\n      \"\\n\\uD83D\\uDCC5 *Inicio:* \" + formatarData(c.DT_INICIO) +\n      \"\\n\\uD83D\\uDCC5 *Fim:* \" + formatarData(c.DT_FIM) +\n      \"\\n\\uD83D\\uDCB0 *Total:* \" + formatarValor(c.TOTAL_CONTRATADO) +\n      \"\\n\\uD83D\\uDCB3 *Executado:* \" + formatarValor(c.VL_EXECUTADO) +\n      \"\\n\\uD83D\\uDCB3 *Pago:* \" + formatarValor(c.VL_PAGO) +\n      \"\\n\\uD83D\\uDCCA *Exec:* \" + (c.PC_EXECUTADO || \"0\") + \"%\" +\n      \"\\n\\n*Deseja mais informacoes?*\\n\" +\n      \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n      \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n      \"4\\uFE0F\\u20E3 Nova Busca\"\n  }];\n}\n\nconst grupos = {};\nconst listaOrdenada = [];\ntodos.forEach(item => {\n  const sit = item.json.SITUACAO || \"Outros\";\n  if (!grupos[sit]) grupos[sit] = [];\n  grupos[sit].push(item.json);\n});\n\nlet mensagem = \"\\uD83D\\uDCDC *Contratos do Projeto*\\n*\" + p.NOME + \"*\\n\\n\";\nlet contador = 0;\n\nObject.keys(grupos).forEach(situacao => {\n  mensagem += \"\\uD83D\\uDFE1 *\" + situacao + \"*\\n\";\n  grupos[situacao].forEach(c => {\n    listaOrdenada.push(c);\n    mensagem += \"\\n\" + numeroLabel(contador) +\n      \" *\" + (c.NUMERO || \"-\") + \"*\" +\n      \"\\n\\uD83C\\uDFAF \" + (c.OBJETO || \"-\") +\n      \"\\n\\uD83D\\uDCCA *\" + (c.PC_EXECUTADO || \"0\") + \"% exec.*\\n\";\n    contador++;\n  });\n  mensagem += \"\\n\";\n});\n\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nstaticData.contextos[remetente].contratos = listaOrdenada;\n\nmensagem += \"\\uD83D\\uDC47 Digite o numero para ver detalhes\\n4\\uFE0F\\u20E3 Nova Busca\";\nreturn [{ remetente, mensagem_retorno: mensagem }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4096,
+        2160
+      ],
+      "id": "cdf3aa3a-8d3f-4d9e-aa0f-5882b341eb4d",
+      "name": "FormadaContratos"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "saudacao",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "752b8671-7998-4a95-9268-ab80cbddbf22"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "saudacao"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7f3af603-f00b-45bb-a612-525c3b084f47",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "reinicio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "reinicio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "fc72e7ca-e027-4350-9118-b98bb38a02f7",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "submenu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "submenu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c7a06738-772e-46f5-b12b-2d1cf0654c15",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "selecao_contrato",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "selecao_contrato"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "609cc4e9-53d2-4bc6-894e-c9a919e64ca4",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "busca",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "busca"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c223e729-5ae0-4c0c-ae3e-9fc2fb27258f",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "selecao",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "selecao"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ee4a6c2a-d0ed-4def-af6a-423a25a6925e",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "pergunta_livre",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pergunta_livre"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3b1f3516-de51-4d79-aca5-b5fcf21a6394",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "ignorar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ignorar"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        3040,
+        1920
+      ],
+      "id": "6be2c773-bb79-465a-91bf-2af35e93dc5f",
+      "name": "RoteadorPrincipal"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "=={{ $json.tipo }}",
+                    "rightValue": "projeto_unico",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "df4810e3-651f-45b0-b94a-99497a20e654"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "projeto_unico"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        4320,
+        2432
+      ],
+      "id": "a0859f1a-cc8a-4803-95aa-7627085c4566",
+      "name": "RoteiaResultado"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0c0da6ac-ee95-45cc-9483-9575bf8b023e",
+              "leftValue": "={{ $json.body.data.key.fromMe }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "1ea7d868-e038-49e4-a328-29b8f144b240",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "messages.upsert",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "e04ee576-64a8-4489-a933-951daf672585",
+              "leftValue": "={{ $json.body.data.message.conversation }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        2656,
+        2016
+      ],
+      "id": "27b64a1b-2fa9-4b5f-bef8-a2d5b27928fe",
+      "name": "FiltraMensagem"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst textoOriginal =\n  input.body?.data?.message?.conversation ||\n  input.body?.data?.message?.listResponseMessage?.singleSelectReply?.selectedRowId ||\n  input.body?.text || \"\";\nconst textoLimpo = textoOriginal.trim();\nconst remetente = input.body?.data?.key?.remoteJid || \"\";\n\nif (!textoLimpo || !remetente) {\n  return [{ tipo: \"ignorar\", busca_limpa: \"\", remetente: \"\", mensagem_retorno: \"\" }];\n}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nconst TIMEOUT_MS = 20 * 60 * 1000;\nconst agora = Date.now();\n\nlet contexto = staticData.contextos[remetente] || {\n  termos: [], lista: null, contratos: null,\n  campos_acumulados: {}, projeto_exibido: false,\n  projeto_atual: null, ultimaInteracao: null\n};\n\nif (contexto.ultimaInteracao && (agora - contexto.ultimaInteracao) > TIMEOUT_MS) {\n  contexto = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: null };\n  staticData.contextos[remetente] = contexto;\n  return [{\n    tipo: \"saudacao\", busca_limpa: \"\", remetente,\n    mensagem_retorno: \"\\u23F1\\uFE0F Sua sessao expirou por falta de interacao.\\n\\nOla! Bem-vindo ao Projeta SC \\uD83C\\uDFDB\\uFE0F\\nSou o assistente de projetos do Governo de Santa Catarina.\\n\\n\\uD83D\\uDD0E Digite o que voce deseja consultar:\"\n  }];\n}\n\nconst textoNormalizado = textoLimpo.toLowerCase().normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").replace(/[^a-z0-9 \\/]/g, \"\").trim();\nconst saudacoes = ['oi', 'ola', 'oie', 'bom dia', 'boa tarde', 'boa noite', 'hey', 'hello'];\nconst eSaudacao = saudacoes.some(s => textoNormalizado === s || textoNormalizado.startsWith(s + \" \"));\nconst eNumero = /^\\d+$/.test(textoLimpo.trim());\nconst eCurto = textoLimpo.length < 4 && !eNumero;\n\n// Detecta pergunta livre antecipadamente (tem prioridade sobre saudacao)\nconst palavrasInterrogativas = [\n  'qual', 'quanto', 'quantos', 'quando', 'como', 'por que', 'porque',\n  'quem', 'onde', 'me fala', 'me conta', 'me diz', 'explica', 'detalha', 'mostra'\n];\nconst ePergunta = textoLimpo.includes('?') ||\n  palavrasInterrogativas.some(p => textoNormalizado.startsWith(p));\n\n// 1. SAUDACAO — apenas saudacao pura (sem pergunta embutida)\nif ((eSaudacao || eCurto) && !ePergunta) {\n  staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  return [{ tipo: \"saudacao\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 2. RESET\nif (textoNormalizado === \"menu\" || textoNormalizado === \"0\") {\n  staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  return [{ tipo: \"saudacao\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 3. CODIGO DE PROCESSO (ex: 654/2014)\nconst eCodigo = /^\\d+\\/\\d{4}$/.test(textoLimpo.trim());\nif (eCodigo) {\n  contexto = { termos: [textoLimpo], lista: null, contratos: null, campos_acumulados: { codigo: textoLimpo }, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"busca\", busca_limpa: textoLimpo, campos_acumulados: { codigo: textoLimpo }, campos_faltantes: [], remetente, mensagem_retorno: \"\" }];\n}\n\n// 4. SELECAO DE ITEM DA LISTA DE PROJETOS\nif (eNumero && contexto.lista && contexto.lista[parseInt(textoLimpo) - 1]) {\n  const projeto = contexto.lista[parseInt(textoLimpo) - 1];\n  contexto.ultimaInteracao = agora;\n  contexto.lista = null;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"selecao\", projeto, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 4B. SELECAO DE CONTRATO DA LISTA\nif (eNumero && contexto.contratos && contexto.contratos[parseInt(textoLimpo) - 1]) {\n  const contrato = contexto.contratos[parseInt(textoLimpo) - 1];\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"selecao_contrato\", contrato, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 5. SUBMENU DO PROJETO\nif (contexto.projeto_atual) {\n  if (textoLimpo === \"nova_busca\" || textoNormalizado === \"4\") {\n    staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n    return [{ tipo: \"reinicio\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (textoLimpo === \"entregas\" || textoNormalizado === \"1\") {\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"entregas\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (textoLimpo === \"valores\" || textoNormalizado === \"2\") {\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"valores\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (textoLimpo === \"contratos\" || textoNormalizado === \"3\") {\n    contexto.ultimaInteracao = agora;\n    contexto.contratos = null;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"contratos\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  // Pergunta livre sobre projeto atual\n  if (ePergunta) {\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"pergunta_livre\", pergunta: textoLimpo, projeto_atual: contexto.projeto_atual, remetente, mensagem_retorno: \"\" }];\n  }\n}\n\n// 6. SE PROJETO FOI EXIBIDO, LIMPA CONTEXTO\nconst termoNovo = textoLimpo.toLowerCase();\nif (contexto.projeto_exibido) {\n  contexto = { termos: [termoNovo], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"busca\", busca_limpa: termoNovo, campos_acumulados: {}, campos_faltantes: [], remetente, mensagem_retorno: \"\" }];\n}\n\n// 6B. DETECTA \"NAO SEI\"\nconst frasesPular = ['nao sei', 'nao tenho', 'qualquer', 'todos', 'todas', 'tanto faz', 'qualquer um', 'sem preferencia', 'nao importa', 'pode ser qualquer'];\nconst ePular = frasesPular.some(f => textoNormalizado.includes(f));\n\nif (ePular && contexto.projeto_atual === null) {\n  const campos = contexto.campos_acumulados || {};\n  if (!campos.municipio) { campos.municipio = \"QUALQUER\"; }\n  else if (!campos.situacao) { campos.situacao = \"QUALQUER\"; }\n  else if (!campos.nome) { campos.nome = \"QUALQUER\"; }\n  else if (!campos.orgao) { campos.orgao = \"QUALQUER\"; }\n  else if (!campos.tipo) { campos.tipo = \"QUALQUER\"; }\n  contexto.campos_acumulados = campos;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"busca\", busca_limpa: \"refinar\", campos_acumulados: campos, campos_faltantes: [], remetente, mensagem_retorno: \"\" }];\n}\n\n// 6C. NOVA BUSCA pelo \"4\" sem projeto\nif (textoNormalizado === \"4\" && contexto.projeto_atual === null) {\n  staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  return [{ tipo: \"reinicio\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 6D. PERGUNTA LIVRE (sem projeto em contexto)\nif (ePergunta) {\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"pergunta_livre\", pergunta: textoLimpo, projeto_atual: contexto.projeto_atual || null, remetente, mensagem_retorno: \"\" }];\n}\n\n// 7. ACUMULA TERMO\nif (!contexto.termos.includes(termoNovo)) {\n  contexto.termos.push(termoNovo);\n}\ncontexto.ultimaInteracao = agora;\nstaticData.contextos[remetente] = contexto;\n\nconst camposAtuais = contexto.campos_acumulados || {};\nconst campos_faltantes = [\n  !camposAtuais.municipio ? \"municipio\" : null,\n  !camposAtuais.situacao ? \"situacao\" : null,\n  !camposAtuais.nome ? \"nome\" : null,\n  !camposAtuais.orgao ? \"orgao\" : null,\n  !camposAtuais.tipo ? \"tipo\" : null\n].filter(Boolean);\n\nreturn [{ tipo: \"busca\", busca_limpa: termoNovo, campos_acumulados: camposAtuais, campos_faltantes, remetente, mensagem_retorno: \"\" }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2864,
+        2016
+      ],
+      "id": "2c6d0915-bc8c-41f9-9aba-4718d186309b",
+      "name": "ProcessaMensagem"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "${EVOLUTION_API_KEY}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.remetente }}"
+            },
+            {
+              "name": "text",
+              "value": "==={{ $json.descricao_projeto }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        4592,
+        2768
+      ],
+      "id": "2c35c2f0-b94b-4c6d-a6e9-8acc4ec2e0b6",
+      "name": "RetornoProjeto"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mensagem",
+        "options": {}
+      },
+      "id": "e1e03d76-6c53-4b19-8269-a94694964150",
+      "name": "Whatsapp",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        2448,
+        2016
+      ],
+      "webhookId": "ca260f54-431d-4cc9-bb68-c51dbc71c6bb"
+    },
+    {
+      "parameters": {
+        "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
+      },
+      "id": "9b1949be-a740-4e3c-9289-34b00146ce5e",
+      "name": "ConsultaProjetos",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        3888,
+        2432
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const todos = $input.all().filter(item => item.json && item.json.NOME);\nconst total = todos.length;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst campos = $('MontaBusca').first().json.campos || {};\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nlet totalInvestimento = 0;\nlet concluidos = [];\nlet emAndamento = [];\n\ntodos.forEach(item => {\n  totalInvestimento += parseFloat(String(item.json.VALORPLANEJADO || \"0\").replace(\",\", \".\")) || 0;\n  const sit = (item.json.SITUACAO || \"\").toLowerCase();\n  if (sit.includes('conclu') || sit.includes('finaliz') || sit.includes('encerr'))\n    concluidos.push(item);\n  else\n    emAndamento.push(item);\n});\n\nfunction formatarValor(val) {\n  if (val >= 1e9) return \"R$ \" + (val / 1e9).toFixed(1).replace(\".\", \",\") + \" bilhoes\";\n  if (val >= 1e6) return \"R$ \" + (val / 1e6).toFixed(1).replace(\".\", \",\") + \" milhoes\";\n  if (val >= 1e3) return \"R$ \" + (val / 1e3).toFixed(1).replace(\".\", \",\") + \" mil\";\n  return \"R$ \" + val.toFixed(2).replace(\".\", \",\");\n}\n\nfunction resumoBusca(c) {\n  const partes = [c.nome, c.municipio, c.situacao, c.tipo, c.orgao].filter(v => v && v !== \"QUALQUER\");\n  return partes.length > 0 ? \"*\" + partes.join(\" - \") + \"*\" : \"sua busca\";\n}\n\nfunction projetoParaContexto(json) {\n  return {\n    PROJETO_ID: json.PROJETO_ID, NUMERO: json.NUMERO, ANO: json.ANO,\n    NOME: json.NOME, CODIGO_PROCESSO: json.CODIGO_PROCESSO,\n    SITUACAO: json.SITUACAO, SITUACAO_ATUAL: json.SITUACAO_ATUAL,\n    ORGAO: json.ORGAO, DATA_INICIO: json.DATA_INICIO, DATA_FIM: json.DATA_FIM,\n    VALORPLANEJADO: json.VALORPLANEJADO, PERCENTUAL_EXEC: json.PERCENTUAL_EXEC\n  };\n}\n\nfunction linhaProjeto(item, i) {\n  const emojis = [\"1\\uFE0F\\u20E3\",\"2\\uFE0F\\u20E3\",\"3\\uFE0F\\u20E3\",\"4\\uFE0F\\u20E3\",\"5\\uFE0F\\u20E3\",\"6\\uFE0F\\u20E3\",\"7\\uFE0F\\u20E3\",\"8\\uFE0F\\u20E3\",\"9\\uFE0F\\u20E3\",\"10\\uFE0F\\u20E3\"];\n  const p = item.json;\n  const codigo = p.CODIGO_PROCESSO ? \"*\" + p.CODIGO_PROCESSO + \"* - \" : \"\";\n  const sit = p.SITUACAO ? \" - \" + p.SITUACAO : \"\";\n  const municipio = p.MUNICIPIO ? \" - \\uD83D\\uDCCD \" + p.MUNICIPIO : \"\";\n  const exec = p.PERCENTUAL_EXEC ? \" (\" + p.PERCENTUAL_EXEC + \"%)\" : \"\";\n  return (emojis[i] || \"*\" + (i + 1) + \".*\") + \" \" + codigo + p.NOME + municipio + sit + exec;\n}\n\nfunction descricaoProjeto(p) {\n  const val = formatarValor(parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")));\n  return (\n    \"Aqui estao as informacoes que encontrei! \\uD83D\\uDCCB\\n\\n\" +\n    \"*\" + p.NOME + \"*\\n\" +\n    \"\\uD83D\\uDCCC *Codigo:* \" + (p.CODIGO_PROCESSO || \"-\") + \"\\n\" +\n    \"\\uD83C\\uDFDB *Orgao:* \" + (p.ORGAO || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCCA *Situacao:* \" + (p.SITUACAO || \"-\") + \"\\n\" +\n    (p.SITUACAO_ATUAL ? \"\\u2705 *Detalhe:* \" + p.SITUACAO_ATUAL + \"\\n\\n\" : \"\\n\") +\n    \"\\uD83D\\uDCC5 *Inicio:* \" + (p.DATA_INICIO || \"-\") + \"\\n\" +\n    \"\\uD83D\\uDCC5 *Termino:* \" + (p.DATA_FIM || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCB0 *Valor:* R$ \" + parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + \"\\n\" +\n    \"\\uD83D\\uDCCA *Execucao:* \" + (p.PERCENTUAL_EXEC || \"0\") + \"%\\n\\n\" +\n    \"*Deseja mais informacoes?*\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n    \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n    \"3\\uFE0F\\u20E3 Ver Contratos\\n\" +\n    \"4\\uFE0F\\u20E3 Nova Busca\"\n  );\n}\n\nfunction contarPorCampo(lista, campo) {\n  const mapa = {};\n  lista.forEach(item => {\n    const val = item.json[campo];\n    if (val) mapa[val] = (mapa[val] || 0) + 1;\n  });\n  return Object.entries(mapa).sort((a, b) => b[1] - a[1]);\n}\n\nfunction perguntaRefinamento(campos, total, todos) {\n  const temMunicipio = !!campos.municipio && campos.municipio !== \"QUALQUER\";\n  const temSituacao  = !!campos.situacao  && campos.situacao  !== \"QUALQUER\";\n  const temNome      = !!campos.nome      && campos.nome      !== \"QUALQUER\";\n  const temOrgao     = !!campos.orgao     && campos.orgao     !== \"QUALQUER\";\n  const temTipo      = !!campos.tipo      && campos.tipo      !== \"QUALQUER\";\n\n  const termoBusca = campos.nome || campos.municipio || campos.orgao || campos.tipo || \"sua busca\";\n\n  if (!temMunicipio) {\n    const topMunicipios = contarPorCampo(todos, 'MUNICIPIO').slice(0, 5);\n    const outros = total - topMunicipios.reduce((s, [, c]) => s + c, 0);\n\n    let msg = \"Encontrei *\" + total + \" projetos* relacionados a *\" + termoBusca + \"*! \\uD83D\\uDD0E\\n\\n\";\n    msg += \"Veja como estao distribuidos por municipio:\\n\";\n    topMunicipios.forEach(([mun, qtd]) => {\n      msg += \"\\uD83D\\uDCCD \" + mun + \" \\u2014 \" + qtd + \" projeto\" + (qtd > 1 ? \"s\" : \"\") + \"\\n\";\n    });\n    if (outros > 0) msg += \"\\uD83D\\uDCCD Outros municipios \\u2014 \" + outros + \" projeto\" + (outros > 1 ? \"s\" : \"\") + \"\\n\";\n    msg += \"\\nDe qual *municipio* voce quer ver os projetos?\\n_Se nao souber, responda 'nao sei'_\";\n    return msg;\n  }\n\n  if (!temSituacao) {\n    const qtdAndamento = emAndamento.length;\n    const qtdConcluido = concluidos.length;\n    let msg = \"Em *\" + campos.municipio + \"* encontrei *\" + total + \" projetos*\";\n    if (termoBusca !== campos.municipio) msg += \" com *\" + termoBusca + \"*\";\n    msg += \"!\\n\\n\";\n    if (qtdAndamento > 0) msg += \"\\u23F3 Em andamento: *\" + qtdAndamento + \"* projeto\" + (qtdAndamento > 1 ? \"s\" : \"\") + \"\\n\";\n    if (qtdConcluido > 0) msg += \"\\u2705 Concluidos: *\" + qtdConcluido + \"* projeto\" + (qtdConcluido > 1 ? \"s\" : \"\") + \"\\n\";\n    msg += \"\\nEsse projeto esta *em andamento* ou ja foi *concluido*?\\n_Se nao souber, responda 'nao sei'_\";\n    return msg;\n  }\n\n  if (!temNome) {\n    let msg = \"Ainda encontrei *\" + total + \" projetos*\";\n    if (temMunicipio) msg += \" em *\" + campos.municipio + \"*\";\n    if (temSituacao)  msg += \" com situacao *\" + campos.situacao + \"*\";\n    msg += \".\\n\\nVoce sabe o *nome* ou alguma *palavra-chave* do projeto?\\n\";\n    msg += \"_Se nao souber, responda 'nao sei'_\\n\\nPor exemplo: escola, ponte, hospital, rodovia...\";\n    return msg;\n  }\n\n  if (!temOrgao) {\n    const topOrgaos = contarPorCampo(todos, 'ORGAO').slice(0, 4);\n    let msg = \"Ainda encontrei *\" + total + \" projetos* com o nome *\" + campos.nome + \"*.\\n\\n\";\n    msg += \"Voce sabe qual *secretaria* ou *orgao* e responsavel?\\n_Se nao souber, responda 'nao sei'_\";\n    if (topOrgaos.length > 0) {\n      msg += \"\\n\\nOs orgaos com mais projetos sao:\\n\";\n      topOrgaos.forEach(([org, qtd]) => { msg += \"\\uD83C\\uDFDB \" + org + \" (\" + qtd + \")\\n\"; });\n    }\n    return msg;\n  }\n\n  if (!temTipo) {\n    const topTipos = contarPorCampo(todos, 'TIPO').slice(0, 4);\n    let msg = \"Ainda encontrei *\" + total + \" projetos*. Qual o *tipo* do projeto?\\n\";\n    msg += \"_Se nao souber, responda 'nao sei'_\";\n    if (topTipos.length > 0) {\n      msg += \"\\n\\nOs tipos encontrados sao:\\n\";\n      topTipos.forEach(([tipo, qtd]) => { msg += \"- \" + tipo + \" (\" + qtd + \")\\n\"; });\n    }\n    return msg;\n  }\n\n  return (\n    \"Ainda encontrei *\" + total + \" projetos* com esses filtros.\\n\\n\" +\n    \"Voce consegue me dar mais algum detalhe?\\nPode ser o codigo do processo (ex: 32/2025) ou o ano do projeto.\"\n  );\n}\n\nif (total === 0) {\n  const busca = resumoBusca(campos);\n  return [{\n    tipo: \"sem_resultado\", remetente,\n    mensagem_retorno:\n      \"Nao encontrei nenhum projeto para \" + busca + \". \\uD83D\\uDD0D\\n\\n\" +\n      \"Isso pode acontecer porque o nome esta diferente no sistema.\\n\\n\" +\n      \"Voce pode tentar:\\n\" +\n      \"- Informar o *municipio* onde o projeto fica\\n\" +\n      \"- O *codigo* do processo (ex: 32/2025)\\n\" +\n      \"- Uma *palavra-chave* diferente\\n\" +\n      \"- Digitar *0* para comecar uma nova busca\"\n  }];\n}\n\nif (total === 1) {\n  const projeto = todos[0].json;\n  if (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\n  staticData.contextos[remetente].lista = null;\n  staticData.contextos[remetente].projeto_atual = projetoParaContexto(projeto);\n  staticData.contextos[remetente].projeto_exibido = false;\n  return [{ tipo: \"projeto_unico\", remetente, descricao_projeto: descricaoProjeto(projeto) }];\n}\n\nif (total >= 2 && total <= 10) {\n  const listaOrdenada = [...concluidos, ...emAndamento];\n  if (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\n  staticData.contextos[remetente].lista = listaOrdenada.map(item => projetoParaContexto(item.json));\n\n  let mensagem = \"Encontrei *\" + total + \" projetos*! Qual deles e o que voce procura?\\n\\n\";\n  if (concluidos.length > 0) {\n    mensagem += \"\\u2705 *Concluidos*\\n\";\n    concluidos.forEach((item, i) => { mensagem += linhaProjeto(item, i) + \"\\n\"; });\n    mensagem += \"\\n\";\n  }\n  if (emAndamento.length > 0) {\n    mensagem += \"\\u23F3 *Em andamento*\\n\";\n    emAndamento.forEach((item, i) => { mensagem += linhaProjeto(item, concluidos.length + i) + \"\\n\"; });\n  }\n  mensagem += \"\\nDigite o numero para ver os detalhes completos.\";\n  return [{ tipo: \"lista\", remetente, mensagem_retorno: mensagem }];\n}\n\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nstaticData.contextos[remetente].lista = null;\n\nconst pergunta = perguntaRefinamento(campos, total, todos);\nreturn [{ tipo: \"muitos_resultados\", remetente, mensagem_retorno: pergunta }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4112,
+        2432
+      ],
+      "id": "841cccf0-757c-4bd8-8e66-5d5857670e5d",
+      "name": "ProcessaResultados"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "${EVOLUTION_API_KEY}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.remetente }}"
+            },
+            {
+              "name": "text",
+              "value": "=={{ $json.mensagem_retorno || $json.descricao_projeto || \"\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        4592,
+        2288
+      ],
+      "id": "d441d67d-55f7-4f59-a33d-87f9a10d5515",
+      "name": "RetornaMensagem"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst id = input.projeto.PROJETO_ID;\n\nconst sql = \"SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = \" + id + \" AND ROWNUM < 16\";\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_contratos: sql\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3680,
+        2160
+      ],
+      "id": "bda8ae65-66fb-4cc7-8ef1-9009f14dae40",
+      "name": "PreparaContratos"
+    },
+    {
+      "parameters": {
+        "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
+      },
+      "id": "d02ca896-8d66-4852-9da9-f7d3af8543b4",
+      "name": "ConsultaProjetos1",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        4336,
+        1584
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "=SELECT \n    \"Nome\" AS NOME_ENTREGA,\n    \"% Executada\" AS PERC_EXECUTADO\nFROM VW_BI_VDBCRONOGRAMA \nWHERE \"Cód. projeto\" = {{ $json.projeto.PROJETO_ID }}\nAND \"Tipo de informação\" IN ('Entrega', 'Marco')\nORDER BY \"NUORDEM\""
+      },
+      "id": "a55ad661-452c-4865-953f-9197199c6c34",
+      "name": "ConsultaEntregas1",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        3744,
+        1584
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "=SELECT DISTINCT \n    VALOR_PLANEJADO,\n    VALOR_CONTRATADO_2_3 AS VALOR_CONTRATADO,\n    VALOR_EXECUTADO_4_5 AS VALOR_EXECUTADO,\n    VALOR_PAGO,\n    PERCENTUAL_EXECUCAO_CONTRATADO AS PERC_EXEC,\n    SITUACAO_PROJETO\nFROM VW_BI_VDBEXECUCAOPROJETO\nWHERE CODIGO_PROJETO = {{ $json.projeto.PROJETO_ID }}"
+      },
+      "id": "b64aa8b3-bdef-4a2e-9031-2df9c8bc0eb7",
+      "name": "ConsultaValores1",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        3936,
+        1584
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = {{ $json.PROJETO_ID }} AND ROWNUM <= 15"
+      },
+      "id": "08b62d86-e2b6-4fd3-9483-55f010ba9a53",
+      "name": "ConsultaContratos1",
+      "type": "n8n-nodes-oracle11g.oracle11g",
+      "typeVersion": 1,
+      "position": [
+        4128,
+        1584
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "oracle11gApi": {
+          "id": "WuFxnnM18FaQQCfa",
+          "name": "Oracle 11g account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst remetente = input.remetente;\n\nconst c = Object.values(input).find(v => v && typeof v === 'object' && v.NUMERO) || null;\n\nif (!c) {\n  return [{ remetente, mensagem_retorno: \"\\u26A0\\uFE0F Erro ao carregar detalhes. Tente novamente.\" }];\n}\n\nfunction formatarValor(val) {\n  const n = parseFloat(String(val || \"0\").replace(\",\", \".\")) || 0;\n  return \"R$ \" + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n}\n\nfunction formatarData(val) {\n  if (!val) return \"-\";\n  try {\n    const d = new Date(val);\n    return d.toLocaleDateString('pt-BR');\n  } catch(e) {\n    return String(val).substring(0, 10);\n  }\n}\n\nreturn [{\n  remetente,\n  mensagem_retorno:\n    \"\\uD83D\\uDCDC *Contrato:* \" + (c.NUMERO || \"-\") +\n    \"\\n\\uD83C\\uDFE2 *Contratada:* \" + (c.CONTRATADA || \"-\") +\n    \"\\n\\uD83C\\uDFAF *Objeto:* \" + (c.OBJETO || \"-\") +\n    \"\\n\\uD83D\\uDFE1 *Situacao:* \" + (c.SITUACAO || \"-\") +\n    \"\\n\\uD83D\\uDCC5 *Inicio:* \" + formatarData(c.DT_INICIO) +\n    \"\\n\\uD83D\\uDCC5 *Fim:* \" + formatarData(c.DT_FIM) +\n    \"\\n\\uD83D\\uDCB0 *Total:* \" + formatarValor(c.TOTAL_CONTRATADO) +\n    \"\\n\\uD83D\\uDCB3 *Executado:* \" + formatarValor(c.VL_EXECUTADO) +\n    \"\\n\\uD83D\\uDCB3 *Pago:* \" + formatarValor(c.VL_PAGO) +\n    \"\\n\\uD83D\\uDCCA *Exec:* \" + (c.PC_EXECUTADO || \"0\") + \"%\" +\n    \"\\n\\n*Deseja mais informacoes?*\\n\" +\n    \"3\\uFE0F\\u20E3 Ver lista de contratos\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n    \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n    \"4\\uFE0F\\u20E3 Nova Busca\"\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3296,
+        2288
+      ],
+      "id": "35406ea9-3ebc-488a-aedd-7e6d918fa88f",
+      "name": "FormataDetalheContrato"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "${EVOLUTION_API_KEY}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.remetente }}"
+            },
+            {
+              "name": "text",
+              "value": "=={{ \"O que voce gostaria de consultar agora? \\uD83D\\uDD0E\\n\\nVoce pode pesquisar por:\\n\\uD83C\\uDFDB *Secretaria* responsavel\\n\\uD83D\\uDCCD *Municipio* (ex: Florianopolis)\\n\\uD83D\\uDCC4 *Nome* do projeto (ex: Ponte Hercilio Luz)\\n\\uD83D\\uDD22 *Numero do processo* (ex: 32/2025)\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3296,
+        1664
+      ],
+      "id": "05f74e50-538b-4b1b-b5a9-e7535a2bd750",
+      "name": "RetornoReinicio"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst campos = input.campos_acumulados || {};\nconst faltantes = input.campos_faltantes || [];\n\nconst preenchidos = Object.entries(campos)\n  .filter(function(entry) { return entry[1] && entry[1] !== \"QUALQUER\"; })\n  .map(function(entry) { return entry[0] + \": \" + entry[1]; })\n  .join(\", \");\n\n// So inclui contexto de refinamento se ja tem campos preenchidos\nconst temCamposPreenchidos = preenchidos.length > 0;\nconst proximo = temCamposPreenchidos ? (faltantes[0] || \"\") : \"\";\n\nlet contexto;\nif (temCamposPreenchidos) {\n  contexto = \"Campos ja preenchidos: \" + preenchidos +\n    \". Proximo campo esperado: \" + (proximo || \"qualquer\") +\n    \". Texto do usuario: \" + input.busca_limpa;\n} else {\n  contexto = input.busca_limpa;\n}\n\nreturn [{\n  busca_limpa: contexto,\n  campos_acumulados: campos,\n  campos_faltantes: faltantes,\n  remetente: input.remetente\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3296,
+        2432
+      ],
+      "id": "7af13ba5-8da9-4bce-bead-b756bacce0e8",
+      "name": "PreparaConsulta"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst id = input.projeto.PROJETO_ID;\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_entregas: \"SELECT C.DESCRICAO_ATIVIDADE AS NOME_ENTREGA, C.PERCENTUAL_EXECUTADO AS PERC_EXECUTADO FROM CRONOGRAMA C WHERE C.FG_MARCO = 1 AND C.PROJETO_ID = \" + id + \" ORDER BY C.ORDEM\"\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3504,
+        1808
+      ],
+      "id": "0eeee203-a093-4625-ba44-13b83794995a",
+      "name": "PreparaEntregas"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer ${GROQ_API_KEY}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "JSON",
+        "body": "=={{ $json.request_body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3488,
+        2608
+      ],
+      "id": "36dc7eb2-300c-4ce9-9d89-89e0c033ec25",
+      "name": "RespondePerguntas"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst temProjeto = $('ProcessaMensagem').first().json.projeto_atual;\n\nlet resposta = '';\ntry {\n  resposta = input.choices[0].message.content.trim();\n} catch(e) {\n  resposta = 'Nao consegui processar sua pergunta. Tente novamente ou use os menus disponiveis.';\n}\n\nconst rodape = temProjeto\n  ? '\\n\\n*Deseja mais informacoes?*\\n1\\uFE0F\\u20E3 Ver Entregas\\n2\\uFE0F\\u20E3 Ver Valores\\n3\\uFE0F\\u20E3 Ver Contratos\\n4\\uFE0F\\u20E3 Nova Busca'\n  : '\\n\\n\\uD83D\\uDD0E Digite um municipio, nome de projeto ou codigo para comecar.';\n\nreturn [{ remetente, mensagem_retorno: resposta + rodape }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3680,
+        2608
+      ],
+      "id": "ff2ae0ea-5326-4092-b8bb-d92bbff13e15",
+      "name": "FormataRespostaLivre"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst p = input.projeto_atual;\n\nlet userContent = '';\n\nif (p) {\n  userContent = [\n    'Dados do projeto em contexto:',\n    'Nome: ' + p.NOME,\n    'Codigo: ' + p.CODIGO_PROCESSO,\n    'Orgao: ' + (p.ORGAO || '-'),\n    'Situacao: ' + (p.SITUACAO || '-'),\n    'Detalhe: ' + (p.SITUACAO_ATUAL || 'nao informado'),\n    'Inicio: ' + (p.DATA_INICIO || '-'),\n    'Termino: ' + (p.DATA_FIM || '-'),\n    'Valor planejado: R$ ' + (p.VALORPLANEJADO || '0'),\n    'Execucao: ' + (p.PERCENTUAL_EXEC || '0') + '%',\n    '',\n    'Pergunta do usuario: ' + input.pergunta\n  ].join('\\n');\n} else {\n  userContent = [\n    'Nao ha projeto selecionado no momento.',\n    '',\n    'Pergunta do usuario: ' + input.pergunta\n  ].join('\\n');\n}\n\nconst systemContent = [\n  'Voce e um assistente do Projeta SC, sistema de acompanhamento de projetos do Governo de Santa Catarina.',\n  'Responda perguntas sobre projetos de forma direta, clara e amigavel, em portugues.',\n  '',\n  'Regras:',\n  '1. Use apenas os dados fornecidos no contexto, nunca invente informacoes',\n  '2. Se nao tiver a informacao, diga que nao encontrou e sugira os menus: Entregas, Valores ou Contratos',\n  '3. Seja conciso, maximo 4 linhas',\n  '4. Use emojis com moderacao',\n  '5. Se nao houver projeto selecionado, oriente o usuario a buscar um projeto primeiro'\n].join('\\n');\n\nconst requestBody = {\n  model: 'llama-3.3-70b-versatile',\n  temperature: 0.4,\n  max_tokens: 500,\n  messages: [\n    { role: 'system', content: systemContent },\n    { role: 'user', content: userContent }\n  ]\n};\n\nreturn [{\n  remetente: input.remetente,\n  projeto_atual: p,\n  request_body: JSON.stringify(requestBody)\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3296,
+        2608
+      ],
+      "id": "b4935c3f-803b-4c3e-b077-d719cccf6116",
+      "name": "PreparaPromptPergunta"
+    }
+  ],
+  "connections": {
+    "FormataProjeto": {
+      "main": [
+        [
+          {
+            "node": "RetornoProjeto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "InterpretaConsulta": {
+      "main": [
+        [
+          {
+            "node": "MontaBusca",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MontaBusca": {
+      "main": [
+        [
+          {
+            "node": "ConsultaProjetos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RoteiaSubmenu": {
+      "main": [
+        [
+          {
+            "node": "PreparaEntregas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RoteiaValores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RoteiaValores": {
+      "main": [
+        [
+          {
+            "node": "ConsultaValores",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PreparaContratos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ConsultaEntregas": {
+      "main": [
+        [
+          {
+            "node": "FormataEntregas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ConsultaValores": {
+      "main": [
+        [
+          {
+            "node": "FormataValores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ConsultaContratos": {
+      "main": [
+        [
+          {
+            "node": "FormadaContratos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormataEntregas": {
+      "main": [
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormataValores": {
+      "main": [
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormadaContratos": {
+      "main": [
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RoteadorPrincipal": {
+      "main": [
+        [
+          {
+            "node": "RetornoBoasVindas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RetornoReinicio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RoteiaSubmenu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FormataDetalheContrato",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PreparaConsulta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FormataProjeto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PreparaPromptPergunta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "RoteiaResultado": {
+      "main": [
+        [
+          {
+            "node": "RetornoProjeto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FiltraMensagem": {
+      "main": [
+        [
+          {
+            "node": "ProcessaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ProcessaMensagem": {
+      "main": [
+        [
+          {
+            "node": "RoteadorPrincipal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whatsapp": {
+      "main": [
+        [
+          {
+            "node": "FiltraMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ConsultaProjetos": {
+      "main": [
+        [
+          {
+            "node": "ProcessaResultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ProcessaResultados": {
+      "main": [
+        [
+          {
+            "node": "RoteiaResultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreparaContratos": {
+      "main": [
+        [
+          {
+            "node": "ConsultaContratos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormataDetalheContrato": {
+      "main": [
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreparaConsulta": {
+      "main": [
+        [
+          {
+            "node": "InterpretaConsulta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreparaEntregas": {
+      "main": [
+        [
+          {
+            "node": "ConsultaEntregas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RespondePerguntas": {
+      "main": [
+        [
+          {
+            "node": "FormataRespostaLivre",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormataRespostaLivre": {
+      "main": [
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreparaPromptPergunta": {
+      "main": [
+        [
+          {
+            "node": "RespondePerguntas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2ca62e24603a0eb1b6b9cb037bfabe1872c5bf12e8e6461f6d68296d10ac7161"
+  }
+}
