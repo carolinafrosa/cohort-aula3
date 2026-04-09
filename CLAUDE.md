@@ -11,23 +11,43 @@ The AIOX meta-framework (`.aiox-core/`) provides multi-agent orchestration, task
 ## Project Artifact
 
 ```
-docs/flow/projeta-sc.json   # n8n flow — the entire chatbot logic
+docs/flow/projeta-sc.json   # n8n flow — the entire chatbot logic (40 nodes)
 ```
 
 ### Editing the n8n Flow
 
-The chatbot logic lives entirely in this JSON file. Workflow for changes:
+> ⚠️ **NEVER edit `projeta-sc.json` directly.** The routing nodes use complex switch/if logic that becomes malformed without the visual editor. Always use the n8n UI.
 
-1. **Export** the flow from the n8n UI → Download JSON
-2. **Replace** `docs/flow/projeta-sc.json` with the exported file
-3. **Edit** the JSON directly if making targeted node/connection changes
-4. **Import** back to n8n: Settings → Import → select the file
+Workflow for changes:
+
+1. **Import** `docs/flow/projeta-sc.json` into n8n (Settings → Import)
+2. **Edit** visually in the n8n UI
+3. **Test** via test webhook or real WhatsApp conversation
+4. **Export** (Download JSON) and replace `docs/flow/projeta-sc.json`
+5. **Commit**
 
 No build step needed. The file is valid n8n flow JSON — nodes, connections, and credentials are embedded.
 
 **Required env vars** (copy `.env.example` → `.env`):
 - `N8N_API_KEY` — n8n instance API key
 - `N8N_WEBHOOK_URL` — base URL for webhook triggers
+
+### Flow Architecture (Key Node Groups)
+
+The 40-node flow is organized in these functional groups:
+
+| Group | Nodes | Purpose |
+|-------|-------|---------|
+| **Entry** | `Whatsapp`, `FiltraMensagem`, `ProcessaMensagem` | Receive WhatsApp webhook, filter spam, route by state |
+| **Intent** | `PreparaGroqClassificador`, `GroqClassificador`, `AplicaClassificacao`, `RoteiaClassificacao` | Classify user intent via Groq LLM |
+| **Query** | `InterpretaConsulta`, `MontaBusca`, `PreparaConsulta` | Parse natural language into structured query (Gemini 1.5 Pro) |
+| **Database** | `ConsultaProjetos`, `ConsultaEntregas`, `ConsultaValores`, `ConsultaContratos` (+ `*1` variants) | Oracle 11g queries |
+| **Routing** | `RoteadorPrincipal`, `RoteiaSubmenu`, `RoteiaValores`, `RoteiaResultado` | Switch/IF nodes for menu navigation |
+| **Format** | `FormataProjeto`, `FormataEntregas`, `FormataValores`, `FormadaContratos`, `FormataDetalheContrato`, `FormataRefinamento` | Format DB results for WhatsApp |
+| **Response** | `RetornoBoasVindas`, `RetornoProjeto`, `RetornaMensagem`, `RetornoReinicio`, `RespondePerguntas` | Send messages back via WhatsApp API |
+| **Q&A** | `PreparaPromptPergunta`, `PreparaPromptRefinamento`, `GroqRefinamento`, `FormataRespostaLivre` | Free-text answers via LLM |
+
+**External dependencies:** Oracle 11g (SC government DB), Groq API (classification), Gemini 1.5 Pro via OpenAI-compatible endpoint (query interpretation).
 
 ## AIOX Framework Commands
 
