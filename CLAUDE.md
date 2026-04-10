@@ -28,9 +28,11 @@ Workflow for changes:
 
 No build step needed. The file is valid n8n flow JSON — nodes, connections, and credentials are embedded.
 
-**Required env vars** (copy `.env.example` → `.env`):
+**Required env vars** (copy `.env.example` → `.env` — the example lists all available keys):
 - `N8N_API_KEY` — n8n instance API key
 - `N8N_WEBHOOK_URL` — base URL for webhook triggers
+- `GROQ_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` — LLM providers (per flow node)
+- `EXA_API_KEY` — web search for agents
 
 ### Flow Architecture (Key Node Groups)
 
@@ -62,9 +64,13 @@ npm run validate:structure         # Validate project structure
 npm run validate:agents            # Validate agent definitions
 npm run sync:ide                   # Sync IDE configuration
 npm run sync:ide:check             # Verify IDE sync status
+npm run sync:skills:codex          # Sync agent skills to Codex CLI (local)
+npm run sync:skills:codex:global   # Sync agent skills globally (optional)
 ```
 
 **First-time setup:** run `node bin/aiox.js doctor` to verify the environment before starting work.
+
+Agent persona definitions live at `.aiox-core/development/agents/` (e.g. `dev.md`, `qa.md`, `architect.md`).
 
 ## Architecture
 
@@ -108,3 +114,7 @@ Prefer native Claude Code tools over MCP servers:
 - Browser automation → playwright MCP
 
 MCP infrastructure management is **exclusively** handled by `@devops`.
+
+### Known Docker MCP Issue
+
+Docker MCP Toolkit's secrets store does not pass credentials to containers correctly. Workaround: edit `~/.docker/mcp/catalogs/docker-mcp.yaml` directly and hardcode values under the MCP's `env:` block instead of using `docker mcp secret set`. EXA works via `~/.docker/mcp/config.yaml` `apiKeys` and is unaffected.
