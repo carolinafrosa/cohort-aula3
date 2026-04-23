@@ -31,8 +31,10 @@ No build step needed. The file is valid n8n flow JSON — nodes, connections, an
 **Required env vars** (copy `.env.example` → `.env` — the example lists all available keys):
 - `N8N_API_KEY` — n8n instance API key
 - `N8N_WEBHOOK_URL` — base URL for webhook triggers
-- `GROQ_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` — LLM providers (per flow node)
+- `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `DEEPSEEK_API_KEY` / `OPENROUTER_API_KEY` — LLM providers
 - `EXA_API_KEY` — web search for agents
+
+> ⚠️ **Hardcoded credentials in the flow JSON:** The Groq API key (used by `GroqClassificador`, `GroqRefinamento`, `InterpretaConsulta`) and the Evolution API key (used by all WhatsApp response nodes) are currently embedded directly in `projeta-sc.json` as HTTP header values. They are **not** controlled by `.env`. Migration to n8n native credentials is tracked in Story 1.6 (currently Blocked — n8n free plan doesn't support the required credential binding). When inspecting the exported JSON for leaked secrets, search for `gsk_` (Groq) and `apikey` header values (Evolution API).
 
 ### Flow Architecture (Key Node Groups)
 
@@ -49,7 +51,11 @@ The 40-node flow is organized in these functional groups:
 | **Response** | `RetornoBoasVindas`, `RetornoProjeto`, `RetornaMensagem`, `RetornoReinicio`, `RespondePerguntas` | Send messages back via WhatsApp API |
 | **Q&A** | `PreparaPromptPergunta`, `PreparaPromptRefinamento`, `GroqRefinamento`, `FormataRespostaLivre` | Free-text answers via LLM |
 
-**External dependencies:** Oracle 11g (SC government DB), Groq API (classification), Gemini 1.5 Pro via OpenAI-compatible endpoint (query interpretation).
+**External dependencies:**
+- **Oracle 11g** — SC government project database (read-only queries)
+- **Groq API** — intent classification (`GroqClassificador`) and free-text answers (`GroqRefinamento`)
+- **Gemini 1.5 Pro** — natural language → structured query (`InterpretaConsulta`), accessed via OpenAI-compatible endpoint
+- **Evolution API** (`n8n-evolution-api.lkpafu.easypanel.host`) — WhatsApp gateway; all outbound messages go through this service using the `Projeta_SC` instance
 
 ## AIOX Framework Commands
 
@@ -80,7 +86,7 @@ Agent persona definitions live at `.aiox-core/development/agents/` (e.g. `dev.md
 |-------|-------|-----------|
 | L1 — Framework Core | `.aiox-core/core/`, `.aiox-core/constitution.md`, `bin/aiox.js`, `bin/aiox-init.js` | **NEVER modify** |
 | L2 — Framework Templates | `.aiox-core/development/tasks/`, `.aiox-core/development/templates/`, `.aiox-core/development/checklists/`, `.aiox-core/development/workflows/`, `.aiox-core/infrastructure/` | **Extend only** |
-| L3 — Project Config | `.aiox-core/data/`, `agents/*/MEMORY.md`, `core-config.yaml` | Mutable (with care) |
+| L3 — Project Config | `.aiox-core/data/`, `agents/*/MEMORY.md`, `.aiox-core/core-config.yaml` | Mutable (with care) |
 | L4 — Project Runtime | `docs/flow/`, `docs/stories/`, `packages/`, `squads/`, `tests/` | Always modify here |
 
 ### Agent System
@@ -104,6 +110,28 @@ Stories are named `{epicNum}.{storyNum}.story.md`, track progress via `[ ]` → 
 - n8n instance: hosted externally (credentials in `.env`)
 - Docker: Docker Desktop on Windows host (not WSL-native)
 - Supabase CLI: unavailable — use Railway or direct SQL
+
+## Hooks de Governança
+
+Os hooks são registrados em `.claude/settings.local.json` (gitignored). Ao clonar o repositório execute `node bin/aiox.js doctor` para recriar esse arquivo e ativar os hooks.
+
+**Hooks ativos:**
+
+| Hook | Evento | Efeito |
+|------|--------|--------|
+| `synapse-engine.cjs` | `UserPromptSubmit` | Injeta regras contextuais do diretório `.synapse/` (se existir) em cada prompt |
+| `precompact-session-digest.cjs` | `PreCompact` | Salva digest da sessão antes da compactação de contexto |
+
+**Hooks de proteção disponíveis** (ver `.claude/hooks/README.md` para ativar):
+
+| Hook | Trigger | O que bloqueia |
+|------|---------|---------------|
+| `read-protection.py` | `Read` | Leitura parcial (limit/offset) de `.claude/CLAUDE.md`, `.claude/rules/*.md`, `.aiox-core/development/agents/*.md` |
+| `enforce-architecture-first.py` | `Write\|Edit` | Criar código em `supabase/functions/` ou `supabase/migrations/` sem doc aprovada |
+| `sql-governance.py` | `Bash` | DDL direto (`CREATE/ALTER/DROP TABLE`) fora do CLI `supabase migration` |
+| `mind-clone-governance.py` | `Write\|Edit` | Criar mind clones em `squads/*/agents/*.md` sem DNA extraído |
+
+> Os hooks de proteção existem como arquivos mas precisam ser registrados manualmente em `settings.local.json` ou via `node bin/aiox.js doctor`.
 
 ## MCP Tool Priority
 
