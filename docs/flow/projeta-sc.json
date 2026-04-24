@@ -21,7 +21,7 @@
             },
             {
               "name": "text",
-              "value": "=Olá! Bem-vindo ao Projeta SC 🏛️\nSou o assistente de projetos do Governo de Santa Catarina. \nPosso ajudar você a encontrar informações sobre projetos e investimentos do estado.\n🔎 *Digite o que você deseja consultar*\n"
+              "value": "=Olá! Sou o Projeta SC 🏛️, o assistente de projetos do Governo de Santa Catarina.\n\nPosso te ajudar a consultar obras, investimentos e contratos do estado. É só me dizer o que você quer saber, por exemplo:\n\n📍 *escolas em Joinville*\n🏗️ *Ponte Hercílio Luz*\n🏥 *Hospital Regional de Lages*\n🔢 *32/2025*\n\nO que você quer consultar?"
             }
           ]
         },
