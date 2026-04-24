@@ -762,7 +762,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.item.json;\nconst id = parseInt(input.projeto.PROJETO_ID, 10);\nif (isNaN(id) || id <= 0) throw new Error('PROJETO_ID inválido: ' + input.projeto.PROJETO_ID);\n\nconst sql = \"SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = \" + id + \" AND ROWNUM < 16\";\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_contratos: sql\n}];"
+        "jsCode": "const input = $input.item.json;\nconst id = parseInt(input.projeto.PROJETO_ID, 10);\nif (isNaN(id) || id <= 0) throw new Error('PROJETO_ID inválido: ' + input.projeto.PROJETO_ID);\n\nconst sql = \"SELECT * FROM (SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = \" + id + \" ORDER BY DT_INICIO DESC) WHERE ROWNUM <= 15\";\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_contratos: sql\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -835,7 +835,7 @@
     },
     {
       "parameters": {
-        "query": "SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = {{ parseInt($json.PROJETO_ID) || 0 }} AND ROWNUM <= 15"
+        "query": "SELECT * FROM (SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = {{ parseInt($json.PROJETO_ID) || 0 }} ORDER BY DT_INICIO DESC) WHERE ROWNUM <= 15"
       },
       "id": "9f242f8c-f947-4b6e-abe1-dc367ed359a3",
       "name": "ConsultaContratos1",
