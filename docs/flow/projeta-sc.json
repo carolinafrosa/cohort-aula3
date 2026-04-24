@@ -193,7 +193,7 @@
     },
     {
       "parameters": {
-        "query": "=SELECT\n    VL_PLANEJADO AS VALOR_PLANEJADO,\n    VL_CONTRATADO AS VALOR_CONTRATADO,\n    VL_EXECUTADO AS VALOR_EXECUTADO,\n    VL_PAGO AS VALOR_PAGO,\n    PC_EXECUTADO AS PERC_EXEC\nFROM FINANCEIRO\nWHERE PROJETO_ID = {{ $json.projeto.PROJETO_ID }}"
+        "query": "=SELECT\n    VL_PLANEJADO AS VALOR_PLANEJADO,\n    VL_CONTRATADO AS VALOR_CONTRATADO,\n    VL_EXECUTADO AS VALOR_EXECUTADO,\n    VL_PAGO AS VALOR_PAGO,\n    PC_EXECUTADO AS PERC_EXEC\nFROM FINANCEIRO\nWHERE PROJETO_ID = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}"
       },
       "id": "889387fc-43cd-4367-b027-2b6b161de407",
       "name": "ConsultaValores",
@@ -762,7 +762,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.item.json;\nconst id = input.projeto.PROJETO_ID;\n\nconst sql = \"SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = \" + id + \" AND ROWNUM < 16\";\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_contratos: sql\n}];"
+        "jsCode": "const input = $input.item.json;\nconst id = parseInt(input.projeto.PROJETO_ID, 10);\nif (isNaN(id) || id <= 0) throw new Error('PROJETO_ID inválido: ' + input.projeto.PROJETO_ID);\n\nconst sql = \"SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = \" + id + \" AND ROWNUM < 16\";\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_contratos: sql\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -795,7 +795,7 @@
     },
     {
       "parameters": {
-        "query": "=SELECT \n    \"Nome\" AS NOME_ENTREGA,\n    \"% Executada\" AS PERC_EXECUTADO\nFROM VW_BI_VDBCRONOGRAMA \nWHERE \"Cód. projeto\" = {{ $json.projeto.PROJETO_ID }}\nAND \"Tipo de informação\" IN ('Entrega', 'Marco')\nORDER BY \"NUORDEM\""
+        "query": "=SELECT \n    \"Nome\" AS NOME_ENTREGA,\n    \"% Executada\" AS PERC_EXECUTADO\nFROM VW_BI_VDBCRONOGRAMA \nWHERE \"Cód. projeto\" = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}\nAND \"Tipo de informação\" IN ('Entrega', 'Marco')\nORDER BY \"NUORDEM\""
       },
       "id": "f96c8f86-2b96-44ed-8b67-53e9dd3da181",
       "name": "ConsultaEntregas1",
@@ -815,7 +815,7 @@
     },
     {
       "parameters": {
-        "query": "=SELECT DISTINCT \n    VALOR_PLANEJADO,\n    VALOR_CONTRATADO_2_3 AS VALOR_CONTRATADO,\n    VALOR_EXECUTADO_4_5 AS VALOR_EXECUTADO,\n    VALOR_PAGO,\n    PERCENTUAL_EXECUCAO_CONTRATADO AS PERC_EXEC,\n    SITUACAO_PROJETO\nFROM VW_BI_VDBEXECUCAOPROJETO\nWHERE CODIGO_PROJETO = {{ $json.projeto.PROJETO_ID }}"
+        "query": "=SELECT DISTINCT \n    VALOR_PLANEJADO,\n    VALOR_CONTRATADO_2_3 AS VALOR_CONTRATADO,\n    VALOR_EXECUTADO_4_5 AS VALOR_EXECUTADO,\n    VALOR_PAGO,\n    PERCENTUAL_EXECUCAO_CONTRATADO AS PERC_EXEC,\n    SITUACAO_PROJETO\nFROM VW_BI_VDBEXECUCAOPROJETO\nWHERE CODIGO_PROJETO = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}"
       },
       "id": "ebd4c1a4-c963-4ea0-bf86-51765b5ff67c",
       "name": "ConsultaValores1",
@@ -835,7 +835,7 @@
     },
     {
       "parameters": {
-        "query": "SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = {{ $json.PROJETO_ID }} AND ROWNUM <= 15"
+        "query": "SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = {{ parseInt($json.PROJETO_ID) || 0 }} AND ROWNUM <= 15"
       },
       "id": "9f242f8c-f947-4b6e-abe1-dc367ed359a3",
       "name": "ConsultaContratos1",
@@ -923,7 +923,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.item.json;\nconst id = input.projeto.PROJETO_ID;\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_entregas: \"SELECT C.DESCRICAO_ATIVIDADE AS NOME_ENTREGA, C.PERCENTUAL_EXECUTADO AS PERC_EXECUTADO FROM CRONOGRAMA C WHERE C.FG_MARCO = 1 AND C.PROJETO_ID = \" + id + \" ORDER BY C.ORDEM\"\n}];"
+        "jsCode": "const input = $input.item.json;\nconst id = parseInt(input.projeto.PROJETO_ID, 10);\nif (isNaN(id) || id <= 0) throw new Error('PROJETO_ID inválido: ' + input.projeto.PROJETO_ID);\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_entregas: \"SELECT C.DESCRICAO_ATIVIDADE AS NOME_ENTREGA, C.PERCENTUAL_EXECUTADO AS PERC_EXECUTADO FROM CRONOGRAMA C WHERE C.FG_MARCO = 1 AND C.PROJETO_ID = \" + id + \" ORDER BY C.ORDEM\"\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
