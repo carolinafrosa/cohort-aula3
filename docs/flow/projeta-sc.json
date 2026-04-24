@@ -795,7 +795,7 @@
     },
     {
       "parameters": {
-        "query": "=SELECT \n    \"Nome\" AS NOME_ENTREGA,\n    \"% Executada\" AS PERC_EXECUTADO\nFROM VW_BI_VDBCRONOGRAMA \nWHERE \"Cód. projeto\" = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}\nAND \"Tipo de informação\" IN ('Entrega', 'Marco')\nORDER BY \"NUORDEM\""
+        "query": "=SELECT C.DESCRICAO_ATIVIDADE AS NOME_ENTREGA, C.PERCENTUAL_EXECUTADO AS PERC_EXECUTADO\nFROM CRONOGRAMA C\nWHERE C.FG_MARCO = 1 AND C.PROJETO_ID = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}\nORDER BY C.ORDEM"
       },
       "id": "f96c8f86-2b96-44ed-8b67-53e9dd3da181",
       "name": "ConsultaEntregas1",
