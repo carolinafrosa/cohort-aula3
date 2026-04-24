@@ -887,7 +887,7 @@
             },
             {
               "name": "text",
-              "value": "={{ $json.mensagem_retorno || 'O que você gostaria de consultar agora? 🔎\\n\\nVocê pode pesquisar por:\\n🏛 *Secretaria* responsável\\n📍 *Município* (ex: Florianópolis)\\n📄 *Nome* do projeto (ex: Ponte Hercilio Luz)\\n🔢 *Número do processo* (ex: 32/2025)' }}"
+              "value": "={{ $json.mensagem_retorno || 'Ok! Nova busca. 🔎\n\nMe diz o que você quer consultar — nome do projeto, município, secretaria ou número do processo.' }}"
             }
           ]
         },
