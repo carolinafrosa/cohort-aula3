@@ -4,13 +4,12 @@
       "parameters": {
         "method": "POST",
         "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "apikey",
-              "value": "7D5DDE6A591F-4D89-9FAC-785A343AD4F8"
-            }
+            {}
           ]
         },
         "sendBody": true,
@@ -31,11 +30,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        272,
-        -16
+        -18672,
+        1392
       ],
-      "id": "339a1621-c961-4f99-9a60-39edea5e4168",
-      "name": "RetornoBoasVindas"
+      "id": "7785878f-5c0a-42d6-8e5c-c997d9b6af5b",
+      "name": "RetornoBoasVindas",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "GawefCYOjoZJQkML",
+          "name": "APIKEY"
+        }
+      }
     },
     {
       "parameters": {
@@ -44,23 +49,21 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
-        1264
+        -18672,
+        2672
       ],
-      "id": "b99f8964-f0e0-40e5-b8ab-97c10a20a99d",
+      "id": "2c83aff7-c01a-4bfd-b309-c319ca82331f",
       "name": "FormataProjeto"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer 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"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -75,23 +78,29 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        464,
-        912
+        -18480,
+        2320
       ],
-      "id": "5231119d-59df-4aa1-bc2d-2eb1c38b7cb1",
-      "name": "InterpretaConsulta"
+      "id": "7a012110-1f2f-4e12-ad8e-230fe04d6ec9",
+      "name": "InterpretaConsulta",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "qLoh6hso8vZChXP4",
+          "name": "Groq API"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\n\n// Campos e flags de resolucao vem do AplicaFiltrosResolvidos\nconst campos = input.campos || {};\nconst campos_resolvidos = input.campos_resolvidos || {};\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\n// Persiste campos atualizados (sem sobrescrever campos_resolvidos e filtros_label)\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nstaticData.contextos[remetente].campos_acumulados = campos;\n\nfunction removerAcentos(str) {\n  if (!str) return \"\";\n  return str.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").toLowerCase().trim();\n}\n\nconst SINONIMOS = {\n  \"colegio\": [\"escola\",\"educacional\",\"ensino\"],\n  \"escola\": [\"colegio\",\"educacional\",\"ensino\"],\n  \"hospital\": [\"clinica\",\"upa\",\"saude\"],\n  \"clinica\": [\"hospital\",\"upa\",\"saude\"],\n  \"ubs\": [\"clinica\",\"posto\",\"saude\"],\n  \"posto\": [\"ubs\",\"clinica\",\"saude\"],\n  \"saude\": [\"hospital\",\"clinica\",\"ubs\"],\n  \"creche\": [\"cei\",\"infantil\"],\n  \"cei\": [\"creche\",\"infantil\"],\n  \"estrada\": [\"rodovia\",\"pavimentacao\"],\n  \"rodovia\": [\"estrada\",\"via\",\"pavimentacao\"],\n  \"ponte\": [\"viaduto\",\"passarela\"],\n  \"viaduto\": [\"ponte\",\"passarela\"],\n  \"policia\": [\"seguranca\",\"delegacia\"],\n  \"seguranca\": [\"policia\",\"delegacia\",\"bombeiro\"],\n  \"bombeiro\": [\"seguranca\",\"defesa\"],\n  \"habitacao\": [\"moradia\",\"casa\",\"residencia\"],\n  \"moradia\": [\"habitacao\",\"casa\",\"residencia\"],\n  \"saneamento\": [\"esgoto\",\"abastecimento\"],\n  \"esgoto\": [\"saneamento\",\"abastecimento\"],\n  \"parque\": [\"praca\",\"jardim\"],\n  \"praca\": [\"parque\",\"jardim\"],\n  \"biblioteca\": [\"cultural\",\"museu\"],\n  \"ginasio\": [\"arena\",\"estadio\",\"quadra\"],\n  \"estadio\": [\"ginasio\",\"arena\"]\n};\n\nfunction montarPattern(str) {\n  if (!str || str === \"QUALQUER\") return null;\n  const palavras = removerAcentos(str).toUpperCase().split(/\\s+/).filter(function(w){ return w.length >= 3; });\n  if (palavras.length === 0) return null;\n  const palavrasUsadas = palavras.slice(0, 2);\n  return \"%\" + palavrasUsadas.map(function(w){ return w.substring(0, 4); }).join(\"%\") + \"%\";\n}\n\nfunction montarNomePatterns(str) {\n  if (!str || str === \"QUALQUER\") return null;\n  const palavras = removerAcentos(str).toLowerCase().split(/\\s+/).filter(function(w){ return w.length >= 3; });\n  if (palavras.length === 0) return null;\n  const main = montarPattern(str);\n  if (palavras.length !== 1) return [main];\n  const extras = [];\n  (SINONIMOS[palavras[0]] || []).forEach(function(sin) {\n    const sinNorm = removerAcentos(sin).toUpperCase().substring(0, 4);\n    const pat = \"%\" + sinNorm + \"%\";\n    if (!extras.includes(pat) && pat !== main) extras.push(pat);\n  });\n  return [main].concat(extras);\n}\n\nfunction trNorm(col) {\n  return \"TRANSLATE(UPPER(\" + col + \"), 'AÁÀÂÃÄEÉÈÊËIÍÌÎÏOÓÒÔÕÖUÚÙÛÜÇ', 'AAAAAAEEEEEIIIIIOOOOOOUUUUUC')\";\n}\n\nfunction escapeSql(str) {\n  return (str || '').replace(/'/g, \"''\");\n}\n\nconst busca_codigo = campos.codigo || \"\";\nconst busca_nome_patterns = montarNomePatterns(campos.nome);\nconst busca_nome_p = busca_nome_patterns ? busca_nome_patterns[0] : null;\nconst busca_municipio_p = montarPattern(campos.municipio);\n\n// Orgao: usa = quando resolvido exatamente, LIKE caso contrário\nconst orgaoExato = campos_resolvidos.orgao === true && campos.orgao && campos.orgao !== 'QUALQUER';\nconst busca_orgao_p = orgaoExato ? null : montarPattern(campos.orgao);\n\n// Tipo: usa = quando resolvido exatamente, LIKE caso contrário\nconst tipoExato = campos_resolvidos.tipo === true && campos.tipo && campos.tipo !== 'QUALQUER';\nconst busca_tipo_p = tipoExato ? null : montarPattern(campos.tipo);\n\nconst busca_situacao_p = montarPattern(campos.situacao);\n\n// Monta WHERE principal\nfunction nomeWhere(patterns) {\n  if (!patterns || patterns.length === 0) return null;\n  if (patterns.length === 1) return trNorm('VIP.NOME') + \" LIKE '\" + patterns[0] + \"'\";\n  return \"(\" + patterns.map(function(p){ return trNorm('VIP.NOME') + \" LIKE '\" + p + \"'\"; }).join(\" OR \") + \")\";\n}\n\nlet where;\nif (busca_codigo) {\n  const codigoNorm = busca_codigo.replace(\"/\", \"-\");\n  // Whitelist: apenas dígitos e hífen (ex: 654-2024)\n  if (/^\\d{1,6}-\\d{4}$/.test(codigoNorm)) {\n    where = \"TRIM(TO_CHAR(VIP.NUMERO))||'-'||TRIM(TO_CHAR(VIP.ANO)) = '\" + codigoNorm + \"'\";\n  } else {\n    where = \"1=0\"; // código inválido, retorna vazio propositalmente\n  }\n} else if (busca_nome_patterns && busca_municipio_p) {\n  where = nomeWhere(busca_nome_patterns) + \" AND \" + trNorm('M.MUNICIPIO') + \" LIKE '\" + busca_municipio_p + \"'\";\n} else if (busca_nome_patterns) {\n  where = nomeWhere(busca_nome_patterns);\n} else if (busca_municipio_p) {\n  where = trNorm('M.MUNICIPIO') + \" LIKE '\" + busca_municipio_p + \"'\";\n} else {\n  where = \"1=1\";\n}\n\n// Filtros extras como AND\nlet whereExtra = \"\";\nif (busca_situacao_p) whereExtra += \" AND \" + trNorm('VIP.SITUACAO') + \" LIKE '\" + busca_situacao_p + \"'\";\nif (campos.ano && /^[0-9]{4}$/.test(campos.ano)) whereExtra += \" AND VIP.ANO = \" + campos.ano;\n\n// Tipo: = exato ou LIKE fuzzy\nif (tipoExato) {\n  whereExtra += \" AND \" + trNorm('VIP.TIPO') + \" = \" + trNorm(\"'\" + escapeSql(campos.tipo) + \"'\");\n} else if (busca_tipo_p) {\n  whereExtra += \" AND \" + trNorm('VIP.TIPO') + \" LIKE '\" + busca_tipo_p + \"'\";\n}\n\n// Orgao: = exato ou LIKE fuzzy\nif (orgaoExato) {\n  whereExtra += \" AND \" + trNorm('VIP.ORGAO') + \" = \" + trNorm(\"'\" + escapeSql(campos.orgao) + \"'\");\n} else if (busca_orgao_p) {\n  whereExtra += \" AND \" + trNorm('VIP.ORGAO') + \" LIKE '\" + busca_orgao_p + \"'\";\n}\n\nconst sql = \"SELECT DISTINCT VIP.PROJETO_ID, VIP.NUMERO, VIP.ANO, TRIM(TO_CHAR(VIP.NUMERO))||'-'||TRIM(TO_CHAR(VIP.ANO)) AS CODIGO_PROCESSO, VIP.NOME, VIP.SITUACAO, VIP.SITUACAO_ATUAL, VIP.ORGAO, VIP.TIPO, TO_CHAR(VIP.DATAINICIO, 'DD-MM-YYYY') AS DATA_INICIO, TO_CHAR(VIP.DATAFIM, 'DD-MM-YYYY') AS DATA_FIM, VIP.PRAZO_ESTIMADO AS PRAZOESTIMADO, VIP.VALORPLANEJADO, VIP.PERCEXECUTADOFINANC AS PERCENTUAL_EXEC, M.MUNICIPIO, MR.REGIAO FROM VW_IDENTIFICACAO_PROJETOS VIP LEFT JOIN LOCALIZACAO L ON L.PROJETO_ID = VIP.PROJETO_ID LEFT JOIN MUNICIPIO M ON M.ID = L.MUNICIPIO_ID LEFT JOIN MUNICIPIO_REGIAO MR ON MR.MUNICIPIO_ID = M.ID LEFT JOIN PORTFOLIO_PROJETO PP ON VIP.PROJETO_ID = PP.PROJETO_ID LEFT JOIN PORTFOLIO PORT ON PP.PORTFOLIO_ID = PORT.ID LEFT JOIN PROGRAMA_INVESTIMENTO PI ON PI.ID = PP.PROGRAMA_INVESTIMENTO_ID WHERE (\" + where + \")\" + whereExtra + \" ORDER BY VIP.ANO DESC, VIP.NUMERO DESC FETCH FIRST 200 ROWS ONLY\";\n\nconst busca_limpa_completa = [campos.nome, campos.municipio, campos.situacao, campos.tipo, campos.orgao, campos.codigo, campos.ano]\n  .filter(v => v && v !== \"QUALQUER\")\n  .join(\" \");\n\nreturn [{\n  remetente,\n  busca_limpa: busca_limpa_completa || buscaOriginal,\n  campos,\n  sql_query: sql\n}];"
+        "jsCode": "const input = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\n\n// Campos e flags de resolucao vem do AplicaFiltrosResolvidos\nconst campos = input.campos || {};\nconst campos_resolvidos = input.campos_resolvidos || {};\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\n// Persiste campos atualizados (sem sobrescrever campos_resolvidos e filtros_label)\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nstaticData.contextos[remetente].campos_acumulados = campos;\n\nfunction removerAcentos(str) {\n  if (!str) return \"\";\n  return str.normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").toLowerCase().trim();\n}\n\nconst SINONIMOS = {\n  \"colegio\": [\"escola\",\"educacional\",\"ensino\"],\n  \"escola\": [\"colegio\",\"educacional\",\"ensino\"],\n  \"hospital\": [\"clinica\",\"upa\",\"saude\"],\n  \"clinica\": [\"hospital\",\"upa\",\"saude\"],\n  \"ubs\": [\"clinica\",\"posto\",\"saude\"],\n  \"posto\": [\"ubs\",\"clinica\",\"saude\"],\n  \"saude\": [\"hospital\",\"clinica\",\"ubs\"],\n  \"creche\": [\"cei\",\"infantil\"],\n  \"cei\": [\"creche\",\"infantil\"],\n  \"estrada\": [\"rodovia\",\"pavimentacao\"],\n  \"rodovia\": [\"estrada\",\"via\",\"pavimentacao\"],\n  \"ponte\": [\"viaduto\",\"passarela\"],\n  \"viaduto\": [\"ponte\",\"passarela\"],\n  \"policia\": [\"seguranca\",\"delegacia\"],\n  \"seguranca\": [\"policia\",\"delegacia\",\"bombeiro\"],\n  \"bombeiro\": [\"seguranca\",\"defesa\"],\n  \"habitacao\": [\"moradia\",\"casa\",\"residencia\"],\n  \"moradia\": [\"habitacao\",\"casa\",\"residencia\"],\n  \"saneamento\": [\"esgoto\",\"abastecimento\"],\n  \"esgoto\": [\"saneamento\",\"abastecimento\"],\n  \"parque\": [\"praca\",\"jardim\"],\n  \"praca\": [\"parque\",\"jardim\"],\n  \"biblioteca\": [\"cultural\",\"museu\"],\n  \"ginasio\": [\"arena\",\"estadio\",\"quadra\"],\n  \"estadio\": [\"ginasio\",\"arena\"]\n};\n\nfunction montarPattern(str) {\n  if (!str || str === \"QUALQUER\") return null;\n  const palavras = removerAcentos(str).toUpperCase().split(/\\s+/).filter(function(w){ return w.length >= 3; });\n  if (palavras.length === 0) return null;\n  const palavrasUsadas = palavras.slice(0, 2);\n  return \"%\" + palavrasUsadas.map(function(w){ return w.substring(0, 4); }).join(\"%\") + \"%\";\n}\n\nfunction montarNomePatterns(str) {\n  if (!str || str === \"QUALQUER\") return null;\n  const palavras = removerAcentos(str).toLowerCase().split(/\\s+/).filter(function(w){ return w.length >= 3; });\n  if (palavras.length === 0) return null;\n  const main = montarPattern(str);\n  if (palavras.length !== 1) return [main];\n  const extras = [];\n  (SINONIMOS[palavras[0]] || []).forEach(function(sin) {\n    const sinNorm = removerAcentos(sin).toUpperCase().substring(0, 4);\n    const pat = \"%\" + sinNorm + \"%\";\n    if (!extras.includes(pat) && pat !== main) extras.push(pat);\n  });\n  return [main].concat(extras);\n}\n\nfunction trNorm(col) {\n  return \"TRANSLATE(UPPER(\" + col + \"), 'AÁÀÂÃÄEÉÈÊËIÍÌÎÏOÓÒÔÕÖUÚÙÛÜÇ', 'AAAAAAEEEEEIIIIIOOOOOOUUUUUC')\";\n}\n\nfunction escapeSql(str) {\n  return (str || '').replace(/'/g, \"''\");\n}\n\nconst busca_codigo = campos.codigo || \"\";\nconst busca_nome_patterns = montarNomePatterns(campos.nome);\nconst busca_nome_p = busca_nome_patterns ? busca_nome_patterns[0] : null;\nconst busca_municipio_p = montarPattern(campos.municipio);\n\n// Orgao: usa = quando resolvido exatamente, LIKE caso contrário\nconst orgaoExato = campos_resolvidos.orgao === true && campos.orgao && campos.orgao !== 'QUALQUER';\nconst busca_orgao_p = orgaoExato ? null : montarPattern(campos.orgao);\n\n// Tipo: usa = quando resolvido exatamente, LIKE caso contrário\nconst tipoExato = campos_resolvidos.tipo === true && campos.tipo && campos.tipo !== 'QUALQUER';\nconst busca_tipo_p = tipoExato ? null : montarPattern(campos.tipo);\n\nconst busca_situacao_p = montarPattern(campos.situacao);\n\n// Monta WHERE principal\nfunction nomeWhere(patterns) {\n  if (!patterns || patterns.length === 0) return null;\n  if (patterns.length === 1) return trNorm('VIP.NOME') + \" LIKE '\" + patterns[0] + \"'\";\n  return \"(\" + patterns.map(function(p){ return trNorm('VIP.NOME') + \" LIKE '\" + p + \"'\"; }).join(\" OR \") + \")\";\n}\n\nlet where;\nif (busca_codigo) {\n  const codigoNorm = busca_codigo.replace(\"/\", \"-\");\n  // Whitelist: apenas dígitos e hífen (ex: 654-2024)\n  if (/^\\d{1,6}-\\d{4}$/.test(codigoNorm)) {\n    where = \"TRIM(TO_CHAR(VIP.NUMERO))||'-'||TRIM(TO_CHAR(VIP.ANO)) = '\" + codigoNorm + \"'\";\n  } else {\n    where = \"1=0\"; // código inválido, retorna vazio propositalmente\n  }\n} else if (busca_nome_patterns && busca_municipio_p) {\n  where = nomeWhere(busca_nome_patterns) + \" AND \" + trNorm('M.MUNICIPIO') + \" LIKE '\" + busca_municipio_p + \"'\";\n} else if (busca_nome_patterns) {\n  where = nomeWhere(busca_nome_patterns);\n} else if (busca_municipio_p) {\n  where = trNorm('M.MUNICIPIO') + \" LIKE '\" + busca_municipio_p + \"'\";\n} else {\n  where = \"1=1\";\n}\n\n// Filtros extras como AND\nlet whereExtra = \"\";\nif (busca_situacao_p) {\n  whereExtra += \" AND \" + trNorm('VIP.SITUACAO') + \" LIKE '\" + busca_situacao_p + \"'\";\n} else if (campos.situacao !== 'QUALQUER') {\n  // Padrao: apenas projetos ativos (exclui concluidos/finalizados/encerrados)\n  whereExtra += \" AND NOT (\" + trNorm('VIP.SITUACAO') + \" LIKE '%CONCLU%' OR \" + trNorm('VIP.SITUACAO') + \" LIKE '%FINALIZ%' OR \" + trNorm('VIP.SITUACAO') + \" LIKE '%ENCERR%')\";\n}\nif (campos.ano && /^[0-9]{4}$/.test(campos.ano)) whereExtra += \" AND VIP.ANO = \" + campos.ano;\n\n// Tipo: = exato ou LIKE fuzzy\nif (tipoExato) {\n  whereExtra += \" AND \" + trNorm('VIP.TIPO') + \" = \" + trNorm(\"'\" + escapeSql(campos.tipo) + \"'\");\n} else if (busca_tipo_p) {\n  whereExtra += \" AND \" + trNorm('VIP.TIPO') + \" LIKE '\" + busca_tipo_p + \"'\";\n}\n\n// Orgao: = exato ou LIKE fuzzy\nif (orgaoExato) {\n  whereExtra += \" AND \" + trNorm('VIP.ORGAO') + \" = \" + trNorm(\"'\" + escapeSql(campos.orgao) + \"'\");\n} else if (busca_orgao_p) {\n  whereExtra += \" AND \" + trNorm('VIP.ORGAO') + \" LIKE '\" + busca_orgao_p + \"'\";\n}\n\nconst whereCompleto = \"(\" + where + \")\" + whereExtra;\nconst cteJoins = \" FROM VW_IDENTIFICACAO_PROJETOS VIP LEFT JOIN LOCALIZACAO L ON L.PROJETO_ID = VIP.PROJETO_ID LEFT JOIN MUNICIPIO M ON M.ID = L.MUNICIPIO_ID\";\nconst sql = \"WITH MUNI_COUNTS AS (SELECT M.MUNICIPIO AS MC_MUN, COUNT(DISTINCT VIP.PROJETO_ID) AS MC_CNT\" + cteJoins + \" WHERE \" + whereCompleto + \" GROUP BY M.MUNICIPIO), TOTAL_COUNT AS (SELECT COUNT(DISTINCT VIP.PROJETO_ID) AS TOTAL_GERAL\" + cteJoins + \" WHERE \" + whereCompleto + \") SELECT DISTINCT VIP.PROJETO_ID, VIP.NUMERO, VIP.ANO, TRIM(TO_CHAR(VIP.NUMERO))||'-'||TRIM(TO_CHAR(VIP.ANO)) AS CODIGO_PROCESSO, VIP.NOME, VIP.SITUACAO, VIP.SITUACAO_ATUAL, VIP.ORGAO, VIP.TIPO, TO_CHAR(VIP.DATAINICIO, 'DD-MM-YYYY') AS DATA_INICIO, TO_CHAR(VIP.DATAFIM, 'DD-MM-YYYY') AS DATA_FIM, VIP.PRAZO_ESTIMADO AS PRAZOESTIMADO, VIP.VALORPLANEJADO, VIP.PERCEXECUTADOFINANC AS PERCENTUAL_EXEC, M.MUNICIPIO, MR.REGIAO, NVL(MC.MC_CNT, 0) AS TOTAL_MUNICIPIO, TC.TOTAL_GERAL FROM VW_IDENTIFICACAO_PROJETOS VIP LEFT JOIN LOCALIZACAO L ON L.PROJETO_ID = VIP.PROJETO_ID LEFT JOIN MUNICIPIO M ON M.ID = L.MUNICIPIO_ID LEFT JOIN MUNICIPIO_REGIAO MR ON MR.MUNICIPIO_ID = M.ID LEFT JOIN PORTFOLIO_PROJETO PP ON VIP.PROJETO_ID = PP.PROJETO_ID LEFT JOIN PORTFOLIO PORT ON PP.PORTFOLIO_ID = PORT.ID LEFT JOIN PROGRAMA_INVESTIMENTO PI ON PI.ID = PP.PROGRAMA_INVESTIMENTO_ID LEFT JOIN MUNI_COUNTS MC ON MC.MC_MUN = M.MUNICIPIO CROSS JOIN TOTAL_COUNT TC WHERE \" + whereCompleto + \" ORDER BY VIP.ANO DESC, VIP.NUMERO DESC FETCH FIRST 200 ROWS ONLY\";\n\nconst busca_limpa_completa = [campos.nome, campos.municipio, campos.situacao, campos.tipo, campos.orgao, campos.codigo, campos.ano]\n  .filter(v => v && v !== \"QUALQUER\")\n  .join(\" \");\n\nreturn [{\n  remetente,\n  busca_limpa: busca_limpa_completa || buscaOriginal,\n  campos,\n  sql_query: sql\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        656,
-        912
+        -18288,
+        2320
       ],
-      "id": "5361ed94-5965-4f00-bc40-a61629e4d504",
+      "id": "a6c53688-0cd1-46dc-88c4-b07b8150bfda",
       "name": "MontaBusca"
     },
     {
@@ -122,10 +131,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        272,
-        304
+        -18672,
+        1712
       ],
-      "id": "8c151d48-94d5-4cf5-af38-f31400b7669d",
+      "id": "758eef9a-f40b-474a-9f5e-5aa1f537c7d1",
       "name": "RoteiaSubmenu"
     },
     {
@@ -156,23 +165,23 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        480,
-        480
+        -18464,
+        1888
       ],
-      "id": "7a9b19ad-a688-4c16-958f-4079f3b84ba5",
+      "id": "d05bf5d2-8be0-4041-a189-42d8900fb3a7",
       "name": "RoteiaValores"
     },
     {
       "parameters": {
         "query": "={{ $json.sql_entregas }}"
       },
-      "id": "f6784777-3d9f-489a-9116-0ff2a97ed7ad",
+      "id": "e3709410-4304-4c6f-babc-02200551a211",
       "name": "ConsultaEntregas",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        864,
-        288
+        -18080,
+        1696
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -186,13 +195,13 @@
       "parameters": {
         "query": "=SELECT\n    VL_PLANEJADO AS VALOR_PLANEJADO,\n    VL_CONTRATADO AS VALOR_CONTRATADO,\n    VL_EXECUTADO AS VALOR_EXECUTADO,\n    VL_PAGO AS VALOR_PAGO,\n    PC_EXECUTADO AS PERC_EXEC\nFROM FINANCEIRO\nWHERE PROJETO_ID = {{ $json.projeto.PROJETO_ID }}"
       },
-      "id": "c8dee14d-c826-43cc-8124-9b6199d422a6",
+      "id": "889387fc-43cd-4367-b027-2b6b161de407",
       "name": "ConsultaValores",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        864,
-        464
+        -18080,
+        1872
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -206,13 +215,13 @@
       "parameters": {
         "query": "={{ $json.sql_contratos }}"
       },
-      "id": "7000839f-e7d4-4f07-b4f4-1fcf43358cd2",
+      "id": "3ace9de8-e970-4398-b6ee-8248937d3330",
       "name": "ConsultaContratos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        864,
-        640
+        -18080,
+        2048
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -229,10 +238,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1072,
-        288
+        -17872,
+        1696
       ],
-      "id": "31f50bec-fd4d-427e-b08d-07501343d4a9",
+      "id": "64016b74-3150-4eb0-ae7b-98f374e402d8",
       "name": "FormataEntregas"
     },
     {
@@ -242,10 +251,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1072,
-        464
+        -17872,
+        1872
       ],
-      "id": "8909cdd8-23e8-4451-8c57-0486f59f338d",
+      "id": "5e89a433-8105-4149-96b8-1800d250e0f8",
       "name": "FormataValores"
     },
     {
@@ -255,10 +264,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1072,
-        640
+        -17872,
+        2048
       ],
-      "id": "ee7db3d9-5a97-461b-9e69-0cf970c4e676",
+      "id": "a6bda0d4-7a84-4d1a-8f0f-0746a7ecaa7c",
       "name": "FormadaContratos"
     },
     {
@@ -471,10 +480,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        16,
-        400
+        -19120,
+        2288
       ],
-      "id": "c913a63a-e146-4e66-bb7c-119aa23098b5",
+      "id": "9925d0cb-007d-4438-9ef0-819cce33636d",
       "name": "RoteadorPrincipal"
     },
     {
@@ -538,10 +547,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1296,
-        912
+        -17648,
+        2320
       ],
-      "id": "ad575a42-5f93-401a-835e-e43efe3c95cd",
+      "id": "d5195945-3546-4eef-9b0e-7fda349cb9a4",
       "name": "RoteiaResultado"
     },
     {
@@ -593,36 +602,34 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        -368,
-        496
+        -19312,
+        1904
       ],
-      "id": "6467409a-a719-4f28-b982-406ab0234748",
+      "id": "a00a9035-100d-44ee-9cdd-7874b6bfc2df",
       "name": "FiltraMensagem"
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.item.json;\nconst textoOriginal =\n  input.body?.data?.message?.conversation ||\n  input.body?.data?.message?.listResponseMessage?.singleSelectReply?.selectedRowId ||\n  input.body?.text || \"\";\nconst textoLimpo = textoOriginal.trim();\nconst remetente = input.body?.data?.key?.remoteJid || \"\";\n\nif (!textoLimpo || !remetente) {\n  return [{ tipo: \"ignorar\", busca_limpa: \"\", remetente: \"\", mensagem_retorno: \"\" }];\n}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nconst TIMEOUT_MS = 5 * 60 * 1000; // 5 min (padrão WhatsApp bots)\nconst agora = Date.now();\n\nlet contexto = staticData.contextos[remetente] || {\n  termos: [], lista: null, contratos: null,\n  campos_acumulados: {}, projeto_exibido: false,\n  projeto_atual: null, ultimaInteracao: null\n};\n\nif (contexto.ultimaInteracao && (agora - contexto.ultimaInteracao) > TIMEOUT_MS) {\n  contexto = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: null };\n  staticData.contextos[remetente] = contexto;\n  return [{\n    tipo: \"saudacao\", busca_limpa: \"\", remetente,\n    mensagem_retorno: \"\\u23F1\\uFE0F Sua sessao expirou por falta de interacao.\\n\\nOla! Bem-vindo ao Projeta SC \\uD83C\\uDFDB\\uFE0F\\nSou o assistente de projetos do Governo de Santa Catarina.\\n\\n\\uD83D\\uDD0E Digite o que voce deseja consultar:\"\n  }];\n}\n\nconst textoNormalizado = textoLimpo.toLowerCase().normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").replace(/[^a-z0-9 \\/]/g, \"\").trim();\nconst eNumero = /^\\d+$/.test(textoLimpo.trim());\n\n// 1. SAUDACAO (agora tratado pelo classificador IA — removido daqui)\n// Placeholder mantido para numeracao\n\n// 2. RESET\nif (textoNormalizado === \"menu\" || textoNormalizado === \"0\" || textoNormalizado === \"nova busca\" || textoLimpo === \"nova_busca\") {\n  staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  return [{ tipo: \"saudacao\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 3. CODIGO DE PROCESSO (ex: 654/2014)\nconst eCodigo = /^\\d+\\/\\d{4}$/.test(textoLimpo.trim());\nif (eCodigo) {\n  contexto = { termos: [textoLimpo], lista: null, contratos: null, campos_acumulados: { codigo: textoLimpo }, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"busca\", busca_limpa: textoLimpo, campos_acumulados: { codigo: textoLimpo }, campos_faltantes: [], remetente, mensagem_retorno: \"\" }];\n}\n\n// 4. SELECAO DE ITEM DA LISTA DE PROJETOS\nif (eNumero && contexto.lista && contexto.lista[parseInt(textoLimpo) - 1]) {\n  const projeto = contexto.lista[parseInt(textoLimpo) - 1];\n  contexto.ultimaInteracao = agora;\n  contexto.lista = null;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"selecao\", projeto, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 5. ATALHOS NUMERICOS com projeto atual (1/2/3/4 sao deterministicos)\nif (eNumero && contexto.projeto_atual) {\n  const n = parseInt(textoLimpo);\n  if (n === 4) {\n    staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n    return [{ tipo: \"reinicio\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (n === 1) {\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"entregas\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (n === 2) {\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"valores\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (n === 3) {\n    contexto.ultimaInteracao = agora;\n    contexto.contratos = null;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"contratos\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n}\n\n// 4C. SELECAO DE MUNICIPIO POR NUMERO\nif (eNumero && contexto.municipios_opcoes && contexto.municipios_opcoes[parseInt(textoLimpo) - 1]) {\n  const municipio = contexto.municipios_opcoes[parseInt(textoLimpo) - 1];\n  contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), municipio };\n  contexto.municipios_opcoes = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 4D. SELECAO DE ORGAO POR NUMERO\nif (eNumero && contexto.orgaos_opcoes && contexto.orgaos_opcoes[parseInt(textoLimpo) - 1]) {\n  const orgao = contexto.orgaos_opcoes[parseInt(textoLimpo) - 1];\n  contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), orgao };\n  contexto.orgaos_opcoes = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 4E. SELECAO DE TIPO POR NUMERO\nif (eNumero && contexto.tipos_opcoes && contexto.tipos_opcoes[parseInt(textoLimpo) - 1]) {\n  const tipo = contexto.tipos_opcoes[parseInt(textoLimpo) - 1];\n  contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), tipo };\n  contexto.tipos_opcoes = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 4F. SELECAO DE SITUACAO POR NUMERO\nif (eNumero && contexto.situacao_opcoes && contexto.situacao_opcoes[parseInt(textoLimpo) - 1]) {\n  const situacao = contexto.situacao_opcoes[parseInt(textoLimpo) - 1];\n  contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), situacao };\n  contexto.situacao_opcoes = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 4B. SELECAO DE CONTRATO DA LISTA\nif (eNumero && contexto.contratos && contexto.contratos[parseInt(textoLimpo) - 1]) {\n  const contrato = contexto.contratos[parseInt(textoLimpo) - 1];\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"selecao_contrato\", contrato, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 6. REMOVER CAMPO (ex: \"remover orgao\", \"remover situacao\")\nconst matchRemover = textoNormalizado.match(/^remover\\s+(orgao|municipio|situacao|nome|tipo)/);\nif (matchRemover) {\n  const campoParaRemover = matchRemover[1];\n  const novoCampos = { ...(contexto.campos_acumulados || {}) };\n  delete novoCampos[campoParaRemover];\n  contexto.campos_acumulados = novoCampos;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: novoCampos, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 6C. VER MAIS / OUTROS MUNICIPIOS — exibe lista completa salva no contexto\nconst pedidoVerMais = /^(outros municipios|outros|saiba mais|ver mais|mais munic|mais op|continuar lista|proxim)/i.test(textoNormalizado);\nif (pedidoVerMais && contexto.municipios_todos && contexto.municipios_todos.length > 0) {\n  const todosMun = contexto.municipios_todos;\n  const emojisNum = [\"1️⃣\",\"2️⃣\",\"3️⃣\",\"4️⃣\",\"5️⃣\",\"6️⃣\",\"7️⃣\",\"8️⃣\",\"9️⃣\",\"\\uD83D\\uDD1F\",\"11.\",\"12.\",\"13.\",\"14.\"];\n  const limite = Math.min(todosMun.length, 14);\n  let msgMais = '\\uD83D\\uDCCD *Todos os municip\\u00EDos com projetos:*\\n\\n';\n  todosMun.slice(0, limite).forEach(function([mun, qtd], i) {\n    msgMais += (emojisNum[i] || (i + 1) + '.') + ' ' + mun + ' \\u2014 ' + qtd + ' projeto' + (qtd > 1 ? 's' : '') + '\\n';\n  });\n  msgMais += '\\nDe qual *munic\\u00EDpio* voc\\u00EA quer ver os projetos?';\n  // Salva opcoes para selecao por numero\n  contexto.municipios_opcoes = todosMun.slice(0, limite).map(function([m]) { return m; });\n  contexto.municipios_todos = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'reinicio', remetente, mensagem_retorno: msgMais }];\n}\n\n// 6B. VER TODOS / LISTAR OPCOES — pula o proximo campo do filtro\nconst pedidoListar = /ver (todos|todas)|listar|mostrar (todos|todas)|quero (ver|saber) (todos|todas)|todos os (munic|orgao|tipo|opcao|result)|todas as (opcao|alternativa)/i.test(textoNormalizado);\nif (pedidoListar && contexto.campos_acumulados && Object.keys(contexto.campos_acumulados).length > 0) {\n  const novoCampos = { ...(contexto.campos_acumulados || {}) };\n  const ordemPular = ['municipio', 'situacao', 'nome', 'orgao', 'tipo'];\n  const proximoVazio = ordemPular.find(k => !novoCampos[k]);\n  if (proximoVazio) novoCampos[proximoVazio] = 'QUALQUER';\n  contexto.campos_acumulados = novoCampos;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: novoCampos, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 6D. SABER MAIS — exibe ficha completa do projeto atual\nconst pedidoSaberMais = /^(saber mais|mais info|mais detalhes|detalhe|detalhar|ver mais)$/i.test(textoNormalizado);\nif (pedidoSaberMais && contexto.projeto_atual) {\n  const p = contexto.projeto_atual;\n  const val = parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n  const fichaCompleta =\n    \"\\uD83D\\uDCCB *\" + p.NOME + \"*\\n\\n\" +\n    \"\\uD83D\\uDCCC *Codigo:* \" + (p.CODIGO_PROCESSO || \"-\") + \"\\n\" +\n    \"\\uD83C\\uDFDB *Orgao:* \" + (p.ORGAO || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCCA *Situacao:* \" + (p.SITUACAO || \"-\") + \"\\n\" +\n    (p.SITUACAO_ATUAL ? \"\\u2705 *Detalhe:* \" + p.SITUACAO_ATUAL + \"\\n\\n\" : \"\\n\") +\n    \"\\uD83D\\uDCC5 *Inicio:* \" + (p.DATA_INICIO || \"-\") + \"\\n\" +\n    \"\\uD83D\\uDCC5 *Termino:* \" + (p.DATA_FIM || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCB0 *Valor:* R$ \" + val + \"\\n\" +\n    \"\\uD83D\\uDCCA *Execucao:* \" + (p.PERCENTUAL_EXEC || \"0\") + \"%\\n\\n\" +\n    \"*Deseja mais informacoes?*\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n2\\uFE0F\\u20E3 Ver Valores\\n3\\uFE0F\\u20E3 Ver Contratos\\n4\\uFE0F\\u20E3 Nova Busca\";\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'reinicio', remetente, mensagem_retorno: fichaCompleta }];\n}\n\n// 7. TUDO MAIS -> CLASSIFICAR COM IA\nreturn [{\n  tipo: \"classificar\",\n  busca_limpa: textoLimpo,\n  remetente,\n  contexto_tem_projeto: !!contexto.projeto_atual,\n  contexto_tem_lista: !!(contexto.lista && contexto.lista.length > 0),\n  campos_acumulados: contexto.campos_acumulados || {},\n  projeto_atual: contexto.projeto_atual || null,\n  mensagem_retorno: \"\"\n}];\n"
+        "jsCode": "const input = $input.item.json;\nconst textoOriginal =\n  input.body?.data?.message?.conversation ||\n  input.body?.data?.message?.listResponseMessage?.singleSelectReply?.selectedRowId ||\n  input.body?.text || \"\";\nconst textoLimpo = textoOriginal.trim();\nconst remetente = input.body?.data?.key?.remoteJid || \"\";\n\nif (!textoLimpo || !remetente) {\n  return [{ tipo: \"ignorar\", busca_limpa: \"\", remetente: \"\", mensagem_retorno: \"\" }];\n}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nconst TIMEOUT_MS = 5 * 60 * 1000; // 5 min (padrão WhatsApp bots)\nconst agora = Date.now();\n\nlet contexto = staticData.contextos[remetente] || {\n  termos: [], lista: null, contratos: null,\n  campos_acumulados: {}, projeto_exibido: false,\n  projeto_atual: null, ultimaInteracao: null\n};\n\nif (contexto.ultimaInteracao && (agora - contexto.ultimaInteracao) > TIMEOUT_MS) {\n  contexto = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: null };\n  staticData.contextos[remetente] = contexto;\n  return [{\n    tipo: \"saudacao\", busca_limpa: \"\", remetente,\n    mensagem_retorno: \"\\u23F1\\uFE0F Sua sessao expirou por falta de interacao.\\n\\nOla! Bem-vindo ao Projeta SC \\uD83C\\uDFDB\\uFE0F\\nSou o assistente de projetos do Governo de Santa Catarina.\\n\\n\\uD83D\\uDD0E Digite o que voce deseja consultar:\"\n  }];\n}\n\nconst textoNormalizado = textoLimpo.toLowerCase().normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\").replace(/[^a-z0-9 \\/]/g, \"\").trim();\nconst eNumero = /^\\d+$/.test(textoLimpo.trim());\n\n// 1. SAUDACAO (agora tratado pelo classificador IA — removido daqui)\n// Placeholder mantido para numeracao\n\n// 2. RESET\nif (textoNormalizado === \"menu\" || textoNormalizado === \"0\" || textoNormalizado === \"nova busca\" || textoLimpo === \"nova_busca\") {\n  staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  return [{ tipo: \"saudacao\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 3. CODIGO DE PROCESSO (ex: 654/2014)\nconst eCodigo = /^\\d+\\/\\d{4}$/.test(textoLimpo.trim());\nif (eCodigo) {\n  contexto = { termos: [textoLimpo], lista: null, contratos: null, campos_acumulados: { codigo: textoLimpo }, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"busca\", busca_limpa: textoLimpo, campos_acumulados: { codigo: textoLimpo }, campos_faltantes: [], remetente, mensagem_retorno: \"\" }];\n}\n\n// 4. SELECAO DE ITEM DA LISTA DE PROJETOS\nif (eNumero && contexto.lista && contexto.lista[parseInt(textoLimpo) - 1]) {\n  const projeto = contexto.lista[parseInt(textoLimpo) - 1];\n  contexto.ultimaInteracao = agora;\n  contexto.lista = null;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"selecao\", projeto, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 5. ATALHOS NUMERICOS com projeto atual (1/2/3/4 sao deterministicos)\nif (eNumero && contexto.projeto_atual) {\n  const n = parseInt(textoLimpo);\n  if (n === 4) {\n    staticData.contextos[remetente] = { termos: [], lista: null, contratos: null, campos_acumulados: {}, projeto_exibido: false, projeto_atual: null, ultimaInteracao: agora };\n    return [{ tipo: \"reinicio\", busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (n === 1) {\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"entregas\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (n === 2) {\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"valores\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n  if (n === 3) {\n    contexto.ultimaInteracao = agora;\n    contexto.contratos = null;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: \"submenu\", submenu: \"contratos\", projeto: contexto.projeto_atual, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n  }\n}\n\n// 4C. SELECAO DE MUNICIPIO POR NUMERO\nif (eNumero && contexto.municipios_opcoes) {\n  const numEsc = parseInt(textoLimpo);\n  // Escolheu \"Outros\" - numero logo apos os listados\n  if (numEsc === contexto.municipios_opcoes.length + 1 && contexto.municipios_todos && contexto.municipios_todos.length > 0) {\n    const todosMun = contexto.municipios_todos;\n    const emojisX = [\"1️⃣\",\"2️⃣\",\"3️⃣\",\"4️⃣\",\"5️⃣\",\"6️⃣\",\"7️⃣\",\"8️⃣\",\"9️⃣\",\"10.\",\"11.\",\"12.\",\"13.\",\"14.\"];\n    const lim = Math.min(todosMun.length, 14);\n    let msgX = '\\uD83D\\uDCCD *Todos os munic\\u00EDpios com projetos:*\\n\\n';\n    todosMun.slice(0, lim).forEach(function([mun, qtd], i) {\n      msgX += (emojisX[i] || (i + 1) + '.') + ' ' + mun + ' \\u2014 ' + qtd + ' projeto' + (qtd > 1 ? 's' : '') + '\\n';\n    });\n    msgX += '\\nDe qual *munic\\u00EDpio* voc\\u00EA quer ver os projetos?';\n    contexto.municipios_opcoes = todosMun.slice(0, lim).map(function([m]) { return m; });\n    contexto.municipios_todos = null;\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: 'reinicio', remetente, mensagem_retorno: msgX }];\n  }\n  if (contexto.municipios_opcoes[numEsc - 1]) {\n    const municipio = contexto.municipios_opcoes[numEsc - 1];\n    contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), municipio };\n    contexto.municipios_opcoes = null;\n    contexto.ultimaInteracao = agora;\n    staticData.contextos[remetente] = contexto;\n    return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n  }\n}\n\n// 4D. SELECAO DE ORGAO POR NUMERO\nif (eNumero && contexto.orgaos_opcoes && contexto.orgaos_opcoes[parseInt(textoLimpo) - 1]) {\n  const orgao = contexto.orgaos_opcoes[parseInt(textoLimpo) - 1];\n  contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), orgao };\n  contexto.orgaos_opcoes = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 4E. SELECAO DE TIPO POR NUMERO\nif (eNumero && contexto.tipos_opcoes && contexto.tipos_opcoes[parseInt(textoLimpo) - 1]) {\n  const tipo = contexto.tipos_opcoes[parseInt(textoLimpo) - 1];\n  contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), tipo };\n  contexto.tipos_opcoes = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 4F. SELECAO DE SITUACAO POR NUMERO\nif (eNumero && contexto.situacao_opcoes && contexto.situacao_opcoes[parseInt(textoLimpo) - 1]) {\n  const situacao = contexto.situacao_opcoes[parseInt(textoLimpo) - 1];\n  contexto.campos_acumulados = { ...(contexto.campos_acumulados || {}), situacao };\n  contexto.situacao_opcoes = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: contexto.campos_acumulados, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 4B. SELECAO DE CONTRATO DA LISTA\nif (eNumero && contexto.contratos && contexto.contratos[parseInt(textoLimpo) - 1]) {\n  const contrato = contexto.contratos[parseInt(textoLimpo) - 1];\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: \"selecao_contrato\", contrato, busca_limpa: \"\", remetente, mensagem_retorno: \"\" }];\n}\n\n// 6. REMOVER CAMPO (ex: \"remover orgao\", \"remover situacao\")\nconst matchRemover = textoNormalizado.match(/^remover\\s+(orgao|municipio|situacao|nome|tipo)/);\nif (matchRemover) {\n  const campoParaRemover = matchRemover[1];\n  const novoCampos = { ...(contexto.campos_acumulados || {}) };\n  delete novoCampos[campoParaRemover];\n  contexto.campos_acumulados = novoCampos;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: novoCampos, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 6C. VER MAIS / OUTROS MUNICIPIOS — exibe lista completa salva no contexto\nconst pedidoVerMais = /^(outros municipios|outras opcoes|outras|outros|saiba mais|ver mais|mais munic|mais op|continuar lista|proxim)/i.test(textoNormalizado);\nif (pedidoVerMais && contexto.municipios_todos && contexto.municipios_todos.length > 0) {\n  const todosMun = contexto.municipios_todos;\n  const emojisNum = [\"1️⃣\",\"2️⃣\",\"3️⃣\",\"4️⃣\",\"5️⃣\",\"6️⃣\",\"7️⃣\",\"8️⃣\",\"9️⃣\",\"\\uD83D\\uDD1F\",\"11.\",\"12.\",\"13.\",\"14.\"];\n  const limite = Math.min(todosMun.length, 14);\n  let msgMais = '\\uD83D\\uDCCD *Todos os municip\\u00EDos com projetos:*\\n\\n';\n  todosMun.slice(0, limite).forEach(function([mun, qtd], i) {\n    msgMais += (emojisNum[i] || (i + 1) + '.') + ' ' + mun + ' \\u2014 ' + qtd + ' projeto' + (qtd > 1 ? 's' : '') + '\\n';\n  });\n  msgMais += '\\nDe qual *munic\\u00EDpio* voc\\u00EA quer ver os projetos?';\n  // Salva opcoes para selecao por numero\n  contexto.municipios_opcoes = todosMun.slice(0, limite).map(function([m]) { return m; });\n  contexto.municipios_todos = null;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'reinicio', remetente, mensagem_retorno: msgMais }];\n}\n\n// 6B. VER TODOS / LISTAR OPCOES — pula o proximo campo do filtro\nconst pedidoListar = /ver (todos|todas)|listar|mostrar (todos|todas)|quero (ver|saber) (todos|todas)|todos os (munic|orgao|tipo|opcao|result)|todas as (opcao|alternativa)/i.test(textoNormalizado);\nif (pedidoListar && contexto.campos_acumulados && Object.keys(contexto.campos_acumulados).length > 0) {\n  const novoCampos = { ...(contexto.campos_acumulados || {}) };\n  const ordemPular = ['municipio', 'situacao', 'nome', 'orgao', 'tipo'];\n  const proximoVazio = ordemPular.find(k => !novoCampos[k]);\n  if (proximoVazio) novoCampos[proximoVazio] = 'QUALQUER';\n  contexto.campos_acumulados = novoCampos;\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'busca', busca_limpa: 'refinar', campos_acumulados: novoCampos, campos_faltantes: [], remetente, mensagem_retorno: '' }];\n}\n\n// 6D. SABER MAIS — exibe ficha completa do projeto atual\nconst pedidoSaberMais = /^(saber mais|mais info|mais detalhes|detalhe|detalhar|ver mais)$/i.test(textoNormalizado);\nif (pedidoSaberMais && contexto.projeto_atual) {\n  const p = contexto.projeto_atual;\n  const val = parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n  const fichaCompleta =\n    \"\\uD83D\\uDCCB *\" + p.NOME + \"*\\n\\n\" +\n    \"\\uD83D\\uDCCC *Codigo:* \" + (p.CODIGO_PROCESSO || \"-\") + \"\\n\" +\n    \"\\uD83C\\uDFDB *Orgao:* \" + (p.ORGAO || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCCA *Situacao:* \" + (p.SITUACAO || \"-\") + \"\\n\" +\n    (p.SITUACAO_ATUAL ? \"\\u2705 *Detalhe:* \" + p.SITUACAO_ATUAL + \"\\n\\n\" : \"\\n\") +\n    \"\\uD83D\\uDCC5 *Inicio:* \" + (p.DATA_INICIO || \"-\") + \"\\n\" +\n    \"\\uD83D\\uDCC5 *Termino:* \" + (p.DATA_FIM || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCB0 *Valor:* R$ \" + val + \"\\n\" +\n    \"\\uD83D\\uDCCA *Execucao:* \" + (p.PERCENTUAL_EXEC || \"0\") + \"%\\n\\n\" +\n    \"*Deseja mais informacoes?*\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n2\\uFE0F\\u20E3 Ver Valores\\n3\\uFE0F\\u20E3 Ver Contratos\\n4\\uFE0F\\u20E3 Nova Busca\";\n  contexto.ultimaInteracao = agora;\n  staticData.contextos[remetente] = contexto;\n  return [{ tipo: 'reinicio', remetente, mensagem_retorno: fichaCompleta }];\n}\n\n// 7. TUDO MAIS -> CLASSIFICAR COM IA\nreturn [{\n  tipo: \"classificar\",\n  busca_limpa: textoLimpo,\n  remetente,\n  contexto_tem_projeto: !!contexto.projeto_atual,\n  contexto_tem_lista: !!(contexto.lista && contexto.lista.length > 0),\n  campos_acumulados: contexto.campos_acumulados || {},\n  projeto_atual: contexto.projeto_atual || null,\n  mensagem_retorno: \"\"\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -160,
-        496
+        -19104,
+        1904
       ],
-      "id": "b3f18260-025e-460c-89de-32f199a075ca",
+      "id": "cfd6678a-c7c4-4bf4-a735-f1cc3551f224",
       "name": "ProcessaMensagem"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "apikey",
-              "value": "7D5DDE6A591F-4D89-9FAC-785A343AD4F8"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -647,11 +654,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        1568,
-        1248
+        -16784,
+        2320
       ],
-      "id": "f4c34b63-ad8f-4bcf-a4bd-2211d80a6a4c",
-      "name": "RetornoProjeto"
+      "id": "5a9a29fe-f3e0-4a1d-9651-bfe80a5cb854",
+      "name": "RetornoProjeto",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "GawefCYOjoZJQkML",
+          "name": "APIKEY"
+        }
+      }
     },
     {
       "parameters": {
@@ -659,13 +672,13 @@
         "path": "mensagem",
         "options": {}
       },
-      "id": "692f7b63-e7c5-484f-acb7-698ede36e309",
+      "id": "eae5dd8e-23f3-4f0c-acb4-66c441b3b87f",
       "name": "Whatsapp",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -576,
-        496
+        -19520,
+        1904
       ],
       "webhookId": "ca260f54-431d-4cc9-bb68-c51dbc71c6bb"
     },
@@ -673,13 +686,13 @@
       "parameters": {
         "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
       },
-      "id": "58f958f1-374d-4041-8443-a18ee0d04b64",
+      "id": "2be2f978-81db-4472-976c-2ac79d7f6877",
       "name": "ConsultaProjetos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        864,
-        912
+        -18080,
+        2320
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -691,28 +704,26 @@
     },
     {
       "parameters": {
-        "jsCode": "const todos = $input.all().filter(item => item.json && item.json.NOME);\nconst total = todos.length;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst campos = $('MontaBusca').first().json.campos || {};\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\n// Filtros ativos resolvidos (exibidos no início de cada mensagem)\nconst filtros_label = (staticData.contextos[remetente] || {}).filtros_label || '';\nfunction comFiltros(msg) {\n  return filtros_label ? filtros_label + '\\n\\n' + msg : msg;\n}\n\nlet totalInvestimento = 0;\nlet concluidos = [];\nlet emAndamento = [];\n\ntodos.forEach(item => {\n  const raw = parseFloat(String(item.json.VALORPLANEJADO || \"0\").replace(\",\", \".\"));\n  if (!isNaN(raw) && isFinite(raw) && raw >= 0) totalInvestimento += raw;\n  const sit = (item.json.SITUACAO || \"\").toLowerCase();\n  if (sit.includes('conclu') || sit.includes('finaliz') || sit.includes('encerr'))\n    concluidos.push(item);\n  else\n    emAndamento.push(item);\n});\n\nfunction formatarValor(val) {\n  if (val >= 1e9) return \"R$ \" + (val / 1e9).toFixed(1).replace(\".\", \",\") + \" bilhoes\";\n  if (val >= 1e6) return \"R$ \" + (val / 1e6).toFixed(1).replace(\".\", \",\") + \" milhoes\";\n  if (val >= 1e3) return \"R$ \" + (val / 1e3).toFixed(1).replace(\".\", \",\") + \" mil\";\n  return \"R$ \" + val.toFixed(2).replace(\".\", \",\");\n}\n\nfunction resumoBusca(c) {\n  const partes = [c.nome, c.municipio, c.situacao, c.tipo, c.orgao].filter(v => v && v !== \"QUALQUER\");\n  return partes.length > 0 ? \"*\" + partes.join(\" - \") + \"*\" : \"sua busca\";\n}\n\nfunction projetoParaContexto(json) {\n  return {\n    PROJETO_ID: json.PROJETO_ID, NUMERO: json.NUMERO, ANO: json.ANO,\n    NOME: json.NOME, CODIGO_PROCESSO: json.CODIGO_PROCESSO,\n    SITUACAO: json.SITUACAO, SITUACAO_ATUAL: json.SITUACAO_ATUAL,\n    ORGAO: json.ORGAO, DATA_INICIO: json.DATA_INICIO, DATA_FIM: json.DATA_FIM,\n    VALORPLANEJADO: json.VALORPLANEJADO, PERCENTUAL_EXEC: json.PERCENTUAL_EXEC\n  };\n}\n\nfunction linhaProjeto(item, i) {\n  const emojis = [\"1\\uFE0F\\u20E3\",\"2\\uFE0F\\u20E3\",\"3\\uFE0F\\u20E3\",\"4\\uFE0F\\u20E3\",\"5\\uFE0F\\u20E3\",\"6\\uFE0F\\u20E3\",\"7\\uFE0F\\u20E3\",\"8\\uFE0F\\u20E3\",\"9\\uFE0F\\u20E3\",\"10\\uFE0F\\u20E3\"];\n  const p = item.json;\n  const codigo = p.CODIGO_PROCESSO ? \"*\" + p.CODIGO_PROCESSO + \"* - \" : \"\";\n  const sit = p.SITUACAO ? \" - \" + p.SITUACAO : \"\";\n  const municipio = p.MUNICIPIO ? \" - \\uD83D\\uDCCD \" + p.MUNICIPIO : \"\";\n  const exec = p.PERCENTUAL_EXEC ? \" (\" + p.PERCENTUAL_EXEC + \"%)\" : \"\";\n  return (emojis[i] || \"*\" + (i + 1) + \".*\") + \" \" + codigo + p.NOME + municipio + sit + exec;\n}\n\nfunction descricaoProjeto(p) {\n  const val = formatarValor(parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")));\n  return (\n    \"Aqui estao as informacoes que encontrei! \\uD83D\\uDCCB\\n\\n\" +\n    \"*\" + p.NOME + \"*\\n\" +\n    \"\\uD83D\\uDCCC *Codigo:* \" + (p.CODIGO_PROCESSO || \"-\") + \"\\n\" +\n    \"\\uD83C\\uDFDB *Orgao:* \" + (p.ORGAO || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCCA *Situacao:* \" + (p.SITUACAO || \"-\") + \"\\n\" +\n    (p.SITUACAO_ATUAL ? \"\\u2705 *Detalhe:* \" + p.SITUACAO_ATUAL + \"\\n\\n\" : \"\\n\") +\n    \"\\uD83D\\uDCC5 *Inicio:* \" + (p.DATA_INICIO || \"-\") + \"\\n\" +\n    \"\\uD83D\\uDCC5 *Termino:* \" + (p.DATA_FIM || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCB0 *Valor:* R$ \" + parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + \"\\n\" +\n    \"\\uD83D\\uDCCA *Execucao:* \" + (p.PERCENTUAL_EXEC || \"0\") + \"%\\n\\n\" +\n    \"*Deseja mais informacoes?*\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n    \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n    \"3\\uFE0F\\u20E3 Ver Contratos\\n\" +\n    \"4\\uFE0F\\u20E3 Nova Busca\"\n  );\n}\n\nfunction contarPorCampo(lista, campo) {\n  const mapa = {};\n  lista.forEach(item => {\n    const val = item.json[campo];\n    if (val) mapa[val] = (mapa[val] || 0) + 1;\n  });\n  return Object.entries(mapa).sort((a, b) => b[1] - a[1]);\n}\n\nfunction perguntaRefinamento(campos, total, todos) {\n  const temMunicipio = !!campos.municipio && campos.municipio !== \"QUALQUER\";\n  const temSituacao  = !!campos.situacao  && campos.situacao  !== \"QUALQUER\";\n  const temNome      = !!campos.nome      && campos.nome      !== \"QUALQUER\";\n  const temOrgao     = !!campos.orgao     && campos.orgao     !== \"QUALQUER\";\n  const temTipo      = !!campos.tipo      && campos.tipo      !== \"QUALQUER\";\n\n  const emojisNum = [\"1️⃣\",\"2️⃣\",\"3️⃣\",\"4️⃣\",\"5️⃣\",\"6️⃣\",\"7️⃣\",\"8️⃣\",\"9️⃣\"];\n  const termoBusca = campos.nome || campos.municipio || campos.orgao || campos.tipo || \"sua busca\";\n\n  if (!temMunicipio && campos.municipio !== 'QUALQUER') {\n    const topMunicipios = contarPorCampo(todos, 'MUNICIPIO').slice(0, 5);\n    if (topMunicipios.length > 1) {\n      const outros = total - topMunicipios.reduce((s, [, c]) => s + c, 0);\n      let msg = \"Encontrei *\" + total + \" projetos* relacionados a *\" + termoBusca + \"*! \\uD83D\\uDD0E\\n\\n\";\n      msg += \"Veja como estao distribuidos por municipio:\\n\";\n      staticData.contextos[remetente].municipios_opcoes = topMunicipios.map(([m]) => m);\n      staticData.contextos[remetente].municipios_todos = contarPorCampo(todos, 'MUNICIPIO');\n      topMunicipios.forEach(([mun, qtd], i) => {\n        msg += (emojisNum[i] || (i+1) + \".\") + \" \" + mun + \" \\u2014 \" + qtd + \" projeto\" + (qtd > 1 ? \"s\" : \"\") + \"\\n\";\n      });\n      if (outros > 0) msg += \"\\uD83D\\uDCCD Outros municipios \\u2014 \" + outros + \" projeto\" + (outros > 1 ? \"s\" : \"\") + \"\\n\";\n      msg += \"\\nDe qual *municipio* voce quer ver os projetos?\\n_Se nao souber, responda 'nao sei'_\";\n      return msg;\n    }\n    // 1 município — não filtra, cai no próximo campo\n  }\n\n  if (!temSituacao) {\n    // Contagem precisa: só conta como 'andamento' o que Oracle vai retornar no filtro\n    const qtdAndamento = todos.filter(function(item) {\n      return (item.json.SITUACAO || \"\").toLowerCase().includes('andamento');\n    }).length;\n    const qtdConcluido = concluidos.length;\n    const temVariedadeSituacao = qtdAndamento > 0 && qtdConcluido > 0;\n    if (temVariedadeSituacao) {\n      staticData.contextos[remetente].situacao_opcoes = ['Andamento', 'Concluido'];\n      let msg = \"Em *\" + campos.municipio + \"* encontrei *\" + total + \" projetos*\";\n      if (termoBusca !== campos.municipio) msg += \" com *\" + termoBusca + \"*\";\n      msg += \"!\\n\\n\";\n      msg += \"\\u23F3 1\\uFE0F\\u20E3 Em andamento: *\" + qtdAndamento + \"* projeto\" + (qtdAndamento > 1 ? \"s\" : \"\") + \"\\n\";\n      msg += \"\\u2705 2\\uFE0F\\u20E3 Conclu\\u00EDdos: *\" + qtdConcluido + \"* projeto\" + (qtdConcluido > 1 ? \"s\" : \"\") + \"\\n\\n\";\n      msg += \"Qual a situa\\u00E7\\u00E3o?\\n_Se nao souber, responda 'nao sei'_\";\n      return msg;\n    }\n    // Sem variedade — cai no próximo campo\n  }\n\n  if (!temNome && campos.nome !== 'QUALQUER') {\n    let msg = \"Ainda encontrei *\" + total + \" projetos*\";\n    if (temMunicipio) msg += \" em *\" + campos.municipio + \"*\";\n    if (temSituacao)  msg += \" com situacao *\" + campos.situacao + \"*\";\n    msg += \".\\n\\nVoce sabe o *nome* ou alguma *palavra-chave* do projeto?\\n\";\n    msg += \"_Se nao souber, responda 'nao sei'_\\n\\nPor exemplo: escola, ponte, hospital, rodovia...\";\n    return msg;\n  }\n\n  if (!temOrgao && campos.orgao !== 'QUALQUER') {\n    const topOrgaos = contarPorCampo(todos, 'ORGAO').slice(0, 4);\n    if (topOrgaos.length > 1) {\n      let msg = \"Ainda encontrei *\" + total + \" projetos* com o nome *\" + campos.nome + \"*.\\n\\n\";\n      msg += \"Voce sabe qual *secretaria* ou *orgao* e responsavel?\\n_Se nao souber, responda 'nao sei'_\";\n      msg += \"\\n\\nOs org\\u00E3os com mais projetos s\\u00E3o:\\n\";\n      staticData.contextos[remetente].orgaos_opcoes = topOrgaos.map(([o]) => o);\n      topOrgaos.forEach(([org, qtd], i) => { msg += (emojisNum[i] || (i+1) + \".\") + \"\\uFE0F\\u20E3 \" + org + \"\\n\"; });\n      return msg;\n    }\n    // 1 órgão ou nenhum — não filtra, cai no próximo campo\n  }\n\n  if (!temTipo && campos.tipo !== 'QUALQUER') {\n    const topTipos = contarPorCampo(todos, 'TIPO').slice(0, 4);\n    if (topTipos.length > 1) {\n      let msg = \"Ainda encontrei *\" + total + \" projetos*. Qual o *tipo* do projeto?\\n\";\n      msg += \"_Se nao souber, responda 'nao sei'_\";\n      msg += \"\\n\\nOs tipos encontrados s\\u00E3o:\\n\";\n      staticData.contextos[remetente].tipos_opcoes = topTipos.map(([t]) => t);\n      topTipos.forEach(([tipo, qtd], i) => { msg += (emojisNum[i] || (i+1) + \".\") + \"\\uFE0F\\u20E3 \" + tipo + \"\\n\"; });\n      return msg;\n    }\n    // 1 tipo — não filtra, cai no próximo campo\n  }\n\n  return (\n    \"Ainda encontrei *\" + total + \" projetos* com esses filtros.\\n\\n\" +\n    \"Voce consegue me dar mais algum detalhe?\\nPode ser o codigo do processo (ex: 32/2025) ou o ano do projeto.\"\n  );\n}\n\nif (total === 0) {\n  const ordemPrioridade = ['municipio', 'orgao', 'tipo', 'situacao', 'nome'];\n  const ultimoFiltro = ordemPrioridade.find(k => campos[k] && campos[k] !== 'QUALQUER');\n  const filtrosAtivos = Object.entries(campos).filter(([k,v]) => v && v !== 'QUALQUER').map(([k,v]) => v).join(' + ');\n  let msg = \"Nao encontrei nenhum projeto com todos esses filtros juntos: *\" + filtrosAtivos + \"*. \\uD83D\\uDD0D\\n\\n\";\n  if (ultimoFiltro) {\n    if (ultimoFiltro === \"municipio\") {\n      msg += \"Esse municipio pode nao ter projetos com esse nome. Tente *remover municipio* para ver todos os municipios, ou *0* para comecar de novo.\";\n    } else {\n      msg += \"Provavelmente o campo *\" + ultimoFiltro + \": \" + campos[ultimoFiltro] + \"* nao existe no sistema com esse nome.\\n\\nTente digitar *remover \" + ultimoFiltro + \"* para buscar sem esse filtro, ou *0* para comecar de novo.\";\n    }\n  } else {\n    msg += \"Tente uma *palavra-chave diferente* ou o *codigo do processo* (ex: 32/2025), ou digitar *0* para nova busca.\";\n  }\n  return [{ tipo: \"sem_resultado\", remetente, mensagem_retorno: comFiltros(msg) }];\n}\n\nif (total === 1) {\n  const projeto = todos[0].json;\n  if (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\n  staticData.contextos[remetente].lista = null;\n  staticData.contextos[remetente].projeto_atual = projetoParaContexto(projeto);\n  staticData.contextos[remetente].projeto_exibido = false;\n  return [{ tipo: \"projeto_unico\", remetente, descricao_projeto: comFiltros(descricaoProjeto(projeto)) }];\n}\n\nif (total >= 2 && total <= 10) {\n  const listaOrdenada = [...concluidos, ...emAndamento];\n  if (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\n  staticData.contextos[remetente].lista = listaOrdenada.map(item => projetoParaContexto(item.json));\n\n  let mensagem = \"Encontrei *\" + total + \" projetos*! Qual deles e o que voce procura?\\n\\n\";\n  if (concluidos.length > 0) {\n    mensagem += \"\\u2705 *Concluidos*\\n\";\n    concluidos.forEach((item, i) => { mensagem += linhaProjeto(item, i) + \"\\n\"; });\n    mensagem += \"\\n\";\n  }\n  if (emAndamento.length > 0) {\n    mensagem += \"\\u23F3 *Em andamento*\\n\";\n    emAndamento.forEach((item, i) => { mensagem += linhaProjeto(item, concluidos.length + i) + \"\\n\"; });\n  }\n  mensagem += \"\\nDigite o numero para ver os detalhes completos.\";\n  return [{ tipo: \"lista\", remetente, mensagem_retorno: comFiltros(mensagem) }];\n}\n\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nstaticData.contextos[remetente].lista = null;\n\nstaticData.contextos[remetente].municipios_todos = contarPorCampo(todos, 'MUNICIPIO');\n\nconst msgRefinamento = perguntaRefinamento(campos, total, todos);\nreturn [{ tipo: \"refinamento_direto\", remetente, mensagem_retorno: comFiltros(msgRefinamento) }];\n"
+        "jsCode": "const todos = $input.all().filter(item => item.json && item.json.NOME);\nconst total = (todos.length > 0 ? (parseInt(todos[0].json.TOTAL_GERAL) || todos.length) : 0);\nconst remetente = $('ProcessaMensagem').first().json.remetente;\nconst campos = $('MontaBusca').first().json.campos || {};\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\n// Filtros ativos resolvidos (exibidos no início de cada mensagem)\nconst filtros_label = (staticData.contextos[remetente] || {}).filtros_label || '';\nfunction comFiltros(msg) {\n  return filtros_label ? filtros_label + '\\n\\n' + msg : msg;\n}\n\nlet totalInvestimento = 0;\nlet concluidos = [];\nlet emAndamento = [];\n\ntodos.forEach(item => {\n  const raw = parseFloat(String(item.json.VALORPLANEJADO || \"0\").replace(\",\", \".\"));\n  if (!isNaN(raw) && isFinite(raw) && raw >= 0) totalInvestimento += raw;\n  const sit = (item.json.SITUACAO || \"\").toLowerCase();\n  if (sit.includes('conclu') || sit.includes('finaliz') || sit.includes('encerr'))\n    concluidos.push(item);\n  else\n    emAndamento.push(item);\n});\n\nfunction formatarValor(val) {\n  if (val >= 1e9) return \"R$ \" + (val / 1e9).toFixed(1).replace(\".\", \",\") + \" bilhoes\";\n  if (val >= 1e6) return \"R$ \" + (val / 1e6).toFixed(1).replace(\".\", \",\") + \" milhoes\";\n  if (val >= 1e3) return \"R$ \" + (val / 1e3).toFixed(1).replace(\".\", \",\") + \" mil\";\n  return \"R$ \" + val.toFixed(2).replace(\".\", \",\");\n}\n\nfunction resumoBusca(c) {\n  const partes = [c.nome, c.municipio, c.situacao, c.tipo, c.orgao].filter(v => v && v !== \"QUALQUER\");\n  return partes.length > 0 ? \"*\" + partes.join(\" - \") + \"*\" : \"sua busca\";\n}\n\nfunction projetoParaContexto(json) {\n  return {\n    PROJETO_ID: json.PROJETO_ID, NUMERO: json.NUMERO, ANO: json.ANO,\n    NOME: json.NOME, CODIGO_PROCESSO: json.CODIGO_PROCESSO,\n    SITUACAO: json.SITUACAO, SITUACAO_ATUAL: json.SITUACAO_ATUAL,\n    ORGAO: json.ORGAO, DATA_INICIO: json.DATA_INICIO, DATA_FIM: json.DATA_FIM,\n    VALORPLANEJADO: json.VALORPLANEJADO, PERCENTUAL_EXEC: json.PERCENTUAL_EXEC\n  };\n}\n\nfunction linhaProjeto(item, i) {\n  const emojis = [\"1\\uFE0F\\u20E3\",\"2\\uFE0F\\u20E3\",\"3\\uFE0F\\u20E3\",\"4\\uFE0F\\u20E3\",\"5\\uFE0F\\u20E3\",\"6\\uFE0F\\u20E3\",\"7\\uFE0F\\u20E3\",\"8\\uFE0F\\u20E3\",\"9\\uFE0F\\u20E3\",\"10\\uFE0F\\u20E3\"];\n  const p = item.json;\n  const codigo = p.CODIGO_PROCESSO ? \"*\" + p.CODIGO_PROCESSO + \"* - \" : \"\";\n  const sit = p.SITUACAO ? \" - \" + p.SITUACAO : \"\";\n  const municipio = p.MUNICIPIO ? \" - \\uD83D\\uDCCD \" + p.MUNICIPIO : \"\";\n  const exec = p.PERCENTUAL_EXEC ? \" (\" + p.PERCENTUAL_EXEC + \"%)\" : \"\";\n  return (emojis[i] || \"*\" + (i + 1) + \".*\") + \" \" + codigo + p.NOME + municipio + sit + exec;\n}\n\nfunction descricaoProjeto(p) {\n  const val = formatarValor(parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")));\n  return (\n    \"Aqui estao as informacoes que encontrei! \\uD83D\\uDCCB\\n\\n\" +\n    \"*\" + p.NOME + \"*\\n\" +\n    \"\\uD83D\\uDCCC *Codigo:* \" + (p.CODIGO_PROCESSO || \"-\") + \"\\n\" +\n    \"\\uD83C\\uDFDB *Orgao:* \" + (p.ORGAO || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCCA *Situacao:* \" + (p.SITUACAO || \"-\") + \"\\n\" +\n    (p.SITUACAO_ATUAL ? \"\\u2705 *Detalhe:* \" + p.SITUACAO_ATUAL + \"\\n\\n\" : \"\\n\") +\n    \"\\uD83D\\uDCC5 *Inicio:* \" + (p.DATA_INICIO || \"-\") + \"\\n\" +\n    \"\\uD83D\\uDCC5 *Termino:* \" + (p.DATA_FIM || \"-\") + \"\\n\\n\" +\n    \"\\uD83D\\uDCB0 *Valor:* R$ \" + parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + \"\\n\" +\n    \"\\uD83D\\uDCCA *Execucao:* \" + (p.PERCENTUAL_EXEC || \"0\") + \"%\\n\\n\" +\n    \"*Deseja mais informacoes?*\\n\" +\n    \"1\\uFE0F\\u20E3 Ver Entregas\\n\" +\n    \"2\\uFE0F\\u20E3 Ver Valores\\n\" +\n    \"3\\uFE0F\\u20E3 Ver Contratos\\n\" +\n    \"4\\uFE0F\\u20E3 Nova Busca\"\n  );\n}\n\nfunction contarPorCampo(lista, campo) {\n  const mapa = {};\n  lista.forEach(item => {\n    const val = item.json[campo];\n    if (val) mapa[val] = (mapa[val] || 0) + 1;\n  });\n  return Object.entries(mapa).sort((a, b) => b[1] - a[1]);\n}\n\nfunction contarMunicipiosReais(lista) {\n  const mapa = {};\n  lista.forEach(item => {\n    const mun = item.json.MUNICIPIO;\n    const cnt = parseInt(item.json.TOTAL_MUNICIPIO) || 0;\n    if (mun && !(mun in mapa)) mapa[mun] = cnt;\n  });\n  return Object.entries(mapa).sort((a, b) => b[1] - a[1]);\n}\n\nfunction perguntaRefinamento(campos, total, todos) {\n  const temMunicipio = !!campos.municipio && campos.municipio !== \"QUALQUER\";\n  const temSituacao  = !!campos.situacao  && campos.situacao  !== \"QUALQUER\";\n  const temNome      = !!campos.nome      && campos.nome      !== \"QUALQUER\";\n  const temOrgao     = !!campos.orgao     && campos.orgao     !== \"QUALQUER\";\n  const temTipo      = !!campos.tipo      && campos.tipo      !== \"QUALQUER\";\n\n  const emojisNum = [\"1️⃣\",\"2️⃣\",\"3️⃣\",\"4️⃣\",\"5️⃣\",\"6️⃣\",\"7️⃣\",\"8️⃣\",\"9️⃣\"];\n  const termoBusca = campos.nome || campos.municipio || campos.orgao || campos.tipo || \"sua busca\";\n\n  if (!temMunicipio && campos.municipio !== 'QUALQUER') {\n    const topMunicipios = contarMunicipiosReais(todos).slice(0, 5);\n    if (topMunicipios.length > 1) {\n      const outros = total - topMunicipios.reduce((s, [, c]) => s + c, 0);\n      let msg = \"Encontrei *\" + total + \" projetos* relacionados a *\" + termoBusca + \"*! \\uD83D\\uDD0E\\n\\n\";\n      msg += \"Veja como estao distribuidos por municipio:\\n\";\n      staticData.contextos[remetente].municipios_opcoes = topMunicipios.map(([m]) => m);\n      staticData.contextos[remetente].municipios_todos = contarMunicipiosReais(todos);\n      topMunicipios.forEach(([mun, qtd], i) => {\n        msg += (emojisNum[i] || (i+1) + \".\") + \" \" + mun + \" \\u2014 \" + qtd + \" projeto\" + (qtd > 1 ? \"s\" : \"\") + \"\\n\";\n      });\n      if (outros > 0) msg += (emojisNum[topMunicipios.length] || (topMunicipios.length + 1) + \".\") + \" \\uD83D\\uDCCD Outros municipios \\u2014 \" + outros + \" projeto\" + (outros > 1 ? \"s\" : \"\") + \"\\n\";\n      msg += \"\\nDe qual *municipio* voce quer ver os projetos?\\n_Se nao souber, responda 'nao sei'_\";\n      return msg;\n    }\n    // 1 município — não filtra, cai no próximo campo\n  }\n\n  if (!temSituacao) {\n    // Contagem precisa: só conta como 'andamento' o que Oracle vai retornar no filtro\n    const qtdAndamento = todos.filter(function(item) {\n      return (item.json.SITUACAO || \"\").toLowerCase().includes('andamento');\n    }).length;\n    const qtdConcluido = concluidos.length;\n    const temVariedadeSituacao = qtdAndamento > 0 && qtdConcluido > 0;\n    if (temVariedadeSituacao) {\n      staticData.contextos[remetente].situacao_opcoes = ['Andamento', 'Concluido'];\n      let msg = \"Em *\" + campos.municipio + \"* encontrei *\" + total + \" projetos*\";\n      if (termoBusca !== campos.municipio) msg += \" com *\" + termoBusca + \"*\";\n      msg += \"!\\n\\n\";\n      msg += \"\\u23F3 1\\uFE0F\\u20E3 Em andamento: *\" + qtdAndamento + \"* projeto\" + (qtdAndamento > 1 ? \"s\" : \"\") + \"\\n\";\n      msg += \"\\u2705 2\\uFE0F\\u20E3 Conclu\\u00EDdos: *\" + qtdConcluido + \"* projeto\" + (qtdConcluido > 1 ? \"s\" : \"\") + \"\\n\\n\";\n      msg += \"Qual a situa\\u00E7\\u00E3o?\\n_Se nao souber, responda 'nao sei'_\";\n      return msg;\n    }\n    // Sem variedade — cai no próximo campo\n  }\n\n  if (!temNome && campos.nome !== 'QUALQUER') {\n    let msg = \"Ainda encontrei *\" + total + \" projetos*\";\n    if (temMunicipio) msg += \" em *\" + campos.municipio + \"*\";\n    if (temSituacao)  msg += \" com situacao *\" + campos.situacao + \"*\";\n    msg += \".\\n\\nVoce sabe o *nome* ou alguma *palavra-chave* do projeto?\\n\";\n    msg += \"_Se nao souber, responda 'nao sei'_\\n\\nPor exemplo: escola, ponte, hospital, rodovia...\";\n    return msg;\n  }\n\n  if (!temOrgao && campos.orgao !== 'QUALQUER') {\n    const topOrgaos = contarPorCampo(todos, 'ORGAO').slice(0, 4);\n    if (topOrgaos.length > 1) {\n      let msg = \"Ainda encontrei *\" + total + \" projetos* com o nome *\" + campos.nome + \"*.\\n\\n\";\n      msg += \"Voce sabe qual *secretaria* ou *orgao* e responsavel?\\n_Se nao souber, responda 'nao sei'_\";\n      msg += \"\\n\\nOs org\\u00E3os com mais projetos s\\u00E3o:\\n\";\n      staticData.contextos[remetente].orgaos_opcoes = topOrgaos.map(([o]) => o);\n      topOrgaos.forEach(([org, qtd], i) => { msg += (emojisNum[i] || (i+1) + \".\") + \"\\uFE0F\\u20E3 \" + org + \"\\n\"; });\n      return msg;\n    }\n    // 1 órgão ou nenhum — não filtra, cai no próximo campo\n  }\n\n  if (!temTipo && campos.tipo !== 'QUALQUER') {\n    const topTipos = contarPorCampo(todos, 'TIPO').slice(0, 4);\n    if (topTipos.length > 1) {\n      let msg = \"Ainda encontrei *\" + total + \" projetos*. Qual o *tipo* do projeto?\\n\";\n      msg += \"_Se nao souber, responda 'nao sei'_\";\n      msg += \"\\n\\nOs tipos encontrados s\\u00E3o:\\n\";\n      staticData.contextos[remetente].tipos_opcoes = topTipos.map(([t]) => t);\n      topTipos.forEach(([tipo, qtd], i) => { msg += (emojisNum[i] || (i+1) + \".\") + \"\\uFE0F\\u20E3 \" + tipo + \"\\n\"; });\n      return msg;\n    }\n    // 1 tipo — não filtra, cai no próximo campo\n  }\n\n  return (\n    \"Ainda encontrei *\" + total + \" projetos* com esses filtros.\\n\\n\" +\n    \"Voce consegue me dar mais algum detalhe?\\nPode ser o codigo do processo (ex: 32/2025) ou o ano do projeto.\"\n  );\n}\n\nif (total === 0) {\n  const ordemPrioridade = ['municipio', 'orgao', 'tipo', 'situacao', 'nome'];\n  const ultimoFiltro = ordemPrioridade.find(k => campos[k] && campos[k] !== 'QUALQUER');\n  const filtrosAtivos = Object.entries(campos).filter(([k,v]) => v && v !== 'QUALQUER').map(([k,v]) => v).join(' + ');\n  let msg = \"Nao encontrei nenhum projeto com todos esses filtros juntos: *\" + filtrosAtivos + \"*. \\uD83D\\uDD0D\\n\\n\";\n  if (ultimoFiltro) {\n    if (ultimoFiltro === \"municipio\") {\n      msg += \"Esse municipio pode nao ter projetos com esse nome. Tente *remover municipio* para ver todos os municipios, ou *0* para comecar de novo.\";\n    } else {\n      msg += \"Provavelmente o campo *\" + ultimoFiltro + \": \" + campos[ultimoFiltro] + \"* nao existe no sistema com esse nome.\\n\\nTente digitar *remover \" + ultimoFiltro + \"* para buscar sem esse filtro, ou *0* para comecar de novo.\";\n    }\n  } else {\n    msg += \"Tente uma *palavra-chave diferente* ou o *codigo do processo* (ex: 32/2025), ou digitar *0* para nova busca.\";\n  }\n  return [{ tipo: \"sem_resultado\", remetente, mensagem_retorno: comFiltros(msg) }];\n}\n\nif (total === 1) {\n  const projeto = todos[0].json;\n  if (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\n  staticData.contextos[remetente].lista = null;\n  staticData.contextos[remetente].projeto_atual = projetoParaContexto(projeto);\n  staticData.contextos[remetente].projeto_exibido = false;\n  return [{ tipo: \"projeto_unico\", remetente, descricao_projeto: comFiltros(descricaoProjeto(projeto)) }];\n}\n\nif (total >= 2 && total <= 10) {\n  const listaOrdenada = [...concluidos, ...emAndamento];\n  if (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\n  staticData.contextos[remetente].lista = listaOrdenada.map(item => projetoParaContexto(item.json));\n\n  let mensagem = \"Encontrei *\" + total + \" projetos*! Qual deles e o que voce procura?\\n\\n\";\n  if (concluidos.length > 0) {\n    mensagem += \"\\u2705 *Concluidos*\\n\";\n    concluidos.forEach((item, i) => { mensagem += linhaProjeto(item, i) + \"\\n\"; });\n    mensagem += \"\\n\";\n  }\n  if (emAndamento.length > 0) {\n    mensagem += \"\\u23F3 *Em andamento*\\n\";\n    emAndamento.forEach((item, i) => { mensagem += linhaProjeto(item, concluidos.length + i) + \"\\n\"; });\n  }\n  mensagem += \"\\nDigite o numero para ver os detalhes completos.\";\n  return [{ tipo: \"lista\", remetente, mensagem_retorno: comFiltros(mensagem) }];\n}\n\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nstaticData.contextos[remetente].lista = null;\n\nstaticData.contextos[remetente].municipios_todos = contarMunicipiosReais(todos);\n\nconst msgRefinamento = perguntaRefinamento(campos, total, todos);\nreturn [{ tipo: \"refinamento_direto\", remetente, mensagem_retorno: comFiltros(msgRefinamento) }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1088,
-        912
+        -17856,
+        2320
       ],
-      "id": "1f3d7cd1-5f57-417d-aa2d-6eccd3272533",
+      "id": "71a70fb8-2632-4e29-ba83-a3b131bc9370",
       "name": "ProcessaResultados"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "apikey",
-              "value": "7D5DDE6A591F-4D89-9FAC-785A343AD4F8"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -737,11 +748,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        1568,
-        768
+        -17376,
+        2176
       ],
-      "id": "12bcfbfb-4bc9-419a-8f56-8b80ab271191",
-      "name": "RetornaMensagem"
+      "id": "40f8967c-59db-4eaf-bee2-e13abc8802d9",
+      "name": "RetornaMensagem",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "GawefCYOjoZJQkML",
+          "name": "APIKEY"
+        }
+      }
     },
     {
       "parameters": {
@@ -750,23 +767,23 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        656,
-        640
+        -18288,
+        2048
       ],
-      "id": "afa91a92-602f-4e20-81cd-48c6e6eab5c8",
+      "id": "3e539d71-9765-4013-b885-adbb2eaf4e08",
       "name": "PreparaContratos"
     },
     {
       "parameters": {
         "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
       },
-      "id": "18e4c499-c803-4515-a35d-192f6c10add2",
+      "id": "9f9bf7c4-17e0-41bc-a574-cb0bf27dc64c",
       "name": "ConsultaProjetos1",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        1312,
-        64
+        -17632,
+        1472
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -780,13 +797,13 @@
       "parameters": {
         "query": "=SELECT \n    \"Nome\" AS NOME_ENTREGA,\n    \"% Executada\" AS PERC_EXECUTADO\nFROM VW_BI_VDBCRONOGRAMA \nWHERE \"Cód. projeto\" = {{ $json.projeto.PROJETO_ID }}\nAND \"Tipo de informação\" IN ('Entrega', 'Marco')\nORDER BY \"NUORDEM\""
       },
-      "id": "bc7e82de-fc55-4521-b31b-c47ebbfdf6a6",
+      "id": "f96c8f86-2b96-44ed-8b67-53e9dd3da181",
       "name": "ConsultaEntregas1",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        720,
-        64
+        -18224,
+        1472
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -800,13 +817,13 @@
       "parameters": {
         "query": "=SELECT DISTINCT \n    VALOR_PLANEJADO,\n    VALOR_CONTRATADO_2_3 AS VALOR_CONTRATADO,\n    VALOR_EXECUTADO_4_5 AS VALOR_EXECUTADO,\n    VALOR_PAGO,\n    PERCENTUAL_EXECUCAO_CONTRATADO AS PERC_EXEC,\n    SITUACAO_PROJETO\nFROM VW_BI_VDBEXECUCAOPROJETO\nWHERE CODIGO_PROJETO = {{ $json.projeto.PROJETO_ID }}"
       },
-      "id": "4c931c61-e48d-40a8-83ff-7d19bc3185dc",
+      "id": "ebd4c1a4-c963-4ea0-bf86-51765b5ff67c",
       "name": "ConsultaValores1",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        912,
-        64
+        -18032,
+        1472
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -820,13 +837,13 @@
       "parameters": {
         "query": "SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = {{ $json.PROJETO_ID }} AND ROWNUM <= 15"
       },
-      "id": "de3ccc25-36c9-4e59-ab2e-4dc353242451",
+      "id": "9f242f8c-f947-4b6e-abe1-dc367ed359a3",
       "name": "ConsultaContratos1",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        1104,
-        64
+        -17840,
+        1472
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -843,23 +860,22 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
-        768
+        -18672,
+        2176
       ],
-      "id": "f650fd84-8387-4655-a215-dd3624a42d9f",
+      "id": "2219c4ab-4994-47d6-80c6-aa27b9532e6f",
       "name": "FormataDetalheContrato"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "apikey",
-              "value": "7D5DDE6A591F-4D89-9FAC-785A343AD4F8"
-            }
+            {}
           ]
         },
         "sendBody": true,
@@ -880,11 +896,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        272,
-        144
+        -18672,
+        1552
       ],
-      "id": "37e7aeda-9de3-4977-99f9-7410f5faaa0b",
-      "name": "RetornoReinicio"
+      "id": "3fb5f633-6daf-4453-83bb-25885fb90818",
+      "name": "RetornoReinicio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "GawefCYOjoZJQkML",
+          "name": "APIKEY"
+        }
+      }
     },
     {
       "parameters": {
@@ -893,10 +915,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
-        912
+        -18672,
+        2320
       ],
-      "id": "caebc07b-31b3-47ad-8593-5b1584b16617",
+      "id": "7be1c790-3e26-4a4d-9c93-54a13008da72",
       "name": "PreparaConsulta"
     },
     {
@@ -906,23 +928,21 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        480,
-        288
+        -18464,
+        1696
       ],
-      "id": "dd53a490-9ef4-49f6-b47a-a74292f26310",
+      "id": "c99739ca-2deb-473b-90bc-6e37e713c230",
       "name": "PreparaEntregas"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer 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"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -938,11 +958,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        464,
-        1088
+        -18480,
+        2496
       ],
-      "id": "5f03ed93-3f42-4cd1-9a5c-56e95ea8b051",
-      "name": "RespondePerguntas"
+      "id": "d1438756-bc0e-4605-a826-36d3073bf907",
+      "name": "RespondePerguntas",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "qLoh6hso8vZChXP4",
+          "name": "Groq API"
+        }
+      }
     },
     {
       "parameters": {
@@ -951,10 +977,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        656,
-        1088
+        -18288,
+        2496
       ],
-      "id": "005836a8-c66e-4ff1-918a-f326cac73dde",
+      "id": "0c6a1f47-6b6e-4183-9cc2-c93b9994977b",
       "name": "FormataRespostaLivre"
     },
     {
@@ -964,10 +990,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        272,
-        1088
+        -18672,
+        2496
       ],
-      "id": "7139bbee-448f-41f1-b795-ae9cdd14e04f",
+      "id": "cef8383f-492e-4bac-9380-b3e059264ea9",
       "name": "PreparaPromptPergunta"
     },
     {
@@ -977,23 +1003,21 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1520,
-        1120
+        -17424,
+        2528
       ],
-      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "id": "c17c6cc3-d89c-4f21-8438-226fe15f31c9",
       "name": "PreparaPromptRefinamento"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer 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"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -1009,11 +1033,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        1720,
-        1120
+        -17216,
+        2368
       ],
-      "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
-      "name": "GroqRefinamento"
+      "id": "ba1189b8-18d7-46af-b80d-47e4c0baad44",
+      "name": "GroqRefinamento",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "qLoh6hso8vZChXP4",
+          "name": "Groq API"
+        }
+      }
     },
     {
       "parameters": {
@@ -1022,10 +1052,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1920,
-        1120
+        -17024,
+        2528
       ],
-      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "id": "115666de-17c8-4b13-b1c0-e1083596fb15",
       "name": "FormataRefinamento"
     },
     {
@@ -1056,10 +1086,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        40,
-        500
+        -18912,
+        1968
       ],
-      "id": "d4e5f6a7-b8c9-0123-def0-234567890123",
+      "id": "e4438cd5-aeae-44bb-930f-c35615ec245e",
       "name": "RoteiaClassificacao"
     },
     {
@@ -1069,23 +1099,21 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        240,
-        680
+        -18704,
+        2096
       ],
-      "id": "e5f6a7b8-c9d0-1234-efab-345678901234",
+      "id": "a6668d49-596a-4a3d-ae49-23352ee834d0",
       "name": "PreparaGroqClassificador"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer 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"
-            },
             {
               "name": "Content-Type",
               "value": "application/json"
@@ -1101,11 +1129,17 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        440,
-        680
+        -18512,
+        2096
       ],
-      "id": "f6a7b8c9-d0e1-2345-fabc-456789012345",
-      "name": "GroqClassificador"
+      "id": "305ef2a7-9958-47cb-8299-54fcfcfe703d",
+      "name": "GroqClassificador",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "qLoh6hso8vZChXP4",
+          "name": "Groq API"
+        }
+      }
     },
     {
       "parameters": {
@@ -1114,43 +1148,43 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        640,
-        680
+        -18304,
+        2096
       ],
-      "id": "a7b8c9d0-e1f2-3456-abcd-567890123456",
+      "id": "db6c19b7-ce32-49a2-89fa-8d005e72d7c0",
       "name": "AplicaClassificacao"
     },
     {
-      "id": "cd-oracle-distintos-1a2b3c4d",
+      "parameters": {
+        "query": "SELECT 'ORGAO' AS TIPO_CAMPO, ORGAO AS VALOR FROM (SELECT DISTINCT ORGAO FROM VW_IDENTIFICACAO_PROJETOS WHERE ORGAO IS NOT NULL ORDER BY ORGAO) WHERE ROWNUM <= 200 UNION ALL SELECT 'TIPO' AS TIPO_CAMPO, TIPO AS VALOR FROM (SELECT DISTINCT TIPO FROM VW_IDENTIFICACAO_PROJETOS WHERE TIPO IS NOT NULL ORDER BY TIPO) WHERE ROWNUM <= 100 UNION ALL SELECT 'MUNICIPIO' AS TIPO_CAMPO, MUNICIPIO AS VALOR FROM (SELECT DISTINCT MUNICIPIO FROM MUNICIPIO ORDER BY MUNICIPIO) WHERE ROWNUM <= 300"
+      },
+      "id": "9b5a985b-7cfa-40e1-b84a-e6171e7fc654",
       "name": "ConsultaDistintos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        80,
-        912
+        -18864,
+        2320
       ],
       "credentials": {
         "oracle11gApi": {
           "id": "WuFxnnM18FaQQCfa",
           "name": "Oracle 11g account"
         }
-      },
-      "parameters": {
-        "query": "SELECT 'ORGAO' AS TIPO_CAMPO, ORGAO AS VALOR FROM (SELECT DISTINCT ORGAO FROM VW_IDENTIFICACAO_PROJETOS WHERE ORGAO IS NOT NULL ORDER BY ORGAO) WHERE ROWNUM <= 200 UNION ALL SELECT 'TIPO' AS TIPO_CAMPO, TIPO AS VALOR FROM (SELECT DISTINCT TIPO FROM VW_IDENTIFICACAO_PROJETOS WHERE TIPO IS NOT NULL ORDER BY TIPO) WHERE ROWNUM <= 100 UNION ALL SELECT 'MUNICIPIO' AS TIPO_CAMPO, MUNICIPIO AS VALOR FROM (SELECT DISTINCT MUNICIPIO FROM MUNICIPIO ORDER BY MUNICIPIO) WHERE ROWNUM <= 300"
       }
     },
     {
-      "id": "af-code-filtros-5e6f7g8h",
+      "parameters": {
+        "jsCode": "const groqResp = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nconst contexto = staticData.contextos[remetente] || {};\nconst agora = Date.now();\n\n// Distintos em cache (armazenados pelo PreparaConsulta)\nconst distintos = staticData.filtrosDistintos || { orgaos: [], tipos: [], municipios: [] };\n\n// Quando é refinamento de seleção, não reprocessar campos via LLM\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\nlet resolvido = {};\nif (buscaOriginal !== 'refinar') {\n  try {\n    const texto = groqResp.choices[0].message.content.trim();\n    resolvido = JSON.parse(texto.replace(/```json|```/g, '').trim());\n  } catch(e) {\n    resolvido = {};\n  }\n}\n\n// Aplicar valores resolvidos ao contexto (substitui vagos por exatos)\nconst campos = { ...(contexto.campos_acumulados || {}) };\nconst campos_resolvidos = { ...(contexto.campos_resolvidos || {}) };\n\nfunction normalizar(s) {\n  return (s || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '') // remove diacríticos\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s]/g, ' ')    // remove pontos, parênteses, etc.\n    .replace(/\\s+/g, ' ')             // colapsa espaços\n    .trim();\n}\n\nfunction encontrarExato(valor, lista) {\n  if (!valor || valor === 'null' || valor === null) return null;\n  const norm = normalizar(valor);\n  if (!norm || norm.length < 2) return null;\n  // 1. Match exato normalizado\n  const exato = lista.find(v => normalizar(v) === norm);\n  if (exato) return exato;\n  // 2. Substring: termo do usuário aparece no nome do banco (\"educacao\" ⊂ \"secretaria...educacao\")\n  const contem = lista.find(v => normalizar(v).includes(norm));\n  if (contem) return contem;\n  // 3. Multi-palavra: todas as palavras do usuário (≥3 chars) presentes no nome do banco\n  const palavras = norm.split(' ').filter(p => p.length >= 3);\n  if (palavras.length >= 2) {\n    const multiWord = lista.find(v => {\n      const vn = normalizar(v);\n      return palavras.every(p => vn.includes(p));\n    });\n    if (multiWord) return multiWord;\n  }\n  // 4. Inverso: nome do banco contido no termo (fallback para siglas como \"celesc\")\n  const inverso = lista.find(v => norm.includes(normalizar(v)) && normalizar(v).length >= 4);\n  return inverso || null;\n}\n\n// ORGAO\nif (resolvido.orgao && resolvido.orgao !== null) {\n  const exato = encontrarExato(resolvido.orgao, distintos.orgaos);\n  if (exato) {\n    campos.orgao = exato;\n    campos_resolvidos.orgao = true;\n  } else if (!campos.orgao || campos.orgao === 'QUALQUER') {\n    campos.orgao = resolvido.orgao; // mantém o vago como fallback\n    campos_resolvidos.orgao = false;\n  }\n}\n\n// TIPO\nif (resolvido.tipo && resolvido.tipo !== null) {\n  const exato = encontrarExato(resolvido.tipo, distintos.tipos);\n  if (exato) {\n    campos.tipo = exato;\n    campos_resolvidos.tipo = true;\n  } else if (!campos.tipo || campos.tipo === 'QUALQUER') {\n    campos.tipo = resolvido.tipo;\n    campos_resolvidos.tipo = false;\n  }\n}\n\n// MUNICIPIO (mantém LIKE, só normaliza capitalização)\nif (resolvido.municipio && resolvido.municipio !== null) {\n  const exato = encontrarExato(resolvido.municipio, distintos.municipios);\n  if (exato) {\n    campos.municipio = exato;\n    campos_resolvidos.municipio = true;\n  } else if (!campos.municipio || campos.municipio === 'QUALQUER') {\n    campos.municipio = resolvido.municipio;\n    campos_resolvidos.municipio = false;\n  }\n}\n\n// NOME: preservar exatamente como retornado\nif (resolvido.nome && resolvido.nome !== null && !campos.nome) {\n  campos.nome = resolvido.nome;\n}\n\n// ANO: número puro, sem validação de lista\nif (resolvido.ano && resolvido.ano !== null) {\n  const anoNum = parseInt(resolvido.ano, 10);\n  if (anoNum >= 1990 && anoNum <= 2030) {\n    campos.ano = String(anoNum);\n  }\n}\n\n// Gerar filtros_label legível\nfunction abreviarOrgao(orgao) {\n  return (orgao || '')\n    .replace('Secretaria de Estado da ', 'Sec. de ')\n    .replace('Secretaria de Estado de ', 'Sec. de ')\n    .replace('Secretaria de Estado do ', 'Sec. do ')\n    .replace('Secretaria de Estado dos ', 'Sec. dos ')\n    .replace('Fundação Catarinense', 'FC')\n    .replace('Departamento Estadual de', 'DE');\n}\n\nconst partes = [];\nif (campos.municipio && campos.municipio !== 'QUALQUER') partes.push('Município: ' + campos.municipio);\nif (campos.orgao     && campos.orgao     !== 'QUALQUER') partes.push('Órgão: ' + abreviarOrgao(campos.orgao));\nif (campos.situacao  && campos.situacao  !== 'QUALQUER') partes.push('Situação: ' + campos.situacao);\nif (campos.tipo      && campos.tipo      !== 'QUALQUER') partes.push('Tipo: ' + campos.tipo);\nif (campos.nome      && campos.nome      !== 'QUALQUER') partes.push('Nome: ' + campos.nome);\nif (campos.ano) partes.push('Ano: ' + campos.ano);\n\nconst filtros_label = partes.length > 0\n  ? '\\uD83D\\uDD0D *Filtros:* ' + partes.join(' | ')\n  : '';\n\n// Atualizar contexto\ncontexto.campos_acumulados = campos;\ncontexto.campos_resolvidos = campos_resolvidos;\ncontexto.filtros_label = filtros_label;\ncontexto.ultimaInteracao = agora;\nstaticData.contextos[remetente] = contexto;\n\nreturn [{\n  remetente,\n  campos,\n  campos_resolvidos,\n  filtros_label,\n  busca_limpa: $('PreparaConsulta').first().json.busca_limpa || '',\n  campos_faltantes: []\n}];"
+      },
+      "id": "265d3003-bd8c-40e9-b251-d58d5fbbd14f",
       "name": "AplicaFiltrosResolvidos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        560,
-        912
-      ],
-      "parameters": {
-        "jsCode": "const groqResp = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nconst contexto = staticData.contextos[remetente] || {};\nconst agora = Date.now();\n\n// Distintos em cache (armazenados pelo PreparaConsulta)\nconst distintos = staticData.filtrosDistintos || { orgaos: [], tipos: [], municipios: [] };\n\n// Quando é refinamento de seleção, não reprocessar campos via LLM\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\nlet resolvido = {};\nif (buscaOriginal !== 'refinar') {\n  try {\n    const texto = groqResp.choices[0].message.content.trim();\n    resolvido = JSON.parse(texto.replace(/```json|```/g, '').trim());\n  } catch(e) {\n    resolvido = {};\n  }\n}\n\n// Aplicar valores resolvidos ao contexto (substitui vagos por exatos)\nconst campos = { ...(contexto.campos_acumulados || {}) };\nconst campos_resolvidos = { ...(contexto.campos_resolvidos || {}) };\n\nfunction normalizar(s) {\n  return (s || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '') // remove diacríticos\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s]/g, ' ')    // remove pontos, parênteses, etc.\n    .replace(/\\s+/g, ' ')             // colapsa espaços\n    .trim();\n}\n\nfunction encontrarExato(valor, lista) {\n  if (!valor || valor === 'null' || valor === null) return null;\n  const norm = normalizar(valor);\n  if (!norm || norm.length < 2) return null;\n  // 1. Match exato normalizado\n  const exato = lista.find(v => normalizar(v) === norm);\n  if (exato) return exato;\n  // 2. Substring: termo do usuário aparece no nome do banco (\"educacao\" ⊂ \"secretaria...educacao\")\n  const contem = lista.find(v => normalizar(v).includes(norm));\n  if (contem) return contem;\n  // 3. Multi-palavra: todas as palavras do usuário (≥3 chars) presentes no nome do banco\n  const palavras = norm.split(' ').filter(p => p.length >= 3);\n  if (palavras.length >= 2) {\n    const multiWord = lista.find(v => {\n      const vn = normalizar(v);\n      return palavras.every(p => vn.includes(p));\n    });\n    if (multiWord) return multiWord;\n  }\n  // 4. Inverso: nome do banco contido no termo (fallback para siglas como \"celesc\")\n  const inverso = lista.find(v => norm.includes(normalizar(v)) && normalizar(v).length >= 4);\n  return inverso || null;\n}\n\n// ORGAO\nif (resolvido.orgao && resolvido.orgao !== null) {\n  const exato = encontrarExato(resolvido.orgao, distintos.orgaos);\n  if (exato) {\n    campos.orgao = exato;\n    campos_resolvidos.orgao = true;\n  } else if (!campos.orgao || campos.orgao === 'QUALQUER') {\n    campos.orgao = resolvido.orgao; // mantém o vago como fallback\n    campos_resolvidos.orgao = false;\n  }\n}\n\n// TIPO\nif (resolvido.tipo && resolvido.tipo !== null) {\n  const exato = encontrarExato(resolvido.tipo, distintos.tipos);\n  if (exato) {\n    campos.tipo = exato;\n    campos_resolvidos.tipo = true;\n  } else if (!campos.tipo || campos.tipo === 'QUALQUER') {\n    campos.tipo = resolvido.tipo;\n    campos_resolvidos.tipo = false;\n  }\n}\n\n// MUNICIPIO (mantém LIKE, só normaliza capitalização)\nif (resolvido.municipio && resolvido.municipio !== null) {\n  const exato = encontrarExato(resolvido.municipio, distintos.municipios);\n  if (exato) {\n    campos.municipio = exato;\n    campos_resolvidos.municipio = true;\n  } else if (!campos.municipio || campos.municipio === 'QUALQUER') {\n    campos.municipio = resolvido.municipio;\n    campos_resolvidos.municipio = false;\n  }\n}\n\n// NOME: preservar exatamente como retornado\nif (resolvido.nome && resolvido.nome !== null && !campos.nome) {\n  campos.nome = resolvido.nome;\n}\n\n// ANO: número puro, sem validação de lista\nif (resolvido.ano && resolvido.ano !== null) {\n  const anoNum = parseInt(resolvido.ano, 10);\n  if (anoNum >= 1990 && anoNum <= 2030) {\n    campos.ano = String(anoNum);\n  }\n}\n\n// Gerar filtros_label legível\nfunction abreviarOrgao(orgao) {\n  return (orgao || '')\n    .replace('Secretaria de Estado da ', 'Sec. de ')\n    .replace('Secretaria de Estado de ', 'Sec. de ')\n    .replace('Secretaria de Estado do ', 'Sec. do ')\n    .replace('Secretaria de Estado dos ', 'Sec. dos ')\n    .replace('Fundação Catarinense', 'FC')\n    .replace('Departamento Estadual de', 'DE');\n}\n\nconst partes = [];\nif (campos.municipio && campos.municipio !== 'QUALQUER') partes.push('Município: ' + campos.municipio);\nif (campos.orgao     && campos.orgao     !== 'QUALQUER') partes.push('Órgão: ' + abreviarOrgao(campos.orgao));\nif (campos.situacao  && campos.situacao  !== 'QUALQUER') partes.push('Situação: ' + campos.situacao);\nif (campos.tipo      && campos.tipo      !== 'QUALQUER') partes.push('Tipo: ' + campos.tipo);\nif (campos.nome      && campos.nome      !== 'QUALQUER') partes.push('Nome: ' + campos.nome);\nif (campos.ano) partes.push('Ano: ' + campos.ano);\n\nconst filtros_label = partes.length > 0\n  ? '\\uD83D\\uDD0D *Filtros:* ' + partes.join(' | ')\n  : '';\n\n// Atualizar contexto\ncontexto.campos_acumulados = campos;\ncontexto.campos_resolvidos = campos_resolvidos;\ncontexto.filtros_label = filtros_label;\ncontexto.ultimaInteracao = agora;\nstaticData.contextos[remetente] = contexto;\n\nreturn [{\n  remetente,\n  campos,\n  campos_resolvidos,\n  filtros_label,\n  busca_limpa: $('PreparaConsulta').first().json.busca_limpa || '',\n  campos_faltantes: []\n}];"
-      }
+        -18384,
+        2320
+      ]
     }
   ],
   "connections": {
@@ -1367,39 +1401,6 @@
         ]
       ]
     },
-    "PreparaPromptRefinamento": {
-      "main": [
-        [
-          {
-            "node": "GroqRefinamento",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "GroqRefinamento": {
-      "main": [
-        [
-          {
-            "node": "FormataRefinamento",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "FormataRefinamento": {
-      "main": [
-        [
-          {
-            "node": "RetornaMensagem",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "FiltraMensagem": {
       "main": [
         [
@@ -1416,57 +1417,6 @@
         [
           {
             "node": "RoteiaClassificacao",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "RoteiaClassificacao": {
-      "main": [
-        [
-          {
-            "node": "PreparaGroqClassificador",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "RoteadorPrincipal",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PreparaGroqClassificador": {
-      "main": [
-        [
-          {
-            "node": "GroqClassificador",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "GroqClassificador": {
-      "main": [
-        [
-          {
-            "node": "AplicaClassificacao",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AplicaClassificacao": {
-      "main": [
-        [
-          {
-            "node": "RoteadorPrincipal",
             "type": "main",
             "index": 0
           }
@@ -1528,6 +1478,11 @@
         ]
       ]
     },
+    "RetornoReinicio": {
+      "main": [
+        []
+      ]
+    },
     "PreparaConsulta": {
       "main": [
         [
@@ -1577,6 +1532,90 @@
         [
           {
             "node": "RespondePerguntas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreparaPromptRefinamento": {
+      "main": [
+        [
+          {
+            "node": "GroqRefinamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GroqRefinamento": {
+      "main": [
+        [
+          {
+            "node": "FormataRefinamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FormataRefinamento": {
+      "main": [
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RoteiaClassificacao": {
+      "main": [
+        [
+          {
+            "node": "PreparaGroqClassificador",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RoteadorPrincipal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PreparaGroqClassificador": {
+      "main": [
+        [
+          {
+            "node": "GroqClassificador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GroqClassificador": {
+      "main": [
+        [
+          {
+            "node": "AplicaClassificacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AplicaClassificacao": {
+      "main": [
+        [
+          {
+            "node": "RoteadorPrincipal",
             "type": "main",
             "index": 0
           }
