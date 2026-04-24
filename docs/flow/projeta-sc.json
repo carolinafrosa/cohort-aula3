@@ -30,10 +30,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -18672,
-        1392
+        -15152,
+        4224
       ],
-      "id": "7785878f-5c0a-42d6-8e5c-c997d9b6af5b",
+      "id": "1dc9dd6f-dd50-457f-a5b4-ba65c9e10653",
       "name": "RetornoBoasVindas",
       "credentials": {
         "httpHeaderAuth": {
@@ -49,10 +49,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18672,
-        2672
+        -15152,
+        5088
       ],
-      "id": "2c83aff7-c01a-4bfd-b309-c319ca82331f",
+      "id": "9e0c80ec-19be-4b31-b7fa-9fa138e9dfc3",
       "name": "FormataProjeto"
     },
     {
@@ -78,10 +78,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -18480,
-        2320
+        -14608,
+        4912
       ],
-      "id": "7a012110-1f2f-4e12-ad8e-230fe04d6ec9",
+      "id": "08479593-ce2a-489d-a116-9cc19ba04df0",
       "name": "InterpretaConsulta",
       "credentials": {
         "httpHeaderAuth": {
@@ -97,10 +97,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18288,
-        2320
+        -14096,
+        4912
       ],
-      "id": "a6c53688-0cd1-46dc-88c4-b07b8150bfda",
+      "id": "7a0c91f4-4fb8-40e5-beb6-107bf1f4ccba",
       "name": "MontaBusca"
     },
     {
@@ -131,10 +131,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -18672,
-        1712
+        -15152,
+        4576
       ],
-      "id": "758eef9a-f40b-474a-9f5e-5aa1f537c7d1",
+      "id": "6ce19c18-86a3-4570-a95d-1d82fed0fc4a",
       "name": "RoteiaSubmenu"
     },
     {
@@ -165,23 +165,23 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -18464,
-        1888
+        -14896,
+        4592
       ],
-      "id": "d05bf5d2-8be0-4041-a189-42d8900fb3a7",
+      "id": "09715e76-b958-47b9-9c4d-86ec652a4105",
       "name": "RoteiaValores"
     },
     {
       "parameters": {
         "query": "={{ $json.sql_entregas }}"
       },
-      "id": "e3709410-4304-4c6f-babc-02200551a211",
+      "id": "0947bd04-e3da-42dd-b736-b9ba90ee774f",
       "name": "ConsultaEntregas",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -18080,
-        1696
+        -14608,
+        4400
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -195,13 +195,13 @@
       "parameters": {
         "query": "=SELECT\n    VL_PLANEJADO AS VALOR_PLANEJADO,\n    VL_CONTRATADO AS VALOR_CONTRATADO,\n    VL_EXECUTADO AS VALOR_EXECUTADO,\n    VL_PAGO AS VALOR_PAGO,\n    PC_EXECUTADO AS PERC_EXEC\nFROM FINANCEIRO\nWHERE PROJETO_ID = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}"
       },
-      "id": "889387fc-43cd-4367-b027-2b6b161de407",
+      "id": "c92a777b-26e6-4764-bbea-c58b88310847",
       "name": "ConsultaValores",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -18080,
-        1872
+        -14608,
+        4576
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -215,13 +215,13 @@
       "parameters": {
         "query": "={{ $json.sql_contratos }}"
       },
-      "id": "3ace9de8-e970-4398-b6ee-8248937d3330",
+      "id": "cfeb21b5-df37-40da-b12d-5fd112174b2c",
       "name": "ConsultaContratos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -18080,
-        2048
+        -14352,
+        4752
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -238,10 +238,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -17872,
-        1696
+        -14320,
+        4400
       ],
-      "id": "64016b74-3150-4eb0-ae7b-98f374e402d8",
+      "id": "a428a27b-aca3-4a03-98b6-cae81a31d070",
       "name": "FormataEntregas"
     },
     {
@@ -251,10 +251,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -17872,
-        1872
+        -14320,
+        4576
       ],
-      "id": "5e89a433-8105-4149-96b8-1800d250e0f8",
+      "id": "f2bb9a7f-e35a-419a-9a8f-ecd16dd2ff72",
       "name": "FormataValores"
     },
     {
@@ -264,10 +264,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -17872,
-        2048
+        -14096,
+        4752
       ],
-      "id": "a6bda0d4-7a84-4d1a-8f0f-0746a7ecaa7c",
+      "id": "18c6511e-0ed6-4688-bd01-4548b95b4cad",
       "name": "FormadaContratos"
     },
     {
@@ -480,10 +480,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -19120,
-        2288
+        -15520,
+        4656
       ],
-      "id": "9925d0cb-007d-4438-9ef0-819cce33636d",
+      "id": "435239ed-c381-4e15-aef3-0b196e59b11d",
       "name": "RoteadorPrincipal"
     },
     {
@@ -547,10 +547,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -17648,
-        2320
+        -13232,
+        4896
       ],
-      "id": "d5195945-3546-4eef-9b0e-7fda349cb9a4",
+      "id": "6493881d-9bd4-4ccd-8c84-3a7a22104266",
       "name": "RoteiaResultado"
     },
     {
@@ -602,10 +602,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        -19312,
-        1904
+        -16944,
+        4736
       ],
-      "id": "a00a9035-100d-44ee-9cdd-7874b6bfc2df",
+      "id": "0d54bd00-f466-4b80-b226-e94fd0e0c2af",
       "name": "FiltraMensagem"
     },
     {
@@ -615,10 +615,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -19104,
-        1904
+        -16736,
+        4736
       ],
-      "id": "cfd6678a-c7c4-4bf4-a735-f1cc3551f224",
+      "id": "08edd55d-bdc8-4e7c-9b3f-100e1485665f",
       "name": "ProcessaMensagem"
     },
     {
@@ -654,10 +654,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -16784,
-        2320
+        -13008,
+        4784
       ],
-      "id": "5a9a29fe-f3e0-4a1d-9651-bfe80a5cb854",
+      "id": "16866bb7-f219-4117-b6c9-2793a94ac1ed",
       "name": "RetornoProjeto",
       "credentials": {
         "httpHeaderAuth": {
@@ -672,13 +672,13 @@
         "path": "mensagem",
         "options": {}
       },
-      "id": "eae5dd8e-23f3-4f0c-acb4-66c441b3b87f",
+      "id": "3ee45f16-3415-4b6a-83b3-e152daa814df",
       "name": "Whatsapp",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -19520,
-        1904
+        -17168,
+        4736
       ],
       "webhookId": "ca260f54-431d-4cc9-bb68-c51dbc71c6bb"
     },
@@ -686,13 +686,13 @@
       "parameters": {
         "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
       },
-      "id": "2be2f978-81db-4472-976c-2ac79d7f6877",
+      "id": "d9674887-197e-4cba-8e19-149b180ab8aa",
       "name": "ConsultaProjetos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -18080,
-        2320
+        -13856,
+        4912
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -709,10 +709,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -17856,
-        2320
+        -13600,
+        4912
       ],
-      "id": "71a70fb8-2632-4e29-ba83-a3b131bc9370",
+      "id": "64810b99-f1de-489b-8a5f-ff140e29ad1c",
       "name": "ProcessaResultados"
     },
     {
@@ -748,10 +748,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -17376,
-        2176
+        -11808,
+        4624
       ],
-      "id": "40f8967c-59db-4eaf-bee2-e13abc8802d9",
+      "id": "cf91e509-6d32-4000-ba71-2c9d49c7956c",
       "name": "RetornaMensagem",
       "credentials": {
         "httpHeaderAuth": {
@@ -767,91 +767,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18288,
-        2048
+        -14608,
+        4752
       ],
-      "id": "3e539d71-9765-4013-b885-adbb2eaf4e08",
+      "id": "48fb7fbb-5db8-4c78-8784-1942daf85a79",
       "name": "PreparaContratos"
-    },
-    {
-      "parameters": {
-        "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
-      },
-      "id": "9f9bf7c4-17e0-41bc-a574-cb0bf27dc64c",
-      "name": "ConsultaProjetos1",
-      "type": "n8n-nodes-oracle11g.oracle11g",
-      "typeVersion": 1,
-      "position": [
-        -17632,
-        1472
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "oracle11gApi": {
-          "id": "WuFxnnM18FaQQCfa",
-          "name": "Oracle 11g account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "query": "=SELECT C.DESCRICAO_ATIVIDADE AS NOME_ENTREGA, C.PERCENTUAL_EXECUTADO AS PERC_EXECUTADO\nFROM CRONOGRAMA C\nWHERE C.FG_MARCO = 1 AND C.PROJETO_ID = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}\nORDER BY C.ORDEM"
-      },
-      "id": "f96c8f86-2b96-44ed-8b67-53e9dd3da181",
-      "name": "ConsultaEntregas1",
-      "type": "n8n-nodes-oracle11g.oracle11g",
-      "typeVersion": 1,
-      "position": [
-        -18224,
-        1472
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "oracle11gApi": {
-          "id": "WuFxnnM18FaQQCfa",
-          "name": "Oracle 11g account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "query": "=SELECT\n    VALOR_PLANEJADO,\n    VALOR_CONTRATADO_2_3 AS VALOR_CONTRATADO,\n    VALOR_EXECUTADO_4_5 AS VALOR_EXECUTADO,\n    VALOR_PAGO,\n    PERCENTUAL_EXECUCAO_CONTRATADO AS PERC_EXEC\nFROM VW_BI_VDBEXECUCAOPROJETO\nWHERE CODIGO_PROJETO = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}"
-      },
-      "id": "ebd4c1a4-c963-4ea0-bf86-51765b5ff67c",
-      "name": "ConsultaValores1",
-      "type": "n8n-nodes-oracle11g.oracle11g",
-      "typeVersion": 1,
-      "position": [
-        -18032,
-        1472
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "oracle11gApi": {
-          "id": "WuFxnnM18FaQQCfa",
-          "name": "Oracle 11g account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "query": "SELECT * FROM (SELECT NUMERO_CONTRATO AS NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = {{ parseInt($json.PROJETO_ID) || 0 }} ORDER BY DT_INICIO DESC) WHERE ROWNUM <= 15"
-      },
-      "id": "9f242f8c-f947-4b6e-abe1-dc367ed359a3",
-      "name": "ConsultaContratos1",
-      "type": "n8n-nodes-oracle11g.oracle11g",
-      "typeVersion": 1,
-      "position": [
-        -17840,
-        1472
-      ],
-      "alwaysOutputData": true,
-      "credentials": {
-        "oracle11gApi": {
-          "id": "WuFxnnM18FaQQCfa",
-          "name": "Oracle 11g account"
-        }
-      }
     },
     {
       "parameters": {
@@ -860,10 +780,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18672,
-        2176
+        -15152,
+        4736
       ],
-      "id": "2219c4ab-4994-47d6-80c6-aa27b9532e6f",
+      "id": "f7f755cb-167c-4caf-be83-ae395038dd8d",
       "name": "FormataDetalheContrato"
     },
     {
@@ -896,10 +816,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -18672,
-        1552
+        -15152,
+        4400
       ],
-      "id": "3fb5f633-6daf-4453-83bb-25885fb90818",
+      "id": "2521020a-6930-4943-85c6-7142d85bff88",
       "name": "RetornoReinicio",
       "credentials": {
         "httpHeaderAuth": {
@@ -915,10 +835,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18672,
-        2320
+        -14896,
+        4912
       ],
-      "id": "7be1c790-3e26-4a4d-9c93-54a13008da72",
+      "id": "69a9e76a-ee82-4687-869f-b124d9ed070d",
       "name": "PreparaConsulta"
     },
     {
@@ -928,10 +848,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18464,
-        1696
+        -14896,
+        4400
       ],
-      "id": "c99739ca-2deb-473b-90bc-6e37e713c230",
+      "id": "eaf25860-2f3b-49f7-ac97-91fa7fcda94d",
       "name": "PreparaEntregas"
     },
     {
@@ -958,10 +878,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -18480,
-        2496
+        -14896,
+        5248
       ],
-      "id": "d1438756-bc0e-4605-a826-36d3073bf907",
+      "id": "48acc85f-8eec-43b5-9d41-d9160a681e08",
       "name": "RespondePerguntas",
       "credentials": {
         "httpHeaderAuth": {
@@ -977,10 +897,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18288,
-        2496
+        -14592,
+        5248
       ],
-      "id": "0c6a1f47-6b6e-4183-9cc2-c93b9994977b",
+      "id": "1a4cdb76-6a1f-40a2-ac3a-2a2e3fbb9ca3",
       "name": "FormataRespostaLivre"
     },
     {
@@ -990,10 +910,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18672,
-        2496
+        -15152,
+        5248
       ],
-      "id": "cef8383f-492e-4bac-9380-b3e059264ea9",
+      "id": "cfdc52bc-2e32-4bad-855e-ddfdf14a7090",
       "name": "PreparaPromptPergunta"
     },
     {
@@ -1003,10 +923,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -17424,
-        2528
+        -12848,
+        4912
       ],
-      "id": "c17c6cc3-d89c-4f21-8438-226fe15f31c9",
+      "id": "b55b5d7f-e534-4504-afbc-ff4891a515e0",
       "name": "PreparaPromptRefinamento"
     },
     {
@@ -1033,10 +953,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -17216,
-        2368
+        -12544,
+        4912
       ],
-      "id": "ba1189b8-18d7-46af-b80d-47e4c0baad44",
+      "id": "41de04ee-c0ad-44da-a3e9-4badf3c367c6",
       "name": "GroqRefinamento",
       "credentials": {
         "httpHeaderAuth": {
@@ -1052,10 +972,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -17024,
-        2528
+        -12288,
+        4912
       ],
-      "id": "115666de-17c8-4b13-b1c0-e1083596fb15",
+      "id": "86f09ec3-f6a1-429e-bf86-79abb2c9ab9d",
       "name": "FormataRefinamento"
     },
     {
@@ -1086,10 +1006,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -18912,
-        1968
+        -16528,
+        4736
       ],
-      "id": "e4438cd5-aeae-44bb-930f-c35615ec245e",
+      "id": "f44937cd-5851-4ba8-8bb5-e071eb8bbbd7",
       "name": "RoteiaClassificacao"
     },
     {
@@ -1099,10 +1019,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18704,
-        2096
+        -16176,
+        4560
       ],
-      "id": "a6668d49-596a-4a3d-ae49-23352ee834d0",
+      "id": "882b8918-a646-4f6e-8e8e-1c4fc10dc8af",
       "name": "PreparaGroqClassificador"
     },
     {
@@ -1129,10 +1049,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -18512,
-        2096
+        -15968,
+        4560
       ],
-      "id": "305ef2a7-9958-47cb-8299-54fcfcfe703d",
+      "id": "0dbd6ac6-a4cf-42db-b67e-585d04b9d817",
       "name": "GroqClassificador",
       "credentials": {
         "httpHeaderAuth": {
@@ -1148,23 +1068,23 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18304,
-        2096
+        -15760,
+        4560
       ],
-      "id": "db6c19b7-ce32-49a2-89fa-8d005e72d7c0",
+      "id": "b9950369-0266-485c-b604-8e9a22545966",
       "name": "AplicaClassificacao"
     },
     {
       "parameters": {
         "query": "SELECT 'ORGAO' AS TIPO_CAMPO, ORGAO AS VALOR FROM (SELECT DISTINCT ORGAO FROM VW_IDENTIFICACAO_PROJETOS WHERE ORGAO IS NOT NULL ORDER BY ORGAO) WHERE ROWNUM <= 200 UNION ALL SELECT 'TIPO' AS TIPO_CAMPO, TIPO AS VALOR FROM (SELECT DISTINCT TIPO FROM VW_IDENTIFICACAO_PROJETOS WHERE TIPO IS NOT NULL ORDER BY TIPO) WHERE ROWNUM <= 100 UNION ALL SELECT 'MUNICIPIO' AS TIPO_CAMPO, MUNICIPIO AS VALOR FROM (SELECT DISTINCT MUNICIPIO FROM MUNICIPIO ORDER BY MUNICIPIO) WHERE ROWNUM <= 300"
       },
-      "id": "9b5a985b-7cfa-40e1-b84a-e6171e7fc654",
+      "id": "32c7b2f4-99c3-46f7-8774-428bcec18839",
       "name": "ConsultaDistintos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -18864,
-        2320
+        -15152,
+        4912
       ],
       "credentials": {
         "oracle11gApi": {
@@ -1177,27 +1097,27 @@
       "parameters": {
         "jsCode": "const groqResp = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nconst contexto = staticData.contextos[remetente] || {};\nconst agora = Date.now();\n\n// Distintos em cache (armazenados pelo PreparaConsulta)\nconst distintos = staticData.filtrosDistintos || { orgaos: [], tipos: [], municipios: [] };\n\n// Quando é refinamento de seleção, não reprocessar campos via LLM\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\nlet resolvido = {};\nif (buscaOriginal !== 'refinar') {\n  try {\n    const texto = groqResp.choices[0].message.content.trim();\n    resolvido = JSON.parse(texto.replace(/```json|```/g, '').trim());\n  } catch(e) {\n    resolvido = {};\n  }\n}\n\n// Aplicar valores resolvidos ao contexto (substitui vagos por exatos)\nconst campos = { ...(contexto.campos_acumulados || {}) };\nconst campos_resolvidos = { ...(contexto.campos_resolvidos || {}) };\n\nfunction normalizar(s) {\n  return (s || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '') // remove diacríticos\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s]/g, ' ')    // remove pontos, parênteses, etc.\n    .replace(/\\s+/g, ' ')             // colapsa espaços\n    .trim();\n}\n\nfunction encontrarExato(valor, lista) {\n  if (!valor || valor === 'null' || valor === null) return null;\n  const norm = normalizar(valor);\n  if (!norm || norm.length < 2) return null;\n  // 1. Match exato normalizado\n  const exato = lista.find(v => normalizar(v) === norm);\n  if (exato) return exato;\n  // 2. Substring: termo do usuário aparece no nome do banco (\"educacao\" ⊂ \"secretaria...educacao\")\n  const contem = lista.find(v => normalizar(v).includes(norm));\n  if (contem) return contem;\n  // 3. Multi-palavra: todas as palavras do usuário (≥3 chars) presentes no nome do banco\n  const palavras = norm.split(' ').filter(p => p.length >= 3);\n  if (palavras.length >= 2) {\n    const multiWord = lista.find(v => {\n      const vn = normalizar(v);\n      return palavras.every(p => vn.includes(p));\n    });\n    if (multiWord) return multiWord;\n  }\n  // 4. Inverso: nome do banco contido no termo (fallback para siglas como \"celesc\")\n  const inverso = lista.find(v => norm.includes(normalizar(v)) && normalizar(v).length >= 4);\n  return inverso || null;\n}\n\n// ORGAO\nif (resolvido.orgao && resolvido.orgao !== null) {\n  const exato = encontrarExato(resolvido.orgao, distintos.orgaos);\n  if (exato) {\n    campos.orgao = exato;\n    campos_resolvidos.orgao = true;\n  } else if (!campos.orgao || campos.orgao === 'QUALQUER') {\n    campos.orgao = resolvido.orgao; // mantém o vago como fallback\n    campos_resolvidos.orgao = false;\n  }\n}\n\n// TIPO\nif (resolvido.tipo && resolvido.tipo !== null) {\n  const exato = encontrarExato(resolvido.tipo, distintos.tipos);\n  if (exato) {\n    campos.tipo = exato;\n    campos_resolvidos.tipo = true;\n  } else if (!campos.tipo || campos.tipo === 'QUALQUER') {\n    // Tipo vago: descartar se nome cobre a mesma raiz (evita AND over-constrained)\n    const tipoRaiz = normalizar(resolvido.tipo).split(' ')[0].substring(0, 4);\n    const nomeRaiz = normalizar(resolvido.nome || campos.nome || '').split(' ')[0].substring(0, 4);\n    const tipoCobertoPorNome = tipoRaiz.length >= 3 && nomeRaiz.length >= 3 &&\n      (tipoRaiz.startsWith(nomeRaiz) || nomeRaiz.startsWith(tipoRaiz));\n    if (!tipoCobertoPorNome) {\n      campos.tipo = resolvido.tipo;\n      campos_resolvidos.tipo = false;\n    }\n  }\n}\n\n// MUNICIPIO (mantém LIKE, só normaliza capitalização)\nif (resolvido.municipio && resolvido.municipio !== null) {\n  const exato = encontrarExato(resolvido.municipio, distintos.municipios);\n  if (exato) {\n    campos.municipio = exato;\n    campos_resolvidos.municipio = true;\n  } else if (!campos.municipio || campos.municipio === 'QUALQUER') {\n    campos.municipio = resolvido.municipio;\n    campos_resolvidos.municipio = false;\n  }\n}\n\n// NOME: preservar exatamente como retornado\nif (resolvido.nome && resolvido.nome !== null && !campos.nome) {\n  campos.nome = resolvido.nome;\n}\n\n// ANO: número puro, sem validação de lista\nif (resolvido.ano && resolvido.ano !== null) {\n  const anoNum = parseInt(resolvido.ano, 10);\n  if (anoNum >= 1990 && anoNum <= 2030) {\n    campos.ano = String(anoNum);\n  }\n}\n\n// Gerar filtros_label legível\nfunction abreviarOrgao(orgao) {\n  return (orgao || '')\n    .replace('Secretaria de Estado da ', 'Sec. de ')\n    .replace('Secretaria de Estado de ', 'Sec. de ')\n    .replace('Secretaria de Estado do ', 'Sec. do ')\n    .replace('Secretaria de Estado dos ', 'Sec. dos ')\n    .replace('Fundação Catarinense', 'FC')\n    .replace('Departamento Estadual de', 'DE');\n}\n\nconst partes = [];\nif (campos.municipio && campos.municipio !== 'QUALQUER') partes.push('Município: ' + campos.municipio);\nif (campos.orgao     && campos.orgao     !== 'QUALQUER') partes.push('Órgão: ' + abreviarOrgao(campos.orgao));\nif (campos.situacao  && campos.situacao  !== 'QUALQUER') partes.push('Situação: ' + campos.situacao);\nif (campos.tipo      && campos.tipo      !== 'QUALQUER') partes.push('Tipo: ' + campos.tipo);\nif (campos.nome      && campos.nome      !== 'QUALQUER') partes.push('Nome: ' + campos.nome);\nif (campos.ano) partes.push('Ano: ' + campos.ano);\n\nconst filtros_label = partes.length > 0\n  ? '\\uD83D\\uDD0D *Filtros:* ' + partes.join(' | ')\n  : '';\n\n// Atualizar contexto\ncontexto.campos_acumulados = campos;\ncontexto.campos_resolvidos = campos_resolvidos;\ncontexto.filtros_label = filtros_label;\ncontexto.ultimaInteracao = agora;\nstaticData.contextos[remetente] = contexto;\n\nreturn [{\n  remetente,\n  campos,\n  campos_resolvidos,\n  filtros_label,\n  busca_limpa: $('PreparaConsulta').first().json.busca_limpa || '',\n  campos_faltantes: []\n}];"
       },
-      "id": "265d3003-bd8c-40e9-b251-d58d5fbbd14f",
+      "id": "29da2159-6ec3-4355-b288-90bc2f530d94",
       "name": "AplicaFiltrosResolvidos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -18384,
-        2320
+        -14336,
+        4912
       ]
     },
     {
-      "id": "0d7e3609-f016-42ee-b8d3-cf2b911957dc",
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst remetente = input.remetente;\nconst mensagemRetorno = input.mensagem_retorno;\n\nconst pergunta = $('AplicaClassificacao').first().json.pergunta || '';\n\nlet respostaLLM = mensagemRetorno;\ntry {\n  respostaLLM = $('RespondePerguntas').first().json.choices[0].message.content.trim();\n} catch(e) {}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nconst contexto = staticData.contextos[remetente];\nif (!contexto.historico_qa) contexto.historico_qa = [];\n\ncontexto.historico_qa.push({ role: 'user', content: pergunta });\ncontexto.historico_qa.push({ role: 'assistant', content: respostaLLM });\n\nif (contexto.historico_qa.length > 8) {\n  contexto.historico_qa = contexto.historico_qa.slice(-8);\n}\nstaticData.contextos[remetente] = contexto;\n\nreturn [{ remetente, mensagem_retorno: mensagemRetorno }];"
+      },
+      "id": "a2932d91-e711-4124-ae4b-085e37ac9574",
       "name": "SalvaHistoricoQA",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -17900,
-        2496
-      ],
-      "parameters": {
-        "jsCode": "const input = $input.item.json;\nconst remetente = input.remetente;\nconst mensagemRetorno = input.mensagem_retorno;\n\nconst pergunta = $('AplicaClassificacao').first().json.pergunta || '';\n\nlet respostaLLM = mensagemRetorno;\ntry {\n  respostaLLM = $('RespondePerguntas').first().json.choices[0].message.content.trim();\n} catch(e) {}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nconst contexto = staticData.contextos[remetente];\nif (!contexto.historico_qa) contexto.historico_qa = [];\n\ncontexto.historico_qa.push({ role: 'user', content: pergunta });\ncontexto.historico_qa.push({ role: 'assistant', content: respostaLLM });\n\nif (contexto.historico_qa.length > 8) {\n  contexto.historico_qa = contexto.historico_qa.slice(-8);\n}\nstaticData.contextos[remetente] = contexto;\n\nreturn [{ remetente, mensagem_retorno: mensagemRetorno }];"
-      }
+        -14352,
+        5248
+      ]
     }
   ],
   "connections": {
@@ -1489,11 +1409,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "RetornoReinicio": {
-      "main": [
-        []
       ]
     },
     "PreparaConsulta": {
