@@ -11,7 +11,7 @@ The AIOX meta-framework (`.aiox-core/`) provides multi-agent orchestration, task
 ## Project Artifact
 
 ```
-docs/flow/projeta-sc.json   # n8n flow — the entire chatbot logic (40 nodes)
+docs/flow/projeta-sc.json   # n8n flow — the entire chatbot logic (39 nodes)
 ```
 
 ### Editing the n8n Flow
@@ -52,7 +52,7 @@ Always test the full happy path (search project → view values → view contrac
 
 ### Flow Architecture (Key Node Groups)
 
-The 40-node flow is organized in these functional groups:
+The 39-node flow is organized in these functional groups:
 
 | Group | Nodes | Purpose |
 |-------|-------|---------|
@@ -94,7 +94,7 @@ npm run sync:skills:codex:global   # Sync agent skills globally (optional)
 
 **First-time setup:** run `node bin/aiox.js doctor` to verify the environment before starting work.
 
-Agent persona definitions live at `.aiox-core/development/agents/` (e.g. `dev.md`, `qa.md`, `architect.md`).
+Agent persona definitions live at `.aiox-core/development/agents/` (e.g. `dev.md`, `qa.md`, `architect.md`). For **Codex CLI** users, agent shortcuts and skill mappings are defined in `AGENTS.md` at the repo root.
 
 ## Architecture
 
@@ -121,7 +121,7 @@ All work requires a story in `docs/stories/`. Create the directory if it doesn't
 
 Stories are named `{epicNum}.{storyNum}.story.md`, track progress via `[ ]` → `[x]` checkboxes, and maintain a File List section. Story status transitions: `Draft → Ready → InProgress → InReview → Done`.
 
-**Active Epic:** Epic 1 — "Qualidade e UX do Chatbot" (22 stories, all in `docs/stories/1.*.story.md`). Stories 1.1–1.5 are `InReview`; all others are `Ready`. Story 1.6 (credential migration via `$env` expressions) was unblocked 2026-04-23. Pick any `Ready` story to start.
+**Active Epic:** Epic 1 — "Qualidade e UX do Chatbot" (22 stories, all in `docs/stories/1.*.story.md`). Stories 1.1–1.5 are `InReview`; 1.6–1.22 are `Ready`. Pick any `Ready` story to start.
 
 ## Environment Notes (WSL2)
 

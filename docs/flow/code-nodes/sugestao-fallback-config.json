@@ -1,0 +1,35 @@
+{
+  "_comentario": "Configuração do nó HTTP Request 'SugestaoFallback' para n8n",
+  "_posicionamento": "RoteiaResultado (output sem_resultado) → [SugestaoFallback] → FormataFallback",
+  "_instrucao": "Criar nó HTTP Request com os parâmetros abaixo. Usar credencial GROQ_API_KEY (mesma do GroqClassificador).",
+
+  "name": "SugestaoFallback",
+  "type": "n8n-nodes-base.httpRequest",
+  "method": "POST",
+  "url": "https://api.groq.com/openai/v1/chat/completions",
+  "authentication": "genericCredentialType",
+  "genericAuthType": "httpHeaderAuth",
+  "credential_name": "GROQ_API_KEY",
+
+  "headerParameters": [
+    { "name": "Content-Type", "value": "application/json" }
+  ],
+
+  "jsonBody": {
+    "model": "llama-3.1-8b-instant",
+    "temperature": 0.3,
+    "max_tokens": 150,
+    "messages": [
+      {
+        "role": "system",
+        "content": "Você é um assistente que sugere reformulações de busca para o portal de projetos do governo de SC. Dado um termo de busca sem resultado, retorne SOMENTE um JSON array com 2 ou 3 termos alternativos em português. Exemplo: [\"pavimentação\", \"recuperação de via\", \"rodovia\"]. Sem explicações, apenas o array JSON."
+      },
+      {
+        "role": "user",
+        "content": "={{ $json.busca_original || $('ProcessaMensagem').first().json.busca_limpa }}"
+      }
+    ]
+  },
+
+  "_nota_passagem_dados": "O nó anterior (no ProcessaResultados ou em um nó intermediário) deve incluir os campos: remetente e busca_original. Adicionar ao return de ProcessaResultados quando tipo === 'sem_resultado': { ..., busca_original: $('ProcessaMensagem').first().json.busca_limpa }"
+}
