@@ -2,48 +2,6 @@
   "nodes": [
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {}
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "number",
-              "value": "={{ $json.remetente }}"
-            },
-            {
-              "name": "text",
-              "value": "Olá! Sou o Projeta SC 🏛️, o assistente de projetos do Governo de Santa Catarina.\n\nPosso te ajudar a consultar obras, investimentos e contratos do estado. É só me dizer o que você quer saber, por exemplo:\n\n📍 *escolas em Joinville*\n🏗️ *Ponte Hercílio Luz*\n🏥 *Hospital Regional de Lages*\n🔢 *32/2025*\n\nO que você quer consultar?"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        -5264,
-        32048
-      ],
-      "id": "165a430f-025f-4401-b8b1-dca57033ed95",
-      "name": "RetornoBoasVindas",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "const input = $input.item.json;\nconst p = input.projeto;\nconst remetente = input.remetente;\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nif (staticData.contextos[remetente]) {\n  staticData.contextos[remetente].projeto_atual = p;\n  staticData.contextos[remetente].projeto_exibido = false;\n}\n\nconst percExec = parseFloat(String(p.PERCENTUAL_EXEC || \"0\").replace(\",\", \".\"));\nlet linhaExec = \"📊 *Execução:* \" + (p.PERCENTUAL_EXEC || \"0\") + \"%\";\nif (!isNaN(percExec)) {\n  if (percExec >= 80) linhaExec += \" — execução avançada ✅\";\n  else if (percExec <= 10 && !(p.SITUACAO || \"\").toLowerCase().includes('conclu')) linhaExec += \" — projeto em fase inicial\";\n}\n\nreturn [{\n  tipo: \"projeto_selecionado\",\n  remetente,\n  descricao_projeto:\n    \"Encontrei o projeto! Aqui estão os detalhes 📋\\n\\n\" +\n    \"📄 *\" + p.CODIGO_PROCESSO + \" - \" + p.NOME + \"*\\n\\n\" +\n    \"🟡 *Situação:* \" + (p.SITUACAO || \"-\") + \"\\n\" +\n    \"🏛 *Órgão:* \" + (p.ORGAO || \"-\") + \"\\n\" +\n    (p.PLANO_GOVERNO === \"Sim\" ? \"🏛 *Plano de Governo:* Sim ✅\\n\" : \"\") +\n    (p.PRIORIDADE ? \"⭐ *Prioridade:* \" + p.PRIORIDADE + \"\\n\" : \"\") +\n    \"\\n\" +\n    \"📅 *Início:* \" + (p.DATA_INICIO || \"-\") + \"\\n\" +\n    \"📅 *Término:* \" + (p.DATA_FIM || \"-\") + \"\\n\\n\" +\n    \"💰 *Valor:* R$ \" + parseFloat(String(p.VALORPLANEJADO || \"0\").replace(\",\", \".\")).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + \"\\n\" +\n    linhaExec +\n    (p.SITUACAO_ATUAL ? \"\\n\\n✅ *Detalhe da Situação:*\\n\" + p.SITUACAO_ATUAL : \"\") +\n    \"\\n\\n*Deseja mais informações?*\\n\" +\n    \"1️⃣ Ver Entregas\\n\" +\n    \"2️⃣ Ver Valores\\n\" +\n    \"3️⃣ Ver Contratos\\n\" +\n    \"4️⃣ Nova Busca\"\n}];"
       },
       "type": "n8n-nodes-base.code",
@@ -623,51 +581,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "number",
-              "value": "={{ $json.remetente }}"
-            },
-            {
-              "name": "text",
-              "value": "={{ $json.descricao_projeto }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        -3488,
-        32880
-      ],
-      "id": "237ccef0-3eb4-48e1-b033-8751ece5fc5d",
-      "name": "RetornoProjeto",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
-    },
-    {
-      "parameters": {
         "httpMethod": "POST",
         "path": "mensagem",
         "options": {}
@@ -717,51 +630,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "number",
-              "value": "={{ $json.remetente }}"
-            },
-            {
-              "name": "text",
-              "value": "={{ $json.mensagem_retorno || $json.descricao_projeto || \"\" }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        -2976,
-        32528
-      ],
-      "id": "9e347770-19e3-46d9-80be-f44597af1d8e",
-      "name": "RetornaMensagem",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "const input = $input.item.json;\nconst id = parseInt(input.projeto.PROJETO_ID, 10);\nif (isNaN(id) || id <= 0) throw new Error('PROJETO_ID inválido: ' + input.projeto.PROJETO_ID);\n\nconst sql = \"SELECT * FROM (SELECT NUMERO, OBJETO, SITUACAO, TOTAL_CONTRATADO, VL_EXECUTADO, VL_PAGO, PC_EXECUTADO, DT_INICIO, DT_FIM, CONTRATADA, TIPO_CONTRATO FROM VW_CONTRATO WHERE PROJETO_ID = \" + id + \" ORDER BY DT_INICIO DESC) WHERE ROWNUM <= 15\";\n\nreturn [{\n  remetente: input.remetente,\n  projeto: input.projeto,\n  sql_contratos: sql\n}];"
       },
       "type": "n8n-nodes-base.code",
@@ -785,48 +653,6 @@
       ],
       "id": "c831f7eb-f2cd-4a6e-97e5-4cea2924d8f7",
       "name": "FormataDetalheContrato"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {}
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "number",
-              "value": "={{ $json.remetente }}"
-            },
-            {
-              "name": "text",
-              "value": "={{ $json.mensagem_retorno }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        -5264,
-        32208
-      ],
-      "id": "24a29e34-f17b-4597-bce3-c88115f66152",
-      "name": "RetornoReinicio",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
     },
     {
       "parameters": {
@@ -1135,7 +961,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst creds = await $credentials.get('httpHeaderAuth');\nconst KEY   = creds.value;\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
         "mode": "runOnceForAllItems"
       },
       "type": "n8n-nodes-base.code",
@@ -1155,7 +981,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst creds = await $credentials.get('httpHeaderAuth');\nconst KEY   = creds.value;\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.mensagem_retorno || item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.mensagem_retorno || item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
         "mode": "runOnceForAllItems"
       },
       "type": "n8n-nodes-base.code",
@@ -1175,7 +1001,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst creds = await $credentials.get('httpHeaderAuth');\nconst KEY   = creds.value;\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  const txt = item.json.mensagem_retorno || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  const txt = item.json.mensagem_retorno || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
         "mode": "runOnceForAllItems"
       },
       "type": "n8n-nodes-base.code",
@@ -1195,7 +1021,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst creds = await $credentials.get('httpHeaderAuth');\nconst KEY   = creds.value;\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nconst P1 = 'Olá! Sou o Projeta SC 🏛️, o assistente de projetos do Governo de Santa Catarina.\\n\\nPosso te ajudar a consultar obras, investimentos e contratos do estado.';\nconst P2 = 'É só me dizer o que você quer saber, por exemplo:\\n\\n📍 *escolas em Joinville*\\n🏗️ *Ponte Hercílio Luz*\\n🏥 *Hospital Regional de Lages*\\n🔢 *32/2025*\\n\\nO que você quer consultar?';\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  if (!num) continue;\n  for (const p of [P1, P2]) {\n    await presence(num); await sleep(D_TYPE); await send(num, p); await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nconst P1 = 'Olá! Sou o Projeta SC 🏛️, o assistente de projetos do Governo de Santa Catarina.\\n\\nPosso te ajudar a consultar obras, investimentos e contratos do estado.';\nconst P2 = 'É só me dizer o que você quer saber, por exemplo:\\n\\n📍 *escolas em Joinville*\\n🏗️ *Ponte Hercílio Luz*\\n🏥 *Hospital Regional de Lages*\\n🔢 *32/2025*\\n\\nO que você quer consultar?';\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  if (!num) continue;\n  for (const p of [P1, P2]) {\n    await presence(num); await sleep(D_TYPE); await send(num, p); await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
         "mode": "runOnceForAllItems"
       },
       "type": "n8n-nodes-base.code",
@@ -1297,7 +1123,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// Story 1.28 — VerificaConfianca\nconst THRESHOLD = 0.70;\nconst BASE = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST = 'Projeta_SC';\nconst LABELS = {\n  busca:'Buscar um projeto', saudacao:'Saudação / início',\n  reinicio:'Começar nova busca', submenu_entregas:'Ver entregas do projeto',\n  submenu_valores:'Ver valores do projeto', submenu_contratos:'Ver contratos do projeto',\n  pergunta_livre:'Fazer uma pergunta sobre o projeto', pular_campo:'Pular / qualquer opção',\n};\nfunction label(t) { return LABELS[t] || t; }\n\nconst creds = await $credentials.get('httpHeaderAuth');\nconst KEY   = creds.value;\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const conf  = typeof item.json.confidence === 'number' ? item.json.confidence : 1.0;\n  const alts  = Array.isArray(item.json.alternatives) ? item.json.alternatives : [];\n  const num   = item.json.remetente;\n  const tipo  = item.json.tipo;\n\n  if (conf >= THRESHOLD || alts.length === 0) { resultado.push(item); continue; }\n\n  const op1 = tipo, op2 = alts[0];\n  if (!staticData.contextos[num]) staticData.contextos[num] = {};\n  staticData.contextos[num].aguardando_confirmacao = {\n    opcao1: op1, opcao2: op2,\n    busca_original: item.json.busca_limpa || '',\n    campos_opcao1: item.json.campos_acumulados || {},\n    expira_em: Date.now() + 3 * 60 * 1000,\n  };\n\n  const msg = `Hm, não tenho certeza do que você quer. 🤔\\n\\n1️⃣ ${label(op1)}\\n2️⃣ ${label(op2)}\\n\\nQual é a sua intenção?`;\n  try {\n    await $http.request({ method:'POST',\n      url:`${BASE}/message/sendText/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num, text:msg} });\n  } catch(e) {\n    console.log('VerificaConfianca sendText err:', e.message);\n    resultado.push(item); continue;\n  }\n\n  resultado.push({ json:{ tipo:'aguardando_confirmacao', remetente:num, mensagem_retorno:'' } });\n}\nreturn resultado;\n",
+        "jsCode": "\n// Story 1.28 — VerificaConfianca\nconst THRESHOLD = 0.70;\nconst BASE = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST = 'Projeta_SC';\nconst LABELS = {\n  busca:'Buscar um projeto', saudacao:'Saudação / início',\n  reinicio:'Começar nova busca', submenu_entregas:'Ver entregas do projeto',\n  submenu_valores:'Ver valores do projeto', submenu_contratos:'Ver contratos do projeto',\n  pergunta_livre:'Fazer uma pergunta sobre o projeto', pular_campo:'Pular / qualquer opção',\n};\nfunction label(t) { return LABELS[t] || t; }\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const conf  = typeof item.json.confidence === 'number' ? item.json.confidence : 1.0;\n  const alts  = Array.isArray(item.json.alternatives) ? item.json.alternatives : [];\n  const num   = item.json.remetente;\n  const tipo  = item.json.tipo;\n\n  if (conf >= THRESHOLD || alts.length === 0) { resultado.push(item); continue; }\n\n  const op1 = tipo, op2 = alts[0];\n  if (!staticData.contextos[num]) staticData.contextos[num] = {};\n  staticData.contextos[num].aguardando_confirmacao = {\n    opcao1: op1, opcao2: op2,\n    busca_original: item.json.busca_limpa || '',\n    campos_opcao1: item.json.campos_acumulados || {},\n    expira_em: Date.now() + 3 * 60 * 1000,\n  };\n\n  const msg = `Hm, não tenho certeza do que você quer. 🤔\\n\\n1️⃣ ${label(op1)}\\n2️⃣ ${label(op2)}\\n\\nQual é a sua intenção?`;\n  try {\n    await $http.request({ method:'POST',\n      url:`${BASE}/message/sendText/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num, text:msg} });\n  } catch(e) {\n    console.log('VerificaConfianca sendText err:', e.message);\n    resultado.push(item); continue;\n  }\n\n  resultado.push({ json:{ tipo:'aguardando_confirmacao', remetente:num, mensagem_retorno:'' } });\n}\nreturn resultado;\n",
         "mode": "runOnceForAllItems"
       },
       "type": "n8n-nodes-base.code",
