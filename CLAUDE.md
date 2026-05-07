@@ -34,7 +34,21 @@ No build step needed. The file is valid n8n flow JSON — nodes, connections, an
 - `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `DEEPSEEK_API_KEY` / `OPENROUTER_API_KEY` — LLM providers
 - `EXA_API_KEY` — web search for agents
 
-> ⚠️ **Hardcoded credentials in the flow JSON:** The Groq API key (used by `GroqClassificador`, `GroqRefinamento`, `InterpretaConsulta`) and the Evolution API key (used by all WhatsApp response nodes) are currently embedded directly in `projeta-sc.json` as HTTP header values. They are **not** controlled by `.env`. Migration to n8n native credentials is tracked in Story 1.6 (currently Blocked — n8n free plan doesn't support the required credential binding). When inspecting the exported JSON for leaked secrets, search for `gsk_` (Groq) and `apikey` header values (Evolution API).
+> ⚠️ **Hardcoded credentials in the flow JSON:** The Groq API key (used by `GroqClassificador`, `GroqRefinamento`, `InterpretaConsulta`) and the Evolution API key (used by all WhatsApp response nodes) are currently embedded directly in `projeta-sc.json` as HTTP header values. They are **not** controlled by `.env`. Migration to `$env` expressions is tracked in Story 1.6 (status: Ready — approach uses `={{ $env.GROQ_API_KEY }}` and `={{ $env.EVOLUTION_API_KEY }}` directly in HTTP Request headers, no paid n8n plan required). When inspecting the exported JSON for leaked secrets, search for `gsk_` (Groq) and `apikey` header values (Evolution API).
+>
+> `GROQ_API_KEY` and `EVOLUTION_API_KEY` appear in `.env.example` for documentation purposes only — the live flow ignores them entirely.
+
+### Testing the Flow
+
+There is **no automated test suite**. All validation is manual:
+
+| Method | When to use |
+|--------|------------|
+| n8n test webhook | Send a POST to the test URL shown in n8n UI while the flow is in test mode |
+| Real WhatsApp conversation | End-to-end validation via the `Projeta_SC` Evolution API instance |
+| n8n execution log | Debug individual node outputs after a run |
+
+Always test the full happy path (search project → view values → view contracts) after any node change before exporting.
 
 ### Flow Architecture (Key Node Groups)
 
@@ -51,11 +65,15 @@ The 40-node flow is organized in these functional groups:
 | **Response** | `RetornoBoasVindas`, `RetornoProjeto`, `RetornaMensagem`, `RetornoReinicio`, `RespondePerguntas` | Send messages back via WhatsApp API |
 | **Q&A** | `PreparaPromptPergunta`, `PreparaPromptRefinamento`, `GroqRefinamento`, `FormataRespostaLivre` | Free-text answers via LLM |
 
+**Session state** is managed entirely inside `ProcessaMensagem` (Code node, ~300 lines). It reads `$json.body.data.message.conversation` and a context object stored in memory to decide which branch to activate. When debugging unexpected routing, inspect this node first.
+
 **External dependencies:**
 - **Oracle 11g** — SC government project database (read-only queries)
 - **Groq API** — intent classification (`GroqClassificador`) and free-text answers (`GroqRefinamento`)
 - **Gemini 1.5 Pro** — natural language → structured query (`InterpretaConsulta`), accessed via OpenAI-compatible endpoint
 - **Evolution API** (`n8n-evolution-api.lkpafu.easypanel.host`) — WhatsApp gateway; all outbound messages go through this service using the `Projeta_SC` instance
+
+**Deployment:** For VM installation (Ubuntu 22.04 + Node.js 20 + Oracle Instant Client 19c + PM2), see `docs/deploy/implantacao-vm.md`.
 
 ## AIOX Framework Commands
 
@@ -91,7 +109,7 @@ Agent persona definitions live at `.aiox-core/development/agents/` (e.g. `dev.md
 
 ### Agent System
 
-Agents activate via `@agent-name` (e.g. `@dev`, `@qa`, `@architect`). Each has exclusive authority over specific operations. Critical constraint: **only `@devops` can run `git push` or create PRs**.
+Agents activate via `@agent-name` (e.g. `@dev`, `@qa`, `@architect`) or via slash commands `/AIOX:agents:dev` (backed by `.claude/commands/AIOX/agents/`). Each has exclusive authority over specific operations. Critical constraint: **only `@devops` can run `git push` or create PRs**.
 
 ### Story-Driven Development
 
@@ -102,6 +120,8 @@ All work requires a story in `docs/stories/`. Create the directory if it doesn't
 ```
 
 Stories are named `{epicNum}.{storyNum}.story.md`, track progress via `[ ]` → `[x]` checkboxes, and maintain a File List section. Story status transitions: `Draft → Ready → InProgress → InReview → Done`.
+
+**Active Epic:** Epic 1 — "Qualidade e UX do Chatbot" (22 stories, all in `docs/stories/1.*.story.md`). Stories 1.1–1.5 are `InReview`; all others are `Ready`. Story 1.6 (credential migration via `$env` expressions) was unblocked 2026-04-23. Pick any `Ready` story to start.
 
 ## Environment Notes (WSL2)
 
