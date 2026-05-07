@@ -7,10 +7,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5200,
-        32896
+        -560,
+        36048
       ],
-      "id": "e8f49ebc-74a9-4369-985f-053cd0d87dd6",
+      "id": "3bc3e28a-5368-44a6-a593-0a2f31efca1b",
       "name": "FormataProjeto"
     },
     {
@@ -36,10 +36,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -4848,
-        32736
+        -96,
+        35888
       ],
-      "id": "ea958c75-93f8-4b7f-8570-5233f394f23b",
+      "id": "a8250eed-3583-4c31-9ac9-16f344e1580e",
       "name": "InterpretaConsulta",
       "credentials": {
         "httpHeaderAuth": {
@@ -55,10 +55,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4480,
-        32736
+        240,
+        35888
       ],
-      "id": "6d349848-7d4d-427c-9628-390265691352",
+      "id": "520aa382-1962-4f06-9204-f43680d14ba5",
       "name": "MontaBusca"
     },
     {
@@ -89,10 +89,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -5264,
-        32368
+        -720,
+        35520
       ],
-      "id": "48686d5b-063f-4123-abc6-8965b78d643d",
+      "id": "22de6fdd-16fa-4b8d-9967-3627810d3611",
       "name": "RoteiaSubmenu"
     },
     {
@@ -123,23 +123,23 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -5040,
-        32384
+        -528,
+        35536
       ],
-      "id": "5708e135-3d5c-4d4a-9eba-94ce3d0beddf",
+      "id": "9741e93b-a430-4b33-92ba-888d2b92304f",
       "name": "RoteiaValores"
     },
     {
       "parameters": {
         "query": "={{ $json.sql_entregas }}"
       },
-      "id": "da5f324c-9346-41a9-b0d4-baf62ff37c30",
+      "id": "7d73c5bb-8bbc-4e07-8e49-3fc3dec6543f",
       "name": "ConsultaEntregas",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -4848,
-        32064
+        -288,
+        35216
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -153,13 +153,13 @@
       "parameters": {
         "query": "=SELECT\n    VL_PLANEJADO AS VALOR_PLANEJADO,\n    VL_CONTRATADO AS VALOR_CONTRATADO,\n    VL_EXECUTADO AS VALOR_EXECUTADO,\n    VL_PAGO AS VALOR_PAGO,\n    PC_EXECUTADO AS PERC_EXEC\nFROM FINANCEIRO\nWHERE PROJETO_ID = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}"
       },
-      "id": "3d87d9a2-a92f-4a38-b3bd-0ae622b120ab",
+      "id": "e0b0aaca-fc66-4312-98ad-7ffa20662548",
       "name": "ConsultaValores",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -4832,
-        32240
+        -256,
+        35392
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -173,13 +173,13 @@
       "parameters": {
         "query": "={{ $json.sql_contratos }}"
       },
-      "id": "3845e9d9-17ec-43d8-b7c4-6f060b73ab47",
+      "id": "39ba105c-5a59-4dc9-a543-b009eb18e914",
       "name": "ConsultaContratos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -4640,
-        32400
+        -176,
+        35552
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -196,10 +196,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4656,
-        32064
+        -128,
+        35216
       ],
-      "id": "f8a0ba95-0ab8-4591-8c34-648c93443a53",
+      "id": "18c826ae-0d9b-416f-a4f2-f441f91aa88a",
       "name": "FormataEntregas"
     },
     {
@@ -209,10 +209,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4640,
-        32240
+        -96,
+        35392
       ],
-      "id": "36abcdef-3f67-4702-a7d5-7bbda00b4270",
+      "id": "35a9ea28-db82-4171-80a9-ae76d563b16b",
       "name": "FormataValores"
     },
     {
@@ -222,10 +222,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4448,
-        32400
+        -16,
+        35552
       ],
-      "id": "a95228ac-4cee-44bf-a33e-a87c0c45e282",
+      "id": "dcdb3e55-d2b5-4682-8367-1f521ab6d704",
       "name": "FormadaContratos"
     },
     {
@@ -438,10 +438,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -5504,
-        32464
+        -960,
+        35616
       ],
-      "id": "5c1c57ff-e9e8-43e8-bce7-f130340a8d1e",
+      "id": "bb14645e-6be9-4a81-a4a9-5fbfd988aee4",
       "name": "RoteadorPrincipal"
     },
     {
@@ -505,10 +505,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -3952,
-        32720
+        736,
+        35872
       ],
-      "id": "22deb6f4-fa15-46f8-8f76-427be96d1e10",
+      "id": "18bb7681-f349-4059-98da-f56d2469b0e1",
       "name": "RoteiaResultado"
     },
     {
@@ -560,10 +560,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        -6640,
-        32544
+        -2224,
+        35696
       ],
-      "id": "b7f6d2dd-8edb-4e65-bc27-c2ee0e0375dd",
+      "id": "6827f691-3130-4f2a-a44c-9a84daec09e6",
       "name": "FiltraMensagem"
     },
     {
@@ -573,10 +573,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -6464,
-        32544
+        -2064,
+        35696
       ],
-      "id": "7f5990fe-b3d7-4e7e-80e7-9b0669014daa",
+      "id": "b0adb84d-190b-4a99-9e34-a7f8cdaadeb0",
       "name": "ProcessaMensagem"
     },
     {
@@ -585,13 +585,13 @@
         "path": "mensagem",
         "options": {}
       },
-      "id": "e0e31f95-8268-42ff-b5ff-02ae356a6cdb",
+      "id": "e7a131c8-9ace-4a50-a436-b4409ad2f37c",
       "name": "Whatsapp",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -6816,
-        32544
+        -2384,
+        35696
       ],
       "webhookId": "ca260f54-431d-4cc9-bb68-c51dbc71c6bb"
     },
@@ -599,13 +599,13 @@
       "parameters": {
         "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
       },
-      "id": "29b793f6-4bbd-4d68-89f2-d2c581da8c25",
+      "id": "f475549c-9ab5-45b4-879f-9cf43643d317",
       "name": "ConsultaProjetos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -4320,
-        32736
+        400,
+        35888
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -622,10 +622,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4144,
-        32736
+        560,
+        35888
       ],
-      "id": "eca02ab7-3a07-46b1-ae57-1f028d75a826",
+      "id": "a3542102-e67e-4af0-ada8-67dcaa7a8073",
       "name": "ProcessaResultados"
     },
     {
@@ -635,10 +635,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4832,
-        32400
+        -352,
+        35552
       ],
-      "id": "5d30e9f0-75aa-4030-84a6-73683836f334",
+      "id": "6ca8734e-4922-4a12-95bc-41923e78c757",
       "name": "PreparaContratos"
     },
     {
@@ -648,10 +648,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5264,
-        32544
+        -624,
+        35696
       ],
-      "id": "c831f7eb-f2cd-4a6e-97e5-4cea2924d8f7",
+      "id": "674b6a0e-d6f5-4408-9dfb-b4d649ab2f38",
       "name": "FormataDetalheContrato"
     },
     {
@@ -661,10 +661,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5040,
-        32736
+        -416,
+        35888
       ],
-      "id": "d6542c8c-d5d7-4ab0-9fcd-ac52e75c6509",
+      "id": "95a015d0-9c12-431c-b009-07f0bb74d025",
       "name": "PreparaConsulta"
     },
     {
@@ -674,10 +674,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5024,
-        32064
+        -464,
+        35216
       ],
-      "id": "dd46abfe-4dd2-430f-ab76-2657da39adf9",
+      "id": "56c8af9a-3376-476f-b176-c5d596ba109f",
       "name": "PreparaEntregas"
     },
     {
@@ -704,10 +704,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -4992,
-        33056
+        -352,
+        36208
       ],
-      "id": "abe40d7f-08df-47a0-9932-f59fc7ded005",
+      "id": "f3865c74-8712-4be2-832a-ccdadc129263",
       "name": "RespondePerguntas",
       "credentials": {
         "httpHeaderAuth": {
@@ -723,10 +723,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4800,
-        33056
+        -160,
+        36208
       ],
-      "id": "61b0c554-bb3c-494b-89b5-aa2d15687f1e",
+      "id": "183d57ca-5937-45a4-bf2f-32703500b8da",
       "name": "FormataRespostaLivre"
     },
     {
@@ -736,10 +736,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5200,
-        33056
+        -560,
+        36208
       ],
-      "id": "dced51be-ff9f-489b-9100-35d19ad25251",
+      "id": "e83a5e24-31d1-4148-91da-d4cd2f0e0581",
       "name": "PreparaPromptPergunta"
     },
     {
@@ -749,10 +749,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3616,
-        32736
+        960,
+        35888
       ],
-      "id": "d98b3957-aa43-43c6-9b6e-70c66d1dc540",
+      "id": "a1957c5b-63e2-4766-b05f-fc284b86ff1c",
       "name": "PreparaPromptRefinamento"
     },
     {
@@ -779,10 +779,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -3408,
-        32736
+        1152,
+        35888
       ],
-      "id": "1545be3d-e693-47c1-88f9-56e7277588df",
+      "id": "c6781de9-5ea5-4c8d-b150-4d7752fd5cc1",
       "name": "GroqRefinamento",
       "credentials": {
         "httpHeaderAuth": {
@@ -798,10 +798,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3168,
-        32736
+        1328,
+        35888
       ],
-      "id": "8f091058-8178-45ba-a5f1-c5ef26f545f3",
+      "id": "187f8474-4a92-4dca-96a0-4fe84aa1369a",
       "name": "FormataRefinamento"
     },
     {
@@ -832,10 +832,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -6272,
-        32544
+        -1888,
+        35696
       ],
-      "id": "8dd075e4-2391-4b82-8fda-2774644eb37e",
+      "id": "4aad3aef-dd49-471f-b740-20cb2429ccf8",
       "name": "RoteiaClassificacao"
     },
     {
@@ -845,10 +845,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -6064,
-        32400
+        -1712,
+        35600
       ],
-      "id": "74161c1c-aab5-4ce1-ab1a-982104d17510",
+      "id": "56d83944-f3ec-4e92-b39e-969a751eab84",
       "name": "PreparaGroqClassificador"
     },
     {
@@ -875,10 +875,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -5872,
-        32400
+        -1520,
+        35600
       ],
-      "id": "464713cf-6506-434d-85c9-2c7f2682a197",
+      "id": "d93da377-5257-4b7c-bae6-9a3d0f611ef4",
       "name": "GroqClassificador",
       "credentials": {
         "httpHeaderAuth": {
@@ -894,23 +894,23 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5696,
-        32400
+        -1344,
+        35600
       ],
-      "id": "17901e4c-b03a-40d7-96fe-3f426ea5b8d8",
+      "id": "c2696fe1-9cce-4ff7-b726-7478dd6fc1f7",
       "name": "AplicaClassificacao"
     },
     {
       "parameters": {
         "query": "SELECT 'ORGAO' AS TIPO_CAMPO, ORGAO AS VALOR FROM (SELECT DISTINCT ORGAO FROM VW_IDENTIFICACAO_PROJETOS WHERE ORGAO IS NOT NULL ORDER BY ORGAO) WHERE ROWNUM <= 200 UNION ALL SELECT 'TIPO' AS TIPO_CAMPO, TIPO AS VALOR FROM (SELECT DISTINCT TIPO FROM VW_IDENTIFICACAO_PROJETOS WHERE TIPO IS NOT NULL ORDER BY TIPO) WHERE ROWNUM <= 100 UNION ALL SELECT 'MUNICIPIO' AS TIPO_CAMPO, MUNICIPIO AS VALOR FROM (SELECT DISTINCT MUNICIPIO FROM MUNICIPIO ORDER BY MUNICIPIO) WHERE ROWNUM <= 300 UNION ALL SELECT 'REGIAO' AS TIPO_CAMPO, REGIAO AS VALOR FROM (SELECT DISTINCT REGIAO FROM VW_PROJETO_BUSCA_AVANCADA WHERE REGIAO IS NOT NULL ORDER BY REGIAO) WHERE ROWNUM <= 50 UNION ALL SELECT 'SITUACAO' AS TIPO_CAMPO, SITUACAO AS VALOR FROM (SELECT DISTINCT SITUACAO FROM VW_IDENTIFICACAO_PROJETOS WHERE SITUACAO IS NOT NULL ORDER BY SITUACAO) WHERE ROWNUM <= 30"
       },
-      "id": "91fd6727-fdb8-4955-a67e-6a75d101bbe3",
+      "id": "8f63adad-1cb1-4d50-96f1-2a64083cf917",
       "name": "ConsultaDistintos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        -5216,
-        32736
+        -576,
+        35888
       ],
       "credentials": {
         "oracle11gApi": {
@@ -923,121 +923,92 @@
       "parameters": {
         "jsCode": "const groqResp = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nconst contexto = staticData.contextos[remetente] || {};\nconst agora = Date.now();\n\n// Distintos em cache (armazenados pelo PreparaConsulta)\nconst distintos = staticData.filtrosDistintos || { orgaos: [], tipos: [], municipios: [], regioes: [], situacoes: [] };\n\n// Quando é refinamento de seleção, não reprocessar campos via LLM\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\nlet resolvido = {};\nif (buscaOriginal !== 'refinar') {\n  try {\n    const texto = groqResp.choices[0].message.content.trim();\n    resolvido = JSON.parse(texto.replace(/```json|```/g, '').trim());\n  } catch(e) {\n    resolvido = {};\n  }\n}\n\n// Aplicar valores resolvidos ao contexto (substitui vagos por exatos)\nconst campos = { ...(contexto.campos_acumulados || {}) };\nconst campos_resolvidos = { ...(contexto.campos_resolvidos || {}) };\n\nfunction normalizar(s) {\n  return (s || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '') // remove diacríticos\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s]/g, ' ')    // remove pontos, parênteses, etc.\n    .replace(/\\s+/g, ' ')             // colapsa espaços\n    .trim();\n}\n\nfunction encontrarExato(valor, lista) {\n  if (!valor || valor === 'null' || valor === null) return null;\n  const norm = normalizar(valor);\n  if (!norm || norm.length < 2) return null;\n  // 1. Match exato normalizado\n  const exato = lista.find(v => normalizar(v) === norm);\n  if (exato) return exato;\n  // 2. Substring: termo do usuário aparece no nome do banco (\"educacao\" ⊂ \"secretaria...educacao\")\n  const contem = lista.find(v => normalizar(v).includes(norm));\n  if (contem) return contem;\n  // 3. Multi-palavra: todas as palavras do usuário (≥3 chars) presentes no nome do banco\n  const palavras = norm.split(' ').filter(p => p.length >= 3);\n  if (palavras.length >= 2) {\n    const multiWord = lista.find(v => {\n      const vn = normalizar(v);\n      return palavras.every(p => vn.includes(p));\n    });\n    if (multiWord) return multiWord;\n  }\n  // 4. Inverso: nome do banco contido no termo (fallback para siglas como \"celesc\")\n  const inverso = lista.find(v => norm.includes(normalizar(v)) && normalizar(v).length >= 4);\n  return inverso || null;\n}\n\n// ORGAO\nif (resolvido.orgao && resolvido.orgao !== null) {\n  const exato = encontrarExato(resolvido.orgao, distintos.orgaos);\n  if (exato) {\n    campos.orgao = exato;\n    campos_resolvidos.orgao = true;\n  } else if (!campos.orgao || campos.orgao === 'QUALQUER') {\n    campos.orgao = resolvido.orgao; // mantém o vago como fallback\n    campos_resolvidos.orgao = false;\n  }\n}\n\n// TIPO\nif (resolvido.tipo && resolvido.tipo !== null) {\n  // Tenta match combinado tipo+nome primeiro (ex: \"obra\"+\"rodoviaria\" → \"Obras Rodoviárias\")\n  // Preferir o match mais específico (mais longo) para evitar AND over-constrained\n  const exatoSimples = encontrarExato(resolvido.tipo, distintos.tipos);\n  const exatoCombo = resolvido.nome ? encontrarExato(resolvido.tipo + ' ' + resolvido.nome, distintos.tipos) : null;\n  const exato = (exatoCombo && (!exatoSimples || exatoCombo.length > exatoSimples.length))\n    ? exatoCombo\n    : exatoSimples;\n  if (exato) {\n    campos.tipo = exato;\n    campos_resolvidos.tipo = true;\n    // Nome foi absorvido pelo tipo composto — descartá-lo para evitar filtro duplo\n    if (exatoCombo && exato === exatoCombo) resolvido.nome = null;\n  } else if (!campos.tipo || campos.tipo === 'QUALQUER') {\n    // Tipo vago: descartar se nome cobre a mesma raiz (evita AND over-constrained)\n    const tipoRaiz = normalizar(resolvido.tipo).split(' ')[0].substring(0, 4);\n    const nomeRaiz = normalizar(resolvido.nome || campos.nome || '').split(' ')[0].substring(0, 4);\n    const tipoCobertoPorNome = tipoRaiz.length >= 3 && nomeRaiz.length >= 3 &&\n      (tipoRaiz.startsWith(nomeRaiz) || nomeRaiz.startsWith(tipoRaiz));\n    if (!tipoCobertoPorNome) {\n      campos.tipo = resolvido.tipo;\n      campos_resolvidos.tipo = false;\n    }\n  }\n}\n\n// MUNICIPIO (mantém LIKE, só normaliza capitalização)\nif (resolvido.municipio && resolvido.municipio !== null) {\n  const exato = encontrarExato(resolvido.municipio, distintos.municipios);\n  if (exato) {\n    campos.municipio = exato;\n    campos_resolvidos.municipio = true;\n  } else if (!campos.municipio || campos.municipio === 'QUALQUER') {\n    campos.municipio = resolvido.municipio;\n    campos_resolvidos.municipio = false;\n  }\n}\n\n// REGIAO\nif (resolvido.regiao && resolvido.regiao !== null) {\n  const exatoReg = encontrarExato(resolvido.regiao, distintos.regioes);\n  if (exatoReg) {\n    campos.regiao = exatoReg;\n    campos_resolvidos.regiao = true;\n  } else if (!campos.regiao || campos.regiao === 'QUALQUER') {\n    campos.regiao = resolvido.regiao;\n    campos_resolvidos.regiao = false;\n  }\n}\n\n// NOME: preservar exatamente como retornado\nif (resolvido.nome && resolvido.nome !== null && !campos.nome) {\n  campos.nome = resolvido.nome;\n}\n\n// Se tipo foi resolvido exatamente e nome é redundante (palavras do nome já estão\n// dentro do valor do tipo), descartar nome para evitar AND over-constrained.\n// Ex: tipo=\"Obras Rodoviárias\" + nome=\"rodoviaria\" → descarta nome.\nif (campos_resolvidos.tipo === true && campos.tipo && campos.nome) {\n  const tipoNorm = normalizar(campos.tipo);\n  const nomePalavras = normalizar(campos.nome).split(' ').filter(p => p.length >= 4);\n  if (nomePalavras.length > 0 && nomePalavras.every(p => tipoNorm.includes(p))) {\n    delete campos.nome;\n  }\n}\n\n// ANO: número puro, sem validação de lista\nif (resolvido.ano && resolvido.ano !== null) {\n  const anoNum = parseInt(resolvido.ano, 10);\n  if (anoNum >= 1990 && anoNum <= 2030) {\n    campos.ano = String(anoNum);\n  }\n}\n\n// CODIGO: pass-through direto (ex: \"654\" ou \"654/2024\")\nif (resolvido.codigo && resolvido.codigo !== null) {\n  campos.codigo = String(resolvido.codigo).trim();\n}\n\n// Campos de VW_PROJETO_BUSCA_AVANCADA — pass-through direto\nif (resolvido.plano_governo !== null && resolvido.plano_governo !== undefined) {\n  // Guardrail: só aceita plano_governo do LLM se o usuário mencionou explicitamente \"plano\" ou \"governo\"\n  const texPGGuard = normalizar(buscaOriginal);\n  if (texPGGuard.includes('plano') || texPGGuard.includes('governo')) {\n    const pg = String(resolvido.plano_governo).trim().toLowerCase();\n    if (pg === 'sim' || pg === 's' || pg === 'true')                          campos.plano_governo = \"Sim\";\n    else if (pg === 'não' || pg === 'nao' || pg === 'n' || pg === 'false') campos.plano_governo = \"Não\";\n  }\n}\n\n// SITUACAO — resolve exato contra lista do banco quando disponível\nif (resolvido.situacao && resolvido.situacao !== null) {\n  const exatoSit = encontrarExato(resolvido.situacao, distintos.situacoes || []);\n  if (exatoSit) {\n    campos.situacao = exatoSit;\n    campos_resolvidos.situacao = true;\n  } else if (!campos.situacao || campos.situacao === 'QUALQUER') {\n    campos.situacao = resolvido.situacao;\n    campos_resolvidos.situacao = false;\n  }\n}\n// Override determinístico: detecta negação/afirmação de plano de governo no texto original\n// Necessário porque o LLM frequentemente ignora a negação e extrai só o conceito base\nif (buscaOriginal && buscaOriginal !== 'refinar') {\n  const _texPG = buscaOriginal.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n  if (/plano\\s+de\\s+governo/.test(_texPG)) {\n    campos.plano_governo = /\\b(nao|sem|exceto|nenhum)\\b/.test(_texPG) ? 'Não' : 'Sim';\n  }\n}\nif (resolvido.prioridade && resolvido.prioridade !== null) campos.prioridade = resolvido.prioridade;\nif (resolvido.programa   && resolvido.programa   !== null && !campos.programa)   campos.programa   = resolvido.programa;\nif (resolvido.setor      && resolvido.setor      !== null && !campos.setor)      campos.setor      = resolvido.setor;\nif (resolvido.associacao && resolvido.associacao !== null && !campos.associacao) campos.associacao = resolvido.associacao;\n\n// Descarte pós-LLM: se nome é apenas palavras de introdução + município já resolvido,\n// o nome é redundante e deve ser removido para evitar filtro desnecessário.\n// Ex: nome=\"Projetos Palhoça\" + municipio=\"Palhoça\" → descarta nome.\nif (campos.nome && campos.municipio) {\n  const INTRO = ['projeto', 'projetos', 'lista', 'mostre', 'quais'];\n  let resto = normalizar(campos.nome);\n  INTRO.forEach(w => { resto = resto.replace(new RegExp('\\\\b' + w + '\\\\b', 'g'), ''); });\n  resto = resto.replace(normalizar(campos.municipio), '').replace(/\\s+/g, '').trim();\n  if (resto.length < 3) delete campos.nome;\n}\n\n// Detecção direta de palavras-chave no texto original (fallback quando LLM falha)\nconst buscaNorm = normalizar(buscaOriginal);\nif (/plano\\s+(de\\s+)?governo/.test(buscaNorm)) {\n  campos.plano_governo = /\\b(nao|sem|exceto|nenhum)\\b/.test(buscaNorm) ? 'Não' : 'Sim';\n  // Remove do nome se o LLM classificou errado\n  if (campos.nome) {\n    const nomeNorm = normalizar(campos.nome);\n    if (nomeNorm.includes(\"plano\") && nomeNorm.includes(\"governo\")) delete campos.nome;\n  }\n}\n\n// Gerar filtros_label legível\nfunction abreviarOrgao(orgao) {\n  return (orgao || '')\n    .replace('Secretaria de Estado da ', 'Sec. de ')\n    .replace('Secretaria de Estado de ', 'Sec. de ')\n    .replace('Secretaria de Estado do ', 'Sec. do ')\n    .replace('Secretaria de Estado dos ', 'Sec. dos ')\n    .replace('Fundação Catarinense', 'FC')\n    .replace('Departamento Estadual de', 'DE');\n}\n\nconst partes = [];\nif (campos.municipio && campos.municipio !== 'QUALQUER') partes.push('Município: ' + campos.municipio);\nif (campos.regiao    && campos.regiao    !== 'QUALQUER') partes.push('Região: '    + campos.regiao);\nif (campos.orgao     && campos.orgao     !== 'QUALQUER') partes.push('Órgão: ' + abreviarOrgao(campos.orgao));\nif (campos.situacao  && campos.situacao  !== 'QUALQUER') partes.push('Situação: ' + campos.situacao);\nif (campos.tipo      && campos.tipo      !== 'QUALQUER') partes.push('Tipo: ' + campos.tipo);\nif (campos.nome      && campos.nome      !== 'QUALQUER') partes.push('Nome: ' + campos.nome);\nif (campos.ano) partes.push('Ano: ' + campos.ano);\nif (campos.plano_governo === 'Sim') partes.push('Plano de Governo: Sim');\nif (campos.plano_governo === 'Não') partes.push('Plano de Governo: Não');\nif (campos.prioridade  && campos.prioridade  !== 'QUALQUER') partes.push('Prioridade: ' + campos.prioridade);\nif (campos.programa    && campos.programa    !== 'QUALQUER') partes.push('Programa: ' + campos.programa);\nif (campos.setor       && campos.setor       !== 'QUALQUER') partes.push('Setor: ' + campos.setor);\nif (campos.associacao  && campos.associacao  !== 'QUALQUER') partes.push('Associação: ' + campos.associacao);\n\nconst filtros_label = partes.length > 0\n  ? '\\uD83D\\uDD0D *Filtros:* ' + partes.join(' | ')\n  : '';\n\n// Atualizar contexto\ncontexto.campos_acumulados = campos;\ncontexto.campos_resolvidos = campos_resolvidos;\ncontexto.filtros_label = filtros_label;\ncontexto.ultimaInteracao = agora;\nstaticData.contextos[remetente] = contexto;\n\nreturn [{\n  remetente,\n  campos,\n  campos_resolvidos,\n  filtros_label,\n  busca_limpa: $('PreparaConsulta').first().json.busca_limpa || '',\n  campos_faltantes: []\n}];"
       },
-      "id": "e3326e29-5105-4dae-9aa8-a9e65663eb70",
+      "id": "65306d38-6525-4eb6-85bd-a95e090f9c6d",
       "name": "AplicaFiltrosResolvidos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4656,
-        32736
+        80,
+        35888
       ]
     },
     {
       "parameters": {
         "jsCode": "const input = $input.item.json;\nconst remetente = input.remetente;\nconst mensagemRetorno = input.mensagem_retorno;\n\nconst pergunta = $('AplicaClassificacao').first().json.pergunta || '';\n\nlet respostaLLM = mensagemRetorno;\ntry {\n  respostaLLM = $('RespondePerguntas').first().json.choices[0].message.content.trim();\n} catch(e) {}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nconst contexto = staticData.contextos[remetente];\nif (!contexto.historico_qa) contexto.historico_qa = [];\n\ncontexto.historico_qa.push({ role: 'user', content: pergunta });\ncontexto.historico_qa.push({ role: 'assistant', content: respostaLLM });\n\nif (contexto.historico_qa.length > 8) {\n  contexto.historico_qa = contexto.historico_qa.slice(-8);\n}\nstaticData.contextos[remetente] = contexto;\n\nreturn [{ remetente, mensagem_retorno: mensagemRetorno }];"
       },
-      "id": "4a303f8e-b617-40c6-b7e7-bf34c7089104",
+      "id": "f8351772-3ea3-4d88-be20-3000cf72db83",
       "name": "SalvaHistoricoQA",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4608,
-        33056
+        48,
+        36208
       ]
     },
     {
       "parameters": {
-        "jsCode": "\n// Story 1.27 — NormalizaEntrada\n// Inserido entre PreparaConsulta e InterpretaConsulta\n// Normaliza busca_limpa antes que o LLM receba\n\nconst MUNICIPIOS = {\n  'floripa':            'Florianópolis',\n  'ilha da magia':      'Florianópolis',\n  'fpolis':             'Florianópolis',\n  'blumenal':           'Blumenau',\n  'joinvile':           'Joinville',\n  'chapeco':            'Chapecó',\n  'xapeco':             'Chapecó',\n  'itajai':             'Itajaí',\n  'bc':                 'Balneário Camboriú',\n  'balneario camboriu': 'Balneário Camboriú',\n  'criciuma':           'Criciúma',\n  'tubarao':            'Tubarão',\n  'jaragua do sul':     'Jaraguá do Sul',\n  'serrana':            'Lages',\n  'sao jose':           'São José',\n  'palhoca':            'Palhoça',\n  'palhosa':            'Palhoça',\n  'biguacu':            'Biguaçu',\n  'cacador':            'Caçador',\n  'concordia':          'Concórdia',\n  'ararangua':          'Araranguá',\n  'camboriu':           'Camboriú',\n  'icara':              'Içara',\n  'tijucas':            'Tijucas',\n  'imbituba':           'Imbituba',\n  'laguna':             'Laguna',\n  'rio do sul':         'Rio do Sul',\n  'brusque':            'Brusque',\n  'lages':              'Lages',\n  'joinville':          'Joinville',\n};\n\nconst REGIOES = {\n  'grande floripa':       'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'grande fpolis':        'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'grande florianópolis': 'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'grande florianopolis': 'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'região metropolitana': 'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'litoral norte':        'Joinville, Jaraguá do Sul, São Francisco do Sul, Araquari',\n  'litoral sul':          'Criciúma, Tubarão, Laguna, Imbituba, Araranguá',\n  'vale do itajai':       'Blumenau, Itajaí, Balneário Camboriú, Brusque, Camboriú',\n  'vale do itajaí':       'Blumenau, Itajaí, Balneário Camboriú, Brusque, Camboriú',\n  'planalto serrano':     'Lages, Curitibanos, Campos Novos, São Joaquim',\n  'alto vale':            'Rio do Sul, Ibirama, Taió',\n  'extremo oeste':        'Chapecó, São Miguel do Oeste, Maravilha, Pinhalzinho',\n  'meio oeste':           'Caçador, Videira, Joaçaba',\n};\n\nconst MOEDA = [\n  { re: /(\\d+(?:[.,]\\d+)?)\\s*(?:bilhões?|bilhao|bilhão|bi\\b)/i, mult: 1000000000 },\n  { re: /(\\d+(?:[.,]\\d+)?)\\s*(?:milhões?|milhao|milhão|mi\\b)/i, mult: 1000000 },\n  { re: /(\\d+(?:[.,]\\d+)?)\\s*(?:mil\\b|k\\b)/i, mult: 1000 },\n  { re: /meio\\s+bilh[aã]o/i, replacement: 'R$ 500.000.000' },\n  { re: /meio\\s+milh[aã]o/i, replacement: 'R$ 500.000' },\n];\n\nfunction normRegioes(t) {\n  let r = t;\n  for (const [a, m] of Object.entries(REGIOES))\n    r = r.replace(new RegExp(a, 'gi'), m);\n  return r;\n}\n\nfunction normMunicipios(t) {\n  let r = t;\n  for (const [p, o] of Object.entries(MUNICIPIOS))\n    r = r.replace(new RegExp('\\\\b' + p + '\\\\b', 'gi'), o);\n  return r;\n}\n\nfunction normMonetario(t) {\n  let r = t;\n  for (const { re, mult, replacement } of MOEDA) {\n    if (replacement) { r = r.replace(re, replacement); }\n    else { r = r.replace(re, (_, n) => 'R$ ' + (parseFloat(n.replace(',','.')) * mult).toLocaleString('pt-BR')); }\n  }\n  return r;\n}\n\nfunction normalizar(t) { return normMonetario(normMunicipios(normRegioes(t))); }\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const original = item.json.busca_limpa || '';\n  const normalizado = normalizar(original);\n  resultado.push({\n    json: {\n      ...item.json,\n      busca_limpa: normalizado,\n      busca_pre_normalizacao: original !== normalizado ? original : undefined,\n    }\n  });\n}\nreturn resultado;\n",
-        "mode": "runOnceForAllItems"
+        "jsCode": "\n// Story 1.27 — NormalizaEntrada\n// Inserido entre PreparaConsulta e InterpretaConsulta\n// Normaliza busca_limpa antes que o LLM receba\n\nconst MUNICIPIOS = {\n  'floripa':            'Florianópolis',\n  'ilha da magia':      'Florianópolis',\n  'fpolis':             'Florianópolis',\n  'blumenal':           'Blumenau',\n  'joinvile':           'Joinville',\n  'chapeco':            'Chapecó',\n  'xapeco':             'Chapecó',\n  'itajai':             'Itajaí',\n  'bc':                 'Balneário Camboriú',\n  'balneario camboriu': 'Balneário Camboriú',\n  'criciuma':           'Criciúma',\n  'tubarao':            'Tubarão',\n  'jaragua do sul':     'Jaraguá do Sul',\n  'serrana':            'Lages',\n  'sao jose':           'São José',\n  'palhoca':            'Palhoça',\n  'palhosa':            'Palhoça',\n  'biguacu':            'Biguaçu',\n  'cacador':            'Caçador',\n  'concordia':          'Concórdia',\n  'ararangua':          'Araranguá',\n  'camboriu':           'Camboriú',\n  'icara':              'Içara',\n  'tijucas':            'Tijucas',\n  'imbituba':           'Imbituba',\n  'laguna':             'Laguna',\n  'rio do sul':         'Rio do Sul',\n  'brusque':            'Brusque',\n  'lages':              'Lages',\n  'joinville':          'Joinville',\n};\n\nconst REGIOES = {\n  'grande floripa':       'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'grande fpolis':        'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'grande florianópolis': 'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'grande florianopolis': 'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'região metropolitana': 'Florianópolis, São José, Palhoça, Biguaçu, São Pedro de Alcântara',\n  'litoral norte':        'Joinville, Jaraguá do Sul, São Francisco do Sul, Araquari',\n  'litoral sul':          'Criciúma, Tubarão, Laguna, Imbituba, Araranguá',\n  'vale do itajai':       'Blumenau, Itajaí, Balneário Camboriú, Brusque, Camboriú',\n  'vale do itajaí':       'Blumenau, Itajaí, Balneário Camboriú, Brusque, Camboriú',\n  'planalto serrano':     'Lages, Curitibanos, Campos Novos, São Joaquim',\n  'alto vale':            'Rio do Sul, Ibirama, Taió',\n  'extremo oeste':        'Chapecó, São Miguel do Oeste, Maravilha, Pinhalzinho',\n  'meio oeste':           'Caçador, Videira, Joaçaba',\n};\n\nconst MOEDA = [\n  { re: /(\\d+(?:[.,]\\d+)?)\\s*(?:bilhões?|bilhao|bilhão|bi\\b)/i, mult: 1000000000 },\n  { re: /(\\d+(?:[.,]\\d+)?)\\s*(?:milhões?|milhao|milhão|mi\\b)/i, mult: 1000000 },\n  { re: /(\\d+(?:[.,]\\d+)?)\\s*(?:mil\\b|k\\b)/i, mult: 1000 },\n  { re: /meio\\s+bilh[aã]o/i, replacement: 'R$ 500.000.000' },\n  { re: /meio\\s+milh[aã]o/i, replacement: 'R$ 500.000' },\n];\n\nfunction normRegioes(t) {\n  let r = t;\n  for (const [a, m] of Object.entries(REGIOES))\n    r = r.replace(new RegExp(a, 'gi'), m);\n  return r;\n}\n\nfunction normMunicipios(t) {\n  let r = t;\n  for (const [p, o] of Object.entries(MUNICIPIOS))\n    r = r.replace(new RegExp('\\\\b' + p + '\\\\b', 'gi'), o);\n  return r;\n}\n\nfunction normMonetario(t) {\n  let r = t;\n  for (const { re, mult, replacement } of MOEDA) {\n    if (replacement) { r = r.replace(re, replacement); }\n    else { r = r.replace(re, (_, n) => 'R$ ' + (parseFloat(n.replace(',','.')) * mult).toLocaleString('pt-BR')); }\n  }\n  return r;\n}\n\nfunction normalizar(t) { return normMonetario(normMunicipios(normRegioes(t))); }\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const original = item.json.busca_limpa || '';\n  const normalizado = normalizar(original);\n  resultado.push({\n    json: {\n      ...item.json,\n      busca_limpa: normalizado,\n      busca_pre_normalizacao: original !== normalizado ? original : undefined,\n    }\n  });\n}\nreturn resultado;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5200,
-        32600
+        -256,
+        35888
       ],
-      "id": "ccf49fa4-a68c-4ef9-89db-4fe84955fe58",
+      "id": "3ff9de30-98f1-4969-a6ca-0f76ca54383c",
       "name": "NormalizaEntrada"
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
-        "mode": "runOnceForAllItems"
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3688,
-        32880
+        960,
+        35744
       ],
-      "id": "abf5d20d-6a1f-4f1c-951f-7cd6bdbb1d70",
-      "name": "EnviaDigitandoProjeto",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
+      "id": "12fa3003-8947-4fd6-9669-26a522ff46a7",
+      "name": "EnviaDigitandoProjeto"
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.mensagem_retorno || item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
-        "mode": "runOnceForAllItems"
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num  = item.json.remetente;\n  const txt  = item.json.mensagem_retorno || item.json.descricao_projeto || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3176,
-        32528
+        1552,
+        35696
       ],
-      "id": "a45ab87e-2cf5-4cd2-a0e0-1ff252a75808",
-      "name": "EnviaDigitandoMensagem",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
+      "id": "f58b9a03-c61c-4442-9caf-e2f1983c4b79",
+      "name": "EnviaDigitandoMensagem"
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  const txt = item.json.mensagem_retorno || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
-        "mode": "runOnceForAllItems"
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  const txt = item.json.mensagem_retorno || '';\n  if (!num || !txt) continue;\n  const frags = fragmentar(txt, MAX_F);\n  for (let i=0; i<frags.length; i++) {\n    await presence(num); await sleep(D_TYPE);\n    await send(num, frags[i]);\n    if (i < frags.length-1) await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5464,
-        32208
+        -720,
+        35344
       ],
-      "id": "81797fd1-754d-457c-8b21-f339faecb6f1",
-      "name": "EnviaDigitandoReinicio",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
+      "id": "bee9691f-3656-4335-9433-30f39e333472",
+      "name": "EnviaDigitandoReinicio"
     },
     {
       "parameters": {
-        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nconst P1 = 'Olá! Sou o Projeta SC 🏛️, o assistente de projetos do Governo de Santa Catarina.\\n\\nPosso te ajudar a consultar obras, investimentos e contratos do estado.';\nconst P2 = 'É só me dizer o que você quer saber, por exemplo:\\n\\n📍 *escolas em Joinville*\\n🏗️ *Ponte Hercílio Luz*\\n🏥 *Hospital Regional de Lages*\\n🔢 *32/2025*\\n\\nO que você quer consultar?';\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  if (!num) continue;\n  for (const p of [P1, P2]) {\n    await presence(num); await sleep(D_TYPE); await send(num, p); await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n",
-        "mode": "runOnceForAllItems"
+        "jsCode": "\nconst BASE  = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST  = 'Projeta_SC';\nconst LIMITE = 300;\nconst MAX_F  = 280;\nconst D_FRAG = 1200;\nconst D_TYPE = 800;\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\n\nfunction sleep(ms) { return new Promise(r => setTimeout(r, ms)); }\n\nfunction fragmentar(texto, max) {\n  if (!texto || texto.length <= LIMITE) return [texto || ''];\n  const linhas = texto.split('\\n');\n  const frags = []; let atual = '';\n  for (const l of linhas) {\n    const c = atual ? atual + '\\n' + l : l;\n    if (c.length <= max) { atual = c; }\n    else {\n      if (atual.trim()) frags.push(atual.trim());\n      if (l.length > max) {\n        const ps = cortarPalavras(l, max); const u = ps.pop();\n        frags.push(...ps.filter(Boolean)); atual = u;\n      } else { atual = l; }\n    }\n  }\n  if (atual.trim()) frags.push(atual.trim());\n  return frags.length ? frags : [texto];\n}\n\nfunction cortarPalavras(t, max) {\n  const ws = t.split(' '); const ps = []; let a = '';\n  for (const w of ws) {\n    const c = a ? a + ' ' + w : w;\n    if (c.length <= max) { a = c; }\n    else { if (a.trim()) ps.push(a.trim()); if (w.length > max) { for (let i=0;i<w.length;i+=max) ps.push(w.slice(i,i+max)); a=''; } else { a=w; } }\n  }\n  if (a.trim()) ps.push(a.trim());\n  return ps;\n}\n\nasync function presence(num) {\n  try {\n    await $http.request({ method:'POST', url:`${BASE}/chat/sendPresence/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num,presence:'composing'} });\n  } catch(e) { console.log('sendPresence err:',e.message); }\n}\n\nasync function send(num, txt) {\n  await $http.request({ method:'POST', url:`${BASE}/message/sendText/${INST}`,\n    headers:{apikey:KEY,'Content-Type':'application/json'},\n    body:{number:num, text:txt} });\n}\n\nconst P1 = 'Olá! Sou o Projeta SC 🏛️, o assistente de projetos do Governo de Santa Catarina.\\n\\nPosso te ajudar a consultar obras, investimentos e contratos do estado.';\nconst P2 = 'É só me dizer o que você quer saber, por exemplo:\\n\\n📍 *escolas em Joinville*\\n🏗️ *Ponte Hercílio Luz*\\n🏥 *Hospital Regional de Lages*\\n🔢 *32/2025*\\n\\nO que você quer consultar?';\n\nfor (const item of $input.all()) {\n  const num = item.json.remetente;\n  if (!num) continue;\n  for (const p of [P1, P2]) {\n    await presence(num); await sleep(D_TYPE); await send(num, p); await sleep(D_FRAG);\n  }\n}\nreturn [{ json:{ success:true } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5464,
-        32048
+        -720,
+        35168
       ],
-      "id": "cd634fef-0af5-4637-9475-b66717752300",
-      "name": "EnviaBoasVindas",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
+      "id": "f30d6aab-769d-40cd-a34e-bf1023f04ae3",
+      "name": "EnviaBoasVindas"
     },
     {
       "parameters": {
@@ -1066,10 +1037,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -3652,
-        32880
+        976,
+        36080
       ],
-      "id": "73b77a4e-b897-4cd9-9c42-37b5826e12f5",
+      "id": "90eb2349-9153-4a90-a774-3a71542898ac",
       "name": "RoteiaFallback"
     },
     {
@@ -1089,15 +1060,16 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"model\": \"llama-3.1-8b-instant\",\n  \"temperature\": 0.3,\n  \"max_tokens\": 150,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é um assistente que sugere reformulações de busca para o portal de projetos do governo de SC. Dado um termo sem resultado, retorne SOMENTE um JSON array com 2 ou 3 termos alternativos em português. Exemplo: [\\\"pavimentação\\\", \\\"recuperação de via\\\"]. Apenas o array JSON, sem explicações.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json.busca_original }}\"\n    }\n  ]\n}"
+        "jsonBody": "{\n  \"model\": \"llama-3.1-8b-instant\",\n  \"temperature\": 0.3,\n  \"max_tokens\": 150,\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é um assistente que sugere reformulações de busca para o portal de projetos do governo de SC. Dado um termo sem resultado, retorne SOMENTE um JSON array com 2 ou 3 termos alternativos em português. Exemplo: [\\\"pavimentação\\\", \\\"recuperação de via\\\"]. Apenas o array JSON, sem explicações.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json.busca_original }}\"\n    }\n  ]\n}",
+        "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -3402,
-        32820
+        1168,
+        36064
       ],
-      "id": "f612acae-d2d0-4406-a937-439ba9e347f1",
+      "id": "4cca8135-c5f1-4df5-99c9-70d6eb7140ae",
       "name": "SugestaoFallback",
       "credentials": {
         "httpHeaderAuth": {
@@ -1109,37 +1081,29 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// Story 1.25 — FormataFallback\nconst EMOJIS = ['1️⃣','2️⃣','3️⃣'];\n\nfunction extrairSugestoes(content) {\n  if (!content) return [];\n  try {\n    const p = JSON.parse(content);\n    if (Array.isArray(p)) return p.slice(0,3).filter(Boolean);\n  } catch(_) {\n    const linhas = content.split('\\n').filter(l => /^\\d+[\\.\\)]\\s+/.test(l.trim()));\n    if (linhas.length > 0) return linhas.slice(0,3).map(l => l.replace(/^\\d+[\\.\\)]\\s+/,'').trim());\n    const csv = content.split(',').map(s=>s.trim()).filter(Boolean);\n    if (csv.length >= 2) return csv.slice(0,3);\n  }\n  return [];\n}\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const remetente   = item.json.remetente;\n  const busca       = item.json.busca_original || '';\n  const groqContent = item.json.choices?.[0]?.message?.content || '';\n  const sugestoes   = extrairSugestoes(groqContent);\n\n  let mensagem;\n  if (sugestoes.length > 0) {\n    const opts = sugestoes.map((s,i) => `${EMOJIS[i]||`${i+1}.`} ${s}`).join('\\n');\n    mensagem = `Não encontrei nada com *\"${busca}\"*. 🤔\\n\\nQue tal tentar de outro jeito?\\n\\n${opts}\\n\\n0️⃣ Nova busca livre`;\n  } else {\n    mensagem = `Não encontrei nada com *\"${busca}\"*. 😕\\n\\nTente o nome da cidade, categoria da obra, número do projeto ou nome da empresa.\\n\\n0️⃣ Nova busca`;\n  }\n  resultado.push({ json:{ tipo:'sem_resultado', mensagem_retorno:mensagem, remetente } });\n}\nreturn resultado;\n",
-        "mode": "runOnceForAllItems"
+        "jsCode": "\n// Story 1.25 — FormataFallback\nconst EMOJIS = ['1️⃣','2️⃣','3️⃣'];\n\nfunction extrairSugestoes(content) {\n  if (!content) return [];\n  try {\n    const p = JSON.parse(content);\n    if (Array.isArray(p)) return p.slice(0,3).filter(Boolean);\n  } catch(_) {\n    const linhas = content.split('\\n').filter(l => /^\\d+[\\.\\)]\\s+/.test(l.trim()));\n    if (linhas.length > 0) return linhas.slice(0,3).map(l => l.replace(/^\\d+[\\.\\)]\\s+/,'').trim());\n    const csv = content.split(',').map(s=>s.trim()).filter(Boolean);\n    if (csv.length >= 2) return csv.slice(0,3);\n  }\n  return [];\n}\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const remetente   = item.json.remetente;\n  const busca       = item.json.busca_original || '';\n  const groqContent = item.json.choices?.[0]?.message?.content || '';\n  const sugestoes   = extrairSugestoes(groqContent);\n\n  let mensagem;\n  if (sugestoes.length > 0) {\n    const opts = sugestoes.map((s,i) => `${EMOJIS[i]||`${i+1}.`} ${s}`).join('\\n');\n    mensagem = `Não encontrei nada com *\"${busca}\"*. 🤔\\n\\nQue tal tentar de outro jeito?\\n\\n${opts}\\n\\n0️⃣ Nova busca livre`;\n  } else {\n    mensagem = `Não encontrei nada com *\"${busca}\"*. 😕\\n\\nTente o nome da cidade, categoria da obra, número do projeto ou nome da empresa.\\n\\n0️⃣ Nova busca`;\n  }\n  resultado.push({ json:{ tipo:'sem_resultado', mensagem_retorno:mensagem, remetente } });\n}\nreturn resultado;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3152,
-        32820
+        1344,
+        36064
       ],
-      "id": "b5d3d76b-cabb-4210-88dd-d210657e9ee6",
+      "id": "c3ea153d-8849-45d6-879b-1d65e57e10af",
       "name": "FormataFallback"
     },
     {
       "parameters": {
-        "jsCode": "\n// Story 1.28 — VerificaConfianca\nconst THRESHOLD = 0.70;\nconst BASE = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST = 'Projeta_SC';\nconst LABELS = {\n  busca:'Buscar um projeto', saudacao:'Saudação / início',\n  reinicio:'Começar nova busca', submenu_entregas:'Ver entregas do projeto',\n  submenu_valores:'Ver valores do projeto', submenu_contratos:'Ver contratos do projeto',\n  pergunta_livre:'Fazer uma pergunta sobre o projeto', pular_campo:'Pular / qualquer opção',\n};\nfunction label(t) { return LABELS[t] || t; }\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const conf  = typeof item.json.confidence === 'number' ? item.json.confidence : 1.0;\n  const alts  = Array.isArray(item.json.alternatives) ? item.json.alternatives : [];\n  const num   = item.json.remetente;\n  const tipo  = item.json.tipo;\n\n  if (conf >= THRESHOLD || alts.length === 0) { resultado.push(item); continue; }\n\n  const op1 = tipo, op2 = alts[0];\n  if (!staticData.contextos[num]) staticData.contextos[num] = {};\n  staticData.contextos[num].aguardando_confirmacao = {\n    opcao1: op1, opcao2: op2,\n    busca_original: item.json.busca_limpa || '',\n    campos_opcao1: item.json.campos_acumulados || {},\n    expira_em: Date.now() + 3 * 60 * 1000,\n  };\n\n  const msg = `Hm, não tenho certeza do que você quer. 🤔\\n\\n1️⃣ ${label(op1)}\\n2️⃣ ${label(op2)}\\n\\nQual é a sua intenção?`;\n  try {\n    await $http.request({ method:'POST',\n      url:`${BASE}/message/sendText/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num, text:msg} });\n  } catch(e) {\n    console.log('VerificaConfianca sendText err:', e.message);\n    resultado.push(item); continue;\n  }\n\n  resultado.push({ json:{ tipo:'aguardando_confirmacao', remetente:num, mensagem_retorno:'' } });\n}\nreturn resultado;\n",
-        "mode": "runOnceForAllItems"
+        "jsCode": "\n// Story 1.28 — VerificaConfianca\nconst THRESHOLD = 0.70;\nconst BASE = 'https://n8n-evolution-api.lkpafu.easypanel.host';\nconst INST = 'Projeta_SC';\nconst LABELS = {\n  busca:'Buscar um projeto', saudacao:'Saudação / início',\n  reinicio:'Começar nova busca', submenu_entregas:'Ver entregas do projeto',\n  submenu_valores:'Ver valores do projeto', submenu_contratos:'Ver contratos do projeto',\n  pergunta_livre:'Fazer uma pergunta sobre o projeto', pular_campo:'Pular / qualquer opção',\n};\nfunction label(t) { return LABELS[t] || t; }\n\nconst KEY = process.env.EVOLUTION_API_KEY || '';\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\n\nconst resultado = [];\nfor (const item of $input.all()) {\n  const conf  = typeof item.json.confidence === 'number' ? item.json.confidence : 1.0;\n  const alts  = Array.isArray(item.json.alternatives) ? item.json.alternatives : [];\n  const num   = item.json.remetente;\n  const tipo  = item.json.tipo;\n\n  if (conf >= THRESHOLD || alts.length === 0) { resultado.push(item); continue; }\n\n  const op1 = tipo, op2 = alts[0];\n  if (!staticData.contextos[num]) staticData.contextos[num] = {};\n  staticData.contextos[num].aguardando_confirmacao = {\n    opcao1: op1, opcao2: op2,\n    busca_original: item.json.busca_limpa || '',\n    campos_opcao1: item.json.campos_acumulados || {},\n    expira_em: Date.now() + 3 * 60 * 1000,\n  };\n\n  const msg = `Hm, não tenho certeza do que você quer. 🤔\\n\\n1️⃣ ${label(op1)}\\n2️⃣ ${label(op2)}\\n\\nQual é a sua intenção?`;\n  try {\n    await $http.request({ method:'POST',\n      url:`${BASE}/message/sendText/${INST}`,\n      headers:{apikey:KEY,'Content-Type':'application/json'},\n      body:{number:num, text:msg} });\n  } catch(e) {\n    console.log('VerificaConfianca sendText err:', e.message);\n    resultado.push(item); continue;\n  }\n\n  resultado.push({ json:{ tipo:'aguardando_confirmacao', remetente:num, mensagem_retorno:'' } });\n}\nreturn resultado;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5984,
-        32400
+        -1168,
+        35600
       ],
-      "id": "333a0411-169a-4026-a73e-9eb8db948b0d",
-      "name": "VerificaConfianca",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "GawefCYOjoZJQkML",
-          "name": "APIKEY"
-        }
-      }
+      "id": "da39c316-f1ee-46d2-93ae-5149b45e1d85",
+      "name": "VerificaConfianca"
     }
   ],
   "connections": {
