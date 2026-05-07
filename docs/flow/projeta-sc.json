@@ -1235,7 +1235,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"presence\":\"composing\",\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
+        "jsonBody": "={\"presence\":\"composing\",\"delay\":1200,\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -1261,7 +1261,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"presence\":\"composing\",\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
+        "jsonBody": "={\"presence\":\"composing\",\"delay\":1200,\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -1287,7 +1287,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"presence\":\"composing\",\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
+        "jsonBody": "={\"presence\":\"composing\",\"delay\":1200,\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -1313,7 +1313,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"presence\":\"composing\",\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
+        "jsonBody": "={\"presence\":\"composing\",\"delay\":1200,\"number\":\"{{ $json.remetente.replace('@s.whatsapp.net','') }}\"}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
