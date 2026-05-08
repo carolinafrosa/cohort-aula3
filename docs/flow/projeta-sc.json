@@ -1073,11 +1073,11 @@
           "parameters": [
             {
               "name": "number",
-              "value": "={{ $json.remetente }}"
+              "value": "={{ $('FormataProjeto').isExecuted ? $('FormataProjeto').item.json.remetente : $('RoteiaResultado').item.json.remetente }}"
             },
             {
               "name": "text",
-              "value": "={{ $json.descricao_projeto }}"
+              "value": "={{ $('FormataProjeto').isExecuted ? $('FormataProjeto').item.json.descricao_projeto : $('RoteiaResultado').item.json.descricao_projeto }}"
             }
           ]
         },
@@ -1118,11 +1118,11 @@
           "parameters": [
             {
               "name": "number",
-              "value": "={{ $json.remetente }}"
+              "value": "={{ $('FormataEntregas').isExecuted ? $('FormataEntregas').item.json.remetente : $('FormataValores').isExecuted ? $('FormataValores').item.json.remetente : $('FormadaContratos').isExecuted ? $('FormadaContratos').item.json.remetente : $('FormataDetalheContrato').isExecuted ? $('FormataDetalheContrato').item.json.remetente : $('FormataRefinamento').isExecuted ? $('FormataRefinamento').item.json.remetente : $('SalvaHistoricoQA').isExecuted ? $('SalvaHistoricoQA').item.json.remetente : $('RoteiaFallback').isExecuted ? $('RoteiaFallback').item.json.remetente : $('FormataFallback').item.json.remetente }}"
             },
             {
               "name": "text",
-              "value": "={{ $json.mensagem_retorno || $json.descricao_projeto || \"\" }}"
+              "value": "={{ $('FormataEntregas').isExecuted ? ($('FormataEntregas').item.json.mensagem_retorno || '') : $('FormataValores').isExecuted ? ($('FormataValores').item.json.mensagem_retorno || '') : $('FormadaContratos').isExecuted ? ($('FormadaContratos').item.json.mensagem_retorno || '') : $('FormataDetalheContrato').isExecuted ? ($('FormataDetalheContrato').item.json.mensagem_retorno || '') : $('FormataRefinamento').isExecuted ? ($('FormataRefinamento').item.json.mensagem_retorno || '') : $('SalvaHistoricoQA').isExecuted ? ($('SalvaHistoricoQA').item.json.mensagem_retorno || '') : $('RoteiaFallback').isExecuted ? ($('RoteiaFallback').item.json.mensagem_retorno || '') : ($('FormataFallback').item.json.mensagem_retorno || '') }}"
             }
           ]
         },
@@ -1160,11 +1160,11 @@
           "parameters": [
             {
               "name": "number",
-              "value": "={{ $json.remetente }}"
+              "value": "={{ $('RoteadorPrincipal').item.json.remetente }}"
             },
             {
               "name": "text",
-              "value": "={{ $json.mensagem_retorno }}"
+              "value": "={{ $('RoteadorPrincipal').item.json.mensagem_retorno }}"
             }
           ]
         },
@@ -1202,7 +1202,7 @@
           "parameters": [
             {
               "name": "number",
-              "value": "={{ $json.remetente }}"
+              "value": "={{ $('RoteadorPrincipal').item.json.remetente }}"
             },
             {
               "name": "text",
