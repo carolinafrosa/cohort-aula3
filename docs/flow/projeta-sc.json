@@ -7,10 +7,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12368,
-        47104
+        11888,
+        48800
       ],
-      "id": "c7d75b2b-73f3-40ca-96fb-4a2e695f71c2",
+      "id": "3d5c6ecd-15ba-4508-99b8-5eb4f3a7caee",
       "name": "FormataProjeto"
     },
     {
@@ -36,10 +36,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        12896,
-        46928
+        12416,
+        48592
       ],
-      "id": "3950cd1e-ab2f-4e91-8f9e-c96934f16885",
+      "id": "cc940483-1a6c-4d13-92ad-427a6fb6c9d6",
       "name": "InterpretaConsulta",
       "credentials": {
         "httpHeaderAuth": {
@@ -55,10 +55,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13248,
-        46928
+        12752,
+        48592
       ],
-      "id": "0cdadfbf-95b3-42bd-9e0c-4040bda597a7",
+      "id": "8f46056d-7e3a-4641-8d1c-c05817943258",
       "name": "MontaBusca"
     },
     {
@@ -89,10 +89,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        12528,
-        46496
+        11888,
+        48032
       ],
-      "id": "6d1c27bb-1f3b-41e0-a878-6f6a7c5121f1",
+      "id": "ddfb6a29-a16d-42df-a219-351a062d8c92",
       "name": "RoteiaSubmenu"
     },
     {
@@ -123,23 +123,23 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        12864,
-        46624
+        12192,
+        48128
       ],
-      "id": "c43cc66f-6f36-4cbb-899e-b51c06d00f18",
+      "id": "2cb82992-3c3d-4538-8ea6-39d976a42089",
       "name": "RoteiaValores"
     },
     {
       "parameters": {
         "query": "={{ $json.sql_entregas }}"
       },
-      "id": "60477b82-beae-4717-81c5-109db059b17b",
+      "id": "38c1a513-8ca5-4a0f-a94d-fdbef22b663b",
       "name": "ConsultaEntregas",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        13056,
-        46432
+        12384,
+        47808
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -153,13 +153,13 @@
       "parameters": {
         "query": "=SELECT\n    VL_PLANEJADO AS VALOR_PLANEJADO,\n    VL_CONTRATADO AS VALOR_CONTRATADO,\n    VL_EXECUTADO AS VALOR_EXECUTADO,\n    VL_PAGO AS VALOR_PAGO,\n    PC_EXECUTADO AS PERC_EXEC\nFROM FINANCEIRO\nWHERE PROJETO_ID = {{ parseInt($json.projeto.PROJETO_ID) || 0 }}"
       },
-      "id": "3fcf966c-de06-4eb1-924d-5e616ae09ab9",
+      "id": "39550d40-6248-4ab8-9b44-2b36f1307913",
       "name": "ConsultaValores",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        13200,
-        46576
+        12384,
+        48016
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -173,13 +173,13 @@
       "parameters": {
         "query": "={{ $json.sql_contratos }}"
       },
-      "id": "b1555750-822a-438f-a49f-4f6acef9d535",
+      "id": "24766b73-0e4d-4d8b-acc1-ef9b3decba73",
       "name": "ConsultaContratos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        13408,
-        46752
+        12592,
+        48224
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -196,10 +196,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13248,
-        46432
+        12576,
+        47808
       ],
-      "id": "68c63376-f00b-4a7f-85a4-81c6a3159965",
+      "id": "d3c144d4-d8c6-4e77-9c39-c85b91be69aa",
       "name": "FormataEntregas"
     },
     {
@@ -209,10 +209,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13472,
-        46576
+        12576,
+        48016
       ],
-      "id": "23243c78-d77d-4bef-ae64-1bf1231e28a4",
+      "id": "b99fce52-f075-492f-baa0-eaaab310281c",
       "name": "FormataValores"
     },
     {
@@ -222,10 +222,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13680,
-        46752
+        12800,
+        48224
       ],
-      "id": "47c4db3b-a2b8-404b-9c47-d1107e379bb2",
+      "id": "215681f4-36ba-4080-85ba-ac8aa6b5e35b",
       "name": "FormadaContratos"
     },
     {
@@ -391,31 +391,6 @@
                 },
                 "conditions": [
                   {
-                    "id": "ee4a6c2a-d0ed-4def-af6a-423a25a6925e",
-                    "leftValue": "={{ $json.tipo }}",
-                    "rightValue": "pergunta_livre",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "pergunta_livre"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 3
-                },
-                "conditions": [
-                  {
                     "id": "3b1f3516-de51-4d79-aca5-b5fcf21a6394",
                     "leftValue": "={{ $json.tipo }}",
                     "rightValue": "ignorar",
@@ -430,6 +405,31 @@
               },
               "renameOutput": true,
               "outputKey": "ignorar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ee4a6c2a-d0ed-4def-af6a-423a25a6925e",
+                    "leftValue": "={{ $json.tipo }}",
+                    "rightValue": "pergunta_livre",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pergunta_livre"
             }
           ]
         },
@@ -438,10 +438,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        12112,
-        46480
+        11456,
+        48240
       ],
-      "id": "00f4aee4-1df3-4ef0-b950-b287455a8002",
+      "id": "df9db16d-5bd6-4480-bd09-d710fba8e9d7",
       "name": "RoteadorPrincipal"
     },
     {
@@ -505,10 +505,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        13792,
-        46912
+        13312,
+        48576
       ],
-      "id": "2b2694f7-a894-42e3-b3f2-602b1943b3c2",
+      "id": "aec43035-ef1f-45c8-8a72-86f36aec98b1",
       "name": "RoteiaResultado"
     },
     {
@@ -560,10 +560,10 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        10576,
-        46544
+        9920,
+        48304
       ],
-      "id": "8d2e0510-646d-4e18-a4d4-fd26247f4eaf",
+      "id": "9858930f-29ea-42e4-bc50-5fb94856a2d5",
       "name": "FiltraMensagem"
     },
     {
@@ -573,10 +573,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10752,
-        46544
+        10096,
+        48304
       ],
-      "id": "2b6fc373-df77-4605-9fa0-a55b0d741cc2",
+      "id": "be27396d-a54e-4790-a3a9-61279382e80b",
       "name": "ProcessaMensagem"
     },
     {
@@ -585,13 +585,13 @@
         "path": "mensagem",
         "options": {}
       },
-      "id": "fe9cc62c-4b56-4b89-8f19-5528ce83a4fe",
+      "id": "00428516-ea2c-4191-a42d-5105f00b3a4f",
       "name": "Whatsapp",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        10416,
-        46544
+        9760,
+        48304
       ],
       "webhookId": "ca260f54-431d-4cc9-bb68-c51dbc71c6bb"
     },
@@ -599,13 +599,13 @@
       "parameters": {
         "query": "={{ $json.sql_query || $node[\"MontaBusca\"].json.sql_query }}"
       },
-      "id": "eebb8bbd-7593-4537-891d-0347d838f462",
+      "id": "018ac93f-3605-4225-ab13-4cc76902658c",
       "name": "ConsultaProjetos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        13424,
-        46928
+        12928,
+        48592
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -622,10 +622,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13600,
-        46928
+        13120,
+        48592
       ],
-      "id": "4e7ce7a3-8682-4d77-bf49-29a2800ecc63",
+      "id": "08caf5d7-f257-4fc4-8beb-bee3fb22325f",
       "name": "ProcessaResultados"
     },
     {
@@ -635,10 +635,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13200,
-        46752
+        12384,
+        48224
       ],
-      "id": "12a054ed-01a1-4feb-aa1d-acdf4bc6164a",
+      "id": "1574733e-572f-46a6-b6b5-53ed91620b5d",
       "name": "PreparaContratos"
     },
     {
@@ -648,10 +648,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12384,
-        46784
+        11888,
+        48400
       ],
-      "id": "e7686d6d-bc37-478c-bb09-abd0145b3e81",
+      "id": "142be2a1-e5b2-4642-901c-d7be977121af",
       "name": "FormataDetalheContrato"
     },
     {
@@ -661,10 +661,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12560,
-        46928
+        12064,
+        48592
       ],
-      "id": "e7da348d-6958-452d-a32b-8569d5cd899e",
+      "id": "4bf36245-b47f-423d-a1ec-6a5db3f5ad1a",
       "name": "PreparaConsulta"
     },
     {
@@ -674,10 +674,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12864,
-        46432
+        12192,
+        47808
       ],
-      "id": "32de20fe-1555-4386-aa73-99917de8ec87",
+      "id": "24fee83d-619b-4e0e-9eb8-1f5cf3587ab9",
       "name": "PreparaEntregas"
     },
     {
@@ -704,10 +704,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        12576,
-        47280
+        12160,
+        48992
       ],
-      "id": "41458f3d-522b-40e2-aee5-201cc287125d",
+      "id": "625ccd50-a5a2-45b7-a1a1-1d63c69739b8",
       "name": "RespondePerguntas",
       "credentials": {
         "httpHeaderAuth": {
@@ -723,10 +723,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12768,
-        47280
+        12384,
+        48992
       ],
-      "id": "80b747bd-bf4c-4203-9b65-60e46c6d030a",
+      "id": "1bc7f232-51cc-4a85-94c5-eb26e7e1eb06",
       "name": "FormataRespostaLivre"
     },
     {
@@ -736,10 +736,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12384,
-        47280
+        11920,
+        48992
       ],
-      "id": "2f8c6105-1df8-43b0-8af1-1ad9924dbcab",
+      "id": "faedf37b-c5b4-4391-85a9-4d4a323adcdf",
       "name": "PreparaPromptPergunta"
     },
     {
@@ -749,10 +749,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        14400,
-        46864
+        13600,
+        48592
       ],
-      "id": "588d9dfc-b6cb-4fbb-be3c-b0ed78b0d648",
+      "id": "9c158519-4090-4924-abb1-96069b296a85",
       "name": "PreparaPromptRefinamento"
     },
     {
@@ -779,10 +779,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        14592,
-        46864
+        13776,
+        48592
       ],
-      "id": "c4d4c436-ff73-4667-949b-da9cac7b0dd7",
+      "id": "bb9a2a37-c03d-4b13-af8d-4dc8beba023b",
       "name": "GroqRefinamento",
       "credentials": {
         "httpHeaderAuth": {
@@ -798,10 +798,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        14848,
-        46864
+        13952,
+        48592
       ],
-      "id": "f0c2b400-414a-4cb6-b6ad-3b5269bda7ec",
+      "id": "df5346c4-1c2f-4fcb-8360-d470c893301c",
       "name": "FormataRefinamento"
     },
     {
@@ -832,10 +832,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        10928,
-        46544
+        10272,
+        48304
       ],
-      "id": "82935692-4992-4ebf-be6d-c6d689af4471",
+      "id": "e8cda0b4-bc9a-4d22-9ac1-8ffa13e9f4cd",
       "name": "RoteiaClassificacao"
     },
     {
@@ -845,10 +845,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11136,
-        46432
+        10480,
+        48192
       ],
-      "id": "d4dca32c-ba3d-41cb-b242-898bd9e4f6ae",
+      "id": "8fab129c-cc23-4f69-8555-5fd1367b5d2c",
       "name": "PreparaGroqClassificador"
     },
     {
@@ -875,10 +875,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        11328,
-        46432
+        10672,
+        48192
       ],
-      "id": "4dfb6d39-6f79-4f02-a633-1c89539c5341",
+      "id": "a3fe54e1-a7e6-407b-a13b-a50f5069c631",
       "name": "GroqClassificador",
       "credentials": {
         "httpHeaderAuth": {
@@ -894,23 +894,23 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11504,
-        46432
+        10848,
+        48192
       ],
-      "id": "a5d99279-6552-4343-b7ef-ab43685d26b3",
+      "id": "5d75b473-f99f-4b25-885f-49f026f352d8",
       "name": "AplicaClassificacao"
     },
     {
       "parameters": {
         "query": "SELECT 'ORGAO' AS TIPO_CAMPO, ORGAO AS VALOR FROM (SELECT DISTINCT ORGAO FROM VW_IDENTIFICACAO_PROJETOS WHERE ORGAO IS NOT NULL ORDER BY ORGAO) WHERE ROWNUM <= 200 UNION ALL SELECT 'TIPO' AS TIPO_CAMPO, TIPO AS VALOR FROM (SELECT DISTINCT TIPO FROM VW_IDENTIFICACAO_PROJETOS WHERE TIPO IS NOT NULL ORDER BY TIPO) WHERE ROWNUM <= 100 UNION ALL SELECT 'MUNICIPIO' AS TIPO_CAMPO, MUNICIPIO AS VALOR FROM (SELECT DISTINCT MUNICIPIO FROM MUNICIPIO ORDER BY MUNICIPIO) WHERE ROWNUM <= 300 UNION ALL SELECT 'REGIAO' AS TIPO_CAMPO, REGIAO AS VALOR FROM (SELECT DISTINCT REGIAO FROM VW_PROJETO_BUSCA_AVANCADA WHERE REGIAO IS NOT NULL ORDER BY REGIAO) WHERE ROWNUM <= 50 UNION ALL SELECT 'SITUACAO' AS TIPO_CAMPO, SITUACAO AS VALOR FROM (SELECT DISTINCT SITUACAO FROM VW_IDENTIFICACAO_PROJETOS WHERE SITUACAO IS NOT NULL ORDER BY SITUACAO) WHERE ROWNUM <= 30"
       },
-      "id": "da70fbdf-7151-4d85-b2c7-409159b15c01",
+      "id": "a6e5bde0-def3-4ee9-be8b-662ff41ed7f6",
       "name": "ConsultaDistintos",
       "type": "n8n-nodes-oracle11g.oracle11g",
       "typeVersion": 1,
       "position": [
-        12384,
-        46928
+        11888,
+        48592
       ],
       "credentials": {
         "oracle11gApi": {
@@ -923,26 +923,26 @@
       "parameters": {
         "jsCode": "const groqResp = $input.item.json;\nconst remetente = $('ProcessaMensagem').first().json.remetente;\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nconst contexto = staticData.contextos[remetente] || {};\nconst agora = Date.now();\n\n// Distintos em cache (armazenados pelo PreparaConsulta)\nconst distintos = staticData.filtrosDistintos || { orgaos: [], tipos: [], municipios: [], regioes: [], situacoes: [] };\n\n// Quando é refinamento de seleção, não reprocessar campos via LLM\nconst buscaOriginal = $('ProcessaMensagem').first().json.busca_limpa;\nlet resolvido = {};\nif (buscaOriginal !== 'refinar') {\n  try {\n    const texto = groqResp.choices[0].message.content.trim();\n    resolvido = JSON.parse(texto.replace(/```json|```/g, '').trim());\n  } catch(e) {\n    resolvido = {};\n  }\n}\n\n// Aplicar valores resolvidos ao contexto (substitui vagos por exatos)\nconst campos = { ...(contexto.campos_acumulados || {}) };\nconst campos_resolvidos = { ...(contexto.campos_resolvidos || {}) };\n\nfunction normalizar(s) {\n  return (s || '')\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '') // remove diacríticos\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s]/g, ' ')    // remove pontos, parênteses, etc.\n    .replace(/\\s+/g, ' ')             // colapsa espaços\n    .trim();\n}\n\nfunction encontrarExato(valor, lista) {\n  if (!valor || valor === 'null' || valor === null) return null;\n  const norm = normalizar(valor);\n  if (!norm || norm.length < 2) return null;\n  // 1. Match exato normalizado\n  const exato = lista.find(v => normalizar(v) === norm);\n  if (exato) return exato;\n  // 2. Substring: termo do usuário aparece no nome do banco (\"educacao\" ⊂ \"secretaria...educacao\")\n  const contem = lista.find(v => normalizar(v).includes(norm));\n  if (contem) return contem;\n  // 3. Multi-palavra: todas as palavras do usuário (≥3 chars) presentes no nome do banco\n  const palavras = norm.split(' ').filter(p => p.length >= 3);\n  if (palavras.length >= 2) {\n    const multiWord = lista.find(v => {\n      const vn = normalizar(v);\n      return palavras.every(p => vn.includes(p));\n    });\n    if (multiWord) return multiWord;\n  }\n  // 4. Inverso: nome do banco contido no termo (fallback para siglas como \"celesc\")\n  const inverso = lista.find(v => norm.includes(normalizar(v)) && normalizar(v).length >= 4);\n  return inverso || null;\n}\n\n\n// Mesorregiões de SC — se \"município\" não existir na lista, pode ser uma região\nconst MESORREGIOES_SC = [\n  'norte catarinense', 'grande florianopolis', 'grande florianópolis',\n  'vale do itajai', 'vale do itajaí', 'sul catarinense',\n  'oeste catarinense', 'meio oeste', 'planalto norte',\n  'serra catarinense',\n];\nfunction ehRegiao(valor) {\n  if (!valor) return false;\n  const v = valor.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').trim();\n  return MESORREGIOES_SC.some(r => v === r || v.includes(r) || r.includes(v));\n}\n\n// ORGAO\nif (resolvido.orgao && resolvido.orgao !== null) {\n  const exato = encontrarExato(resolvido.orgao, distintos.orgaos);\n  if (exato) {\n    campos.orgao = exato;\n    campos_resolvidos.orgao = true;\n  } else if (!campos.orgao || campos.orgao === 'QUALQUER') {\n    campos.orgao = resolvido.orgao; // mantém o vago como fallback\n    campos_resolvidos.orgao = false;\n  }\n}\n\n// TIPO\nif (resolvido.tipo && resolvido.tipo !== null) {\n  // Tenta match combinado tipo+nome primeiro (ex: \"obra\"+\"rodoviaria\" → \"Obras Rodoviárias\")\n  // Preferir o match mais específico (mais longo) para evitar AND over-constrained\n  const exatoSimples = encontrarExato(resolvido.tipo, distintos.tipos);\n  const exatoCombo = resolvido.nome ? encontrarExato(resolvido.tipo + ' ' + resolvido.nome, distintos.tipos) : null;\n  const exato = (exatoCombo && (!exatoSimples || exatoCombo.length > exatoSimples.length))\n    ? exatoCombo\n    : exatoSimples;\n  if (exato) {\n    campos.tipo = exato;\n    campos_resolvidos.tipo = true;\n    // Nome foi absorvido pelo tipo composto — descartá-lo para evitar filtro duplo\n    if (exatoCombo && exato === exatoCombo) resolvido.nome = null;\n  } else if (!campos.tipo || campos.tipo === 'QUALQUER') {\n    // Tipo vago: descartar se nome cobre a mesma raiz (evita AND over-constrained)\n    const tipoRaiz = normalizar(resolvido.tipo).split(' ')[0].substring(0, 4);\n    const nomeRaiz = normalizar(resolvido.nome || campos.nome || '').split(' ')[0].substring(0, 4);\n    const tipoCobertoPorNome = tipoRaiz.length >= 3 && nomeRaiz.length >= 3 &&\n      (tipoRaiz.startsWith(nomeRaiz) || nomeRaiz.startsWith(tipoRaiz));\n    if (!tipoCobertoPorNome) {\n      campos.tipo = resolvido.tipo;\n      campos_resolvidos.tipo = false;\n    }\n  }\n}\n\n// MUNICIPIO (mantém LIKE, só normaliza capitalização)\nif (resolvido.municipio && resolvido.municipio !== null) {\n  const exato = encontrarExato(resolvido.municipio, distintos.municipios);\n  if (exato) {\n    campos.municipio = exato;\n    campos_resolvidos.municipio = true;\n  } else if (ehRegiao(resolvido.municipio)) {\n    // Classificador colocou região em municipio — mover para regiao\n    if (!campos.regiao || campos.regiao === 'QUALQUER') {\n      campos.regiao = resolvido.municipio;\n      campos_resolvidos.regiao = false;\n    }\n  } else if (!campos.municipio || campos.municipio === 'QUALQUER') {\n    campos.municipio = resolvido.municipio;\n    campos_resolvidos.municipio = false;\n  }\n}\n\n// REGIAO\nif (resolvido.regiao && resolvido.regiao !== null) {\n  const exatoReg = encontrarExato(resolvido.regiao, distintos.regioes);\n  if (exatoReg) {\n    campos.regiao = exatoReg;\n    campos_resolvidos.regiao = true;\n  } else if (!campos.regiao || campos.regiao === 'QUALQUER') {\n    campos.regiao = resolvido.regiao;\n    campos_resolvidos.regiao = false;\n  }\n}\n\n// NOME: preservar exatamente como retornado\nif (resolvido.nome && resolvido.nome !== null && !campos.nome) {\n  campos.nome = resolvido.nome;\n}\n\n// Se tipo foi resolvido exatamente e nome é redundante (palavras do nome já estão\n// dentro do valor do tipo), descartar nome para evitar AND over-constrained.\n// Ex: tipo=\"Obras Rodoviárias\" + nome=\"rodoviaria\" → descarta nome.\nif (campos_resolvidos.tipo === true && campos.tipo && campos.nome) {\n  const tipoNorm = normalizar(campos.tipo);\n  const nomePalavras = normalizar(campos.nome).split(' ').filter(p => p.length >= 4);\n  if (nomePalavras.length > 0 && nomePalavras.every(p => tipoNorm.includes(p))) {\n    delete campos.nome;\n  }\n}\n\n// ANO: número puro, sem validação de lista\nif (resolvido.ano && resolvido.ano !== null) {\n  const anoNum = parseInt(resolvido.ano, 10);\n  if (anoNum >= 1990 && anoNum <= 2030) {\n    campos.ano = String(anoNum);\n  }\n}\n\n// CODIGO: pass-through direto (ex: \"654\" ou \"654/2024\")\nif (resolvido.codigo && resolvido.codigo !== null) {\n  campos.codigo = String(resolvido.codigo).trim();\n}\n\n// Campos de VW_PROJETO_BUSCA_AVANCADA — pass-through direto\nif (resolvido.plano_governo !== null && resolvido.plano_governo !== undefined) {\n  // Guardrail: só aceita plano_governo do LLM se o usuário mencionou explicitamente \"plano\" ou \"governo\"\n  const texPGGuard = normalizar(buscaOriginal);\n  if (texPGGuard.includes('plano') || texPGGuard.includes('governo')) {\n    const pg = String(resolvido.plano_governo).trim().toLowerCase();\n    if (pg === 'sim' || pg === 's' || pg === 'true')                          campos.plano_governo = \"Sim\";\n    else if (pg === 'não' || pg === 'nao' || pg === 'n' || pg === 'false') campos.plano_governo = \"Não\";\n  }\n}\n\n// SITUACAO — resolve exato contra lista do banco quando disponível\nif (resolvido.situacao && resolvido.situacao !== null) {\n  const exatoSit = encontrarExato(resolvido.situacao, distintos.situacoes || []);\n  if (exatoSit) {\n    campos.situacao = exatoSit;\n    campos_resolvidos.situacao = true;\n  } else if (!campos.situacao || campos.situacao === 'QUALQUER') {\n    campos.situacao = resolvido.situacao;\n    campos_resolvidos.situacao = false;\n  }\n}\n// Override determinístico: detecta negação/afirmação de plano de governo no texto original\n// Necessário porque o LLM frequentemente ignora a negação e extrai só o conceito base\nif (buscaOriginal && buscaOriginal !== 'refinar') {\n  const _texPG = buscaOriginal.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');\n  if (/plano\\s+de\\s+governo/.test(_texPG)) {\n    campos.plano_governo = /\\b(nao|sem|exceto|nenhum)\\b/.test(_texPG) ? 'Não' : 'Sim';\n  }\n}\nif (resolvido.prioridade && resolvido.prioridade !== null) campos.prioridade = resolvido.prioridade;\nif (resolvido.programa   && resolvido.programa   !== null && !campos.programa)   campos.programa   = resolvido.programa;\nif (resolvido.setor      && resolvido.setor      !== null && !campos.setor)      campos.setor      = resolvido.setor;\nif (resolvido.associacao && resolvido.associacao !== null && !campos.associacao) campos.associacao = resolvido.associacao;\n\n// Descarte pós-LLM: se nome é apenas palavras de introdução + município já resolvido,\n// o nome é redundante e deve ser removido para evitar filtro desnecessário.\n// Ex: nome=\"Projetos Palhoça\" + municipio=\"Palhoça\" → descarta nome.\nif (campos.nome && campos.municipio) {\n  const INTRO = ['projeto', 'projetos', 'lista', 'mostre', 'quais'];\n  let resto = normalizar(campos.nome);\n  INTRO.forEach(w => { resto = resto.replace(new RegExp('\\\\b' + w + '\\\\b', 'g'), ''); });\n  resto = resto.replace(normalizar(campos.municipio), '').replace(/\\s+/g, '').trim();\n  if (resto.length < 3) delete campos.nome;\n}\n\n// Detecção direta de palavras-chave no texto original (fallback quando LLM falha)\nconst buscaNorm = normalizar(buscaOriginal);\nif (/plano\\s+(de\\s+)?governo/.test(buscaNorm)) {\n  campos.plano_governo = /\\b(nao|sem|exceto|nenhum)\\b/.test(buscaNorm) ? 'Não' : 'Sim';\n  // Remove do nome se o LLM classificou errado\n  if (campos.nome) {\n    const nomeNorm = normalizar(campos.nome);\n    if (nomeNorm.includes(\"plano\") && nomeNorm.includes(\"governo\")) delete campos.nome;\n  }\n}\n\n// Gerar filtros_label legível\nfunction abreviarOrgao(orgao) {\n  return (orgao || '')\n    .replace('Secretaria de Estado da ', 'Sec. de ')\n    .replace('Secretaria de Estado de ', 'Sec. de ')\n    .replace('Secretaria de Estado do ', 'Sec. do ')\n    .replace('Secretaria de Estado dos ', 'Sec. dos ')\n    .replace('Fundação Catarinense', 'FC')\n    .replace('Departamento Estadual de', 'DE');\n}\n\nconst partes = [];\nif (campos.municipio && campos.municipio !== 'QUALQUER') partes.push('Município: ' + campos.municipio);\nif (campos.regiao    && campos.regiao    !== 'QUALQUER') partes.push('Região: '    + campos.regiao);\nif (campos.orgao     && campos.orgao     !== 'QUALQUER') partes.push('Órgão: ' + abreviarOrgao(campos.orgao));\nif (campos.situacao  && campos.situacao  !== 'QUALQUER') partes.push('Situação: ' + campos.situacao);\nif (campos.tipo      && campos.tipo      !== 'QUALQUER') partes.push('Tipo: ' + campos.tipo);\nif (campos.nome      && campos.nome      !== 'QUALQUER') partes.push('Nome: ' + campos.nome);\nif (campos.ano) partes.push('Ano: ' + campos.ano);\nif (campos.plano_governo === 'Sim') partes.push('Plano de Governo: Sim');\nif (campos.plano_governo === 'Não') partes.push('Plano de Governo: Não');\nif (campos.prioridade  && campos.prioridade  !== 'QUALQUER') partes.push('Prioridade: ' + campos.prioridade);\nif (campos.programa    && campos.programa    !== 'QUALQUER') partes.push('Programa: ' + campos.programa);\nif (campos.setor       && campos.setor       !== 'QUALQUER') partes.push('Setor: ' + campos.setor);\nif (campos.associacao  && campos.associacao  !== 'QUALQUER') partes.push('Associação: ' + campos.associacao);\n\nconst filtros_label = partes.length > 0\n  ? '\\uD83D\\uDD0D *Filtros:* ' + partes.join(' | ')\n  : '';\n\n// Atualizar contexto\ncontexto.campos_acumulados = campos;\ncontexto.campos_resolvidos = campos_resolvidos;\ncontexto.filtros_label = filtros_label;\ncontexto.ultimaInteracao = agora;\nstaticData.contextos[remetente] = contexto;\n\n\n// Cleanup final: se municipio não foi resolvido como cidade real e é mesorregião,\n// mover para regiao (evita LIKE %NORT%CATA% em M.MUNICIPIO que nunca bate)\nif (campos.municipio && campos_resolvidos.municipio !== true && ehRegiao(campos.municipio)) {\n  if (!campos.regiao || campos.regiao === 'QUALQUER') {\n    campos.regiao = campos.municipio;\n    campos_resolvidos.regiao = false;\n  }\n  delete campos.municipio;\n  delete campos_resolvidos.municipio;\n}\n\nreturn [{\n  remetente,\n  campos,\n  campos_resolvidos,\n  filtros_label,\n  busca_limpa: $('PreparaConsulta').first().json.busca_limpa || '',\n  campos_faltantes: []\n}];"
       },
-      "id": "03784c2d-89f5-4990-925f-d01d974d38e7",
+      "id": "b17478bd-92d2-401d-baa7-fbd336ad6826",
       "name": "AplicaFiltrosResolvidos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        13072,
-        46928
+        12592,
+        48592
       ]
     },
     {
       "parameters": {
         "jsCode": "const input = $input.item.json;\nconst remetente = input.remetente;\nconst mensagemRetorno = input.mensagem_retorno;\n\nconst pergunta = $('AplicaClassificacao').first().json.pergunta || '';\n\nlet respostaLLM = mensagemRetorno;\ntry {\n  respostaLLM = $('RespondePerguntas').first().json.choices[0].message.content.trim();\n} catch(e) {}\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.contextos) staticData.contextos = {};\nif (!staticData.contextos[remetente]) staticData.contextos[remetente] = {};\nconst contexto = staticData.contextos[remetente];\nif (!contexto.historico_qa) contexto.historico_qa = [];\n\ncontexto.historico_qa.push({ role: 'user', content: pergunta });\ncontexto.historico_qa.push({ role: 'assistant', content: respostaLLM });\n\nif (contexto.historico_qa.length > 8) {\n  contexto.historico_qa = contexto.historico_qa.slice(-8);\n}\nstaticData.contextos[remetente] = contexto;\n\nreturn [{ remetente, mensagem_retorno: mensagemRetorno }];"
       },
-      "id": "049e870d-39cb-4cbf-9570-b0b40bd2df35",
+      "id": "4013c8a9-9bd7-4aef-998b-f31de58f5353",
       "name": "SalvaHistoricoQA",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12960,
-        47280
+        12608,
+        48992
       ]
     },
     {
@@ -952,10 +952,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        12720,
-        46928
+        12240,
+        48592
       ],
-      "id": "62076ea6-ff41-41ce-a184-8e6458dd6846",
+      "id": "ef3f4d52-4640-418a-9e27-6f028d9997a3",
       "name": "NormalizaEntrada"
     },
     {
@@ -985,10 +985,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        14080,
-        47184
+        13600,
+        48816
       ],
-      "id": "23cbd87b-5ed0-430a-8a36-670602b6bdf0",
+      "id": "5552a3b3-6d76-4eee-97df-d10add38fb04",
       "name": "RoteiaFallback"
     },
     {
@@ -1008,16 +1008,16 @@
         },
         "sendBody": true,
         "specifyBody": "string",
-        "options": {},
-        "body": "={{ $json.groq_payload }}"
+        "body": "={{ $json.groq_payload }}",
+        "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        14256,
-        47024
+        14048,
+        48912
       ],
-      "id": "af1d9104-bb80-4a98-8fdd-2688370881b9",
+      "id": "cca7d1d0-2165-4063-841a-bb1de0bb4401",
       "name": "SugestaoFallback",
       "credentials": {
         "httpHeaderAuth": {
@@ -1034,10 +1034,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        14432,
-        47024
+        14256,
+        48912
       ],
-      "id": "7f404605-470b-41db-9808-015f191063a0",
+      "id": "82e6b4a8-508b-407e-bdf2-3da71190b34c",
       "name": "FormataFallback"
     },
     {
@@ -1047,10 +1047,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11696,
-        46432
+        11040,
+        48192
       ],
-      "id": "b92e5cf8-0887-42fa-a1fa-1a040296e3fd",
+      "id": "12801f19-3379-4d92-9128-16ab05a4b326",
       "name": "VerificaConfianca"
     },
     {
@@ -1086,10 +1086,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        14064,
-        46816
+        13552,
+        48208
       ],
-      "id": "bc8fc31b-2947-450a-9258-83eb43795409",
+      "id": "563fcc97-a0df-484c-aeba-1edcd60806b1",
       "name": "RetornoProjeto",
       "credentials": {
         "httpHeaderAuth": {
@@ -1131,10 +1131,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        15344,
-        46528
+        14672,
+        48160
       ],
-      "id": "95918090-e89a-4e89-be58-6d47fe0907ab",
+      "id": "637a8e6d-0836-47e6-9ee0-9833cdb24388",
       "name": "RetornaMensagem",
       "credentials": {
         "httpHeaderAuth": {
@@ -1173,10 +1173,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        12528,
-        46096
+        11888,
+        47648
       ],
-      "id": "24d1532f-4657-493a-9b14-58e54456add7",
+      "id": "b79b2453-bcaa-4fee-903b-29c539eb4f6c",
       "name": "RetornoReinicio",
       "credentials": {
         "httpHeaderAuth": {
@@ -1215,10 +1215,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        12528,
-        45872
+        11888,
+        47472
       ],
-      "id": "03f9bf06-e0a1-4b79-95dd-e8f00ae5a008",
+      "id": "a7c9c6b6-013f-4924-81f5-0722e39d76d6",
       "name": "RetornoBoasVindas",
       "credentials": {
         "httpHeaderAuth": {
@@ -1241,10 +1241,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        14048,
-        46608
+        13584,
+        48368
       ],
-      "id": "62319de6-34d1-49cd-ae95-5a9da88b1b9c",
+      "id": "0bd0b072-2cf1-4044-8765-58792ef9e121",
       "name": "SendPresenceProjeto",
       "credentials": {
         "httpHeaderAuth": {
@@ -1267,10 +1267,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        15184,
-        46736
+        14672,
+        48432
       ],
-      "id": "daaa9e49-8c08-41d5-9f01-7b18427d83ac",
+      "id": "aa0bab02-f0fd-45e3-9c03-67c30abe0d49",
       "name": "SendPresenceMensagem",
       "credentials": {
         "httpHeaderAuth": {
@@ -1293,10 +1293,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        12528,
-        46288
+        11888,
+        47840
       ],
-      "id": "6ac3eedd-a0b1-4691-9031-adeef9aeef12",
+      "id": "e2ff3aba-f51e-41b2-9a63-99105e3f2575",
       "name": "SendPresenceReinicio",
       "credentials": {
         "httpHeaderAuth": {
@@ -1319,10 +1319,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        12528,
-        45664
+        11888,
+        47296
       ],
-      "id": "87b6e016-3c6e-4b55-820b-e2cdcd7f9a3c",
+      "id": "b310a85f-b526-4e62-9e73-3fdf2c1a9a0b",
       "name": "SendPresenceBoas",
       "credentials": {
         "httpHeaderAuth": {
@@ -1356,10 +1356,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        11888,
-        46432
+        11232,
+        48192
       ],
-      "id": "e48ffd70-9af7-4d90-b594-6cf8e08306f7",
+      "id": "1d0aad6b-b127-4dcd-88aa-90f10fe707a8",
       "name": "RoteiaConfirmacao"
     },
     {
@@ -1376,10 +1376,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        12112,
-        46864
+        11456,
+        48624
       ],
-      "id": "66cc0580-07ee-408d-90ba-801023a1d72f",
+      "id": "1bd8174b-9782-4b65-b092-c48279debb24",
       "name": "EnviaConfirmacao",
       "credentials": {
         "httpHeaderAuth": {
@@ -1392,13 +1392,13 @@
       "parameters": {
         "jsCode": "// Prepara payload Groq para sugestões de busca (linguagem natural, sem tipos Oracle)\nconst upstream = $input.first().json;\nconst busca = upstream.busca_original || upstream.busca_limpa || '';\n\nconst payload = JSON.stringify({\n  model: 'llama-3.1-8b-instant',\n  temperature: 0.3,\n  max_tokens: 80,\n  messages: [\n    {\n      role: 'system',\n      content: 'Você é um assistente do portal de projetos de infraestrutura do Governo de SC. Dado um termo sem resultado, sugira 2 ou 3 termos alternativos em português que o cidadão poderia tentar. Foco em obras públicas: rodovias, escolas, hospitais, saneamento, etc. Retorne SOMENTE um JSON array com os termos. Apenas o array, sem explicações.'\n    },\n    {\n      role: 'user',\n      content: 'Termo sem resultado: \"' + busca + '\"'\n    }\n  ]\n});\n\nreturn [{ json: { ...upstream, groq_payload: payload } }];\n"
       },
-      "id": "7fb65a4f-785f-41be-b554-9ef836084917",
+      "id": "d2579f4c-b231-437f-af0d-06a6ec9b01f4",
       "name": "PreparaSugestaoPayload",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        14168,
-        47024
+        13824,
+        48912
       ]
     }
   ],
@@ -1612,6 +1612,7 @@
             "index": 0
           }
         ],
+        [],
         [
           {
             "node": "PreparaPromptPergunta",
