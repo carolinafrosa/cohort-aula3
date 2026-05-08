@@ -1410,11 +1410,6 @@
             "node": "SendPresenceProjeto",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornoProjeto",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1517,11 +1512,6 @@
             "node": "SendPresenceMensagem",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1531,11 +1521,6 @@
         [
           {
             "node": "SendPresenceMensagem",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
             "type": "main",
             "index": 0
           }
@@ -1549,11 +1534,6 @@
             "node": "SendPresenceMensagem",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1565,21 +1545,11 @@
             "node": "SendPresenceBoas",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornoBoasVindas",
-            "type": "main",
-            "index": 0
           }
         ],
         [
           {
             "node": "SendPresenceReinicio",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "RetornoReinicio",
             "type": "main",
             "index": 0
           }
@@ -1627,11 +1597,6 @@
         [
           {
             "node": "SendPresenceProjeto",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "RetornoProjeto",
             "type": "main",
             "index": 0
           }
@@ -1725,11 +1690,6 @@
             "node": "SendPresenceMensagem",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1818,11 +1778,6 @@
             "node": "SendPresenceMensagem",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1907,11 +1862,6 @@
             "node": "SendPresenceMensagem",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1941,11 +1891,6 @@
             "node": "SendPresenceMensagem",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1966,11 +1911,6 @@
         [
           {
             "node": "SendPresenceMensagem",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "RetornaMensagem",
             "type": "main",
             "index": 0
           }
@@ -2011,6 +1951,50 @@
         [
           {
             "node": "SugestaoFallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendPresenceProjeto": {
+      "main": [
+        [
+          {
+            "node": "RetornoProjeto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendPresenceMensagem": {
+      "main": [
+        [
+          {
+            "node": "RetornaMensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendPresenceReinicio": {
+      "main": [
+        [
+          {
+            "node": "RetornoReinicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SendPresenceBoas": {
+      "main": [
+        [
+          {
+            "node": "RetornoBoasVindas",
             "type": "main",
             "index": 0
           }
