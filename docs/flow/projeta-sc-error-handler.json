@@ -1,0 +1,136 @@
+{
+  "name": "Projeta SC - Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567801",
+      "name": "ErrorTrigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Navega pela árvore de execução para encontrar o remoteJid (número WhatsApp)\nlet numero = '';\nlet erroMsg = 'Erro desconhecido';\n\ntry {\n  erroMsg = $json?.execution?.error?.message || erroMsg;\n  const runData = $json?.execution?.data?.resultData?.runData;\n  if (runData) {\n    // O webhook de entrada sempre é o nó 'Whatsapp'\n    const webhookRuns = runData['Whatsapp'];\n    if (webhookRuns?.[0]?.data?.main?.[0]?.[0]?.json) {\n      const body = webhookRuns[0].data.main[0][0].json?.body ||\n                   webhookRuns[0].data.main[0][0].json;\n      numero = body?.data?.key?.remoteJid ||\n               body?.data?.message?.key?.remoteJid ||\n               '';\n    }\n  }\n} catch (_) {}\n\nreturn [{ json: { numero, erroMsg } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300],
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567802",
+      "name": "ExtraiRemetente"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567810",
+              "leftValue": "={{ $json.numero }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [720, 300],
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567803",
+      "name": "TemNumero"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n-evolution-api.lkpafu.easypanel.host/message/sendText/Projeta_SC",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.numero }}"
+            },
+            {
+              "name": "text",
+              "value": "Ops! 😕 Estamos passando por um problema técnico.\n\nTente novamente em alguns instantes. Se o problema persistir, entre em contato com a Secretaria de Infraestrutura."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [960, 220],
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567804",
+      "name": "RetornoErroTecnico",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "GawefCYOjoZJQkML",
+          "name": "APIKEY"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "ErrorTrigger": {
+      "main": [
+        [
+          {
+            "node": "ExtraiRemetente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ExtraiRemetente": {
+      "main": [
+        [
+          {
+            "node": "TemNumero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TemNumero": {
+      "main": [
+        [
+          {
+            "node": "RetornoErroTecnico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "2ca62e24603a0eb1b6b9cb037bfabe1872c5bf12e8e6461f6d68296d10ac7161"
+  }
+}

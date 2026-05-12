@@ -73,7 +73,27 @@ The 39-node flow is organized in these functional groups:
 - **Gemini 1.5 Pro** — natural language → structured query (`InterpretaConsulta`), accessed via OpenAI-compatible endpoint
 - **Evolution API** (`n8n-evolution-api.lkpafu.easypanel.host`) — WhatsApp gateway; all outbound messages go through this service using the `Projeta_SC` instance
 
-**Deployment:** For VM installation (Ubuntu 22.04 + Node.js 20 + Oracle Instant Client 19c + PM2), see `docs/deploy/implantacao-vm.md`.
+**Deployment:** For VM installation (Ubuntu 22.04 + Node.js 20 + Oracle Instant Client 19c + PM2), see `docs/deploy/implantacao-vm.md` (step-by-step) and `docs/deploy/pre-requisitos-vm.md` (prerequisites checklist).
+
+**Backup:** `docs/flow/projeta-sc.bak.json` is a tracked snapshot of the last stable export. Use it to diff or rollback if an export corrupts the flow.
+
+### Code Node Sources (`docs/flow/code-nodes/`)
+
+Story implementations that change n8n Code nodes are committed as `.js` patch files here — one file per node being modified. Each file contains a comment header specifying exactly where in the node to insert the code. Apply them manually in the n8n UI after importing the flow:
+
+| File | Target node | Purpose |
+|------|-------------|---------|
+| `processa-mensagem-patch.js` | `ProcessaMensagem` | Session state / routing logic patches |
+| `aplica-classificacao-patch.js` | `AplicaClassificacao` | Classification application patches |
+| `prepara-groq-classificador-prompt-patch.js` | `PreparaGroqClassificador` | Prompt construction patches |
+| `envia-boas-vindas.js` | `RetornoBoasVindas` | Welcome message with typing simulation |
+| `envia-com-digitacao.js` | Response nodes | Typing-simulation wrapper |
+| `normaliza-entrada.js` | Input nodes | Geographic/monetary normalization |
+| `formata-fallback.js` | Fallback nodes | Fallback formatting |
+| `verifica-confianca.js` | Intent nodes | Confidence score check |
+| `sugestao-fallback-config.json` | — | Configuration for fallback suggestion feature |
+
+After applying all patches from a story, re-export the flow and replace `projeta-sc.json`.
 
 ## AIOX Framework Commands
 
@@ -121,7 +141,7 @@ All work requires a story in `docs/stories/`. Create the directory if it doesn't
 
 Stories are named `{epicNum}.{storyNum}.story.md`, track progress via `[ ]` → `[x]` checkboxes, and maintain a File List section. Story status transitions: `Draft → Ready → InProgress → InReview → Done`.
 
-**Active Epic:** Epic 1 — "Qualidade e UX do Chatbot" (22 stories, all in `docs/stories/1.*.story.md`). Stories 1.1–1.5 are `InReview`; 1.6–1.22 are `Ready`. Pick any `Ready` story to start.
+**Active Epic:** Epic 1 — "Qualidade e UX do Chatbot" (`docs/stories/1.*.story.md`). Check each story's `**Status:**` field — pick any `Ready` story to start. Stories in `InProgress` need a developer to continue; `InReview` are awaiting QA. Do not rely on this file for story counts — the list grows as new stories are created.
 
 ## Environment Notes (WSL2)
 
