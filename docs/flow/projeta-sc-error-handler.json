@@ -59,10 +59,7 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
+            {}
           ]
         },
         "sendBody": true,
