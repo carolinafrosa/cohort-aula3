@@ -11,7 +11,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Navega pela árvore de execução para encontrar o remoteJid (número WhatsApp)\nlet numero = '';\nlet erroMsg = 'Erro desconhecido';\n\ntry {\n  erroMsg = $json?.execution?.error?.message || erroMsg;\n  const runData = $json?.execution?.data?.resultData?.runData;\n  if (runData) {\n    // O webhook de entrada sempre é o nó 'Whatsapp'\n    const webhookRuns = runData['Whatsapp'];\n    if (webhookRuns?.[0]?.data?.main?.[0]?.[0]?.json) {\n      const body = webhookRuns[0].data.main[0][0].json?.body ||\n                   webhookRuns[0].data.main[0][0].json;\n      numero = body?.data?.key?.remoteJid ||\n               body?.data?.message?.key?.remoteJid ||\n               '';\n    }\n  }\n} catch (_) {}\n\nreturn [{ json: { numero, erroMsg } }];"
+        "jsCode": "// Navega pela árvore de execução para encontrar o remoteJid (número WhatsApp)\nlet numero = '';\nlet erroMsg = 'Erro desconhecido';\n\ntry {\n  erroMsg = $json?.execution?.error?.message || erroMsg;\n  const runData = $json?.execution?.data?.resultData?.runData;\n  if (runData) {\n    // O webhook de entrada sempre é o nó 'Whatsapp'\n    const webhookRuns = runData['Whatsapp'];\n    if (webhookRuns?.[0]?.data?.main?.[0]?.[0]?.json) {\n      const body = webhookRuns[0].data.main[0][0].json?.body ||\n                   webhookRuns[0].data.main[0][0].json;\n      numero = body?.data?.key?.remoteJid ||\n               body?.data?.message?.key?.remoteJid ||\n               '';\n    }\n  }\n} catch (_) {}\n\nconst mensagem = 'Ops! \\ud83d\\ude15 Estamos passando por um problema técnico.\\n\\nTente novamente em alguns instantes. Se o problema persistir, entre em contato com a Secretaria de Infraestrutura.';\n\nreturn [{ json: { numero, erroMsg, mensagem } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -71,7 +71,7 @@
             },
             {
               "name": "text",
-              "value": "Ops! 😕 Estamos passando por um problema técnico.\n\nTente novamente em alguns instantes. Se o problema persistir, entre em contato com a Secretaria de Infraestrutura."
+              "value": "={{ $json.mensagem }}"
             }
           ]
         },
