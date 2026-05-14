@@ -1164,7 +1164,7 @@
             },
             {
               "name": "text",
-              "value": "={{ $('RoteadorPrincipal').item.json.mensagem_retorno }}"
+              "value": "Ok! Vamos começar de novo. 🔄\n\nO que você quer buscar? Pode digitar o nome do projeto, município, tipo de obra ou órgão responsável."
             }
           ]
         },
